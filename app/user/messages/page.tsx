@@ -44,7 +44,7 @@ export default function UserMessages() {
 	});
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-between p-24">
+		<main className="grid min-h-screen place-items-center">
 			{query.isLoading && (
 				<Table className="cursor-default">
 					<TableCaption>Messages</TableCaption>
@@ -64,8 +64,8 @@ export default function UserMessages() {
 			)}
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && (
-				<div className="absolute left-0 top-0 h-full w-full bg-neutral-800 bg-opacity-60">
-					<div className="flex h-full w-full items-center justify-center">
+				<div className="absolute left-0 top-0 z-50 h-full w-full bg-neutral-800 bg-opacity-60">
+					<div className="grid h-full place-items-center">
 						<div className="lds-ripple">
 							<div></div>
 							<div></div>
@@ -100,7 +100,7 @@ export default function UserMessages() {
 						</TableBody>
 					</Table>
 					{query.data.totalPages > 1 && (
-						<Pagination>
+						<Pagination className="pb-7">
 							<PaginationContent>
 								<PaginationItem>
 									<PaginationPrevious

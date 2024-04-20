@@ -24,7 +24,7 @@ export default function Home() {
 	});
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-between p-24">
+		<main className="grid min-h-screen place-items-center">
 			{query.isLoading && <p>Loading...</p>}
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
