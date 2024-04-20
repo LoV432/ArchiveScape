@@ -36,7 +36,7 @@ export default function UserMessages() {
 				throw new Error('Error');
 			}
 			return (await res.json()) as {
-				messages: { id: string; messageText: string; createdAt: string }[];
+				messages: { messageText: string; createdAt: string; color: string }[];
 				totalPages: number;
 			};
 		},
@@ -85,11 +85,17 @@ export default function UserMessages() {
 						</TableHeader>
 						<TableBody>
 							{query.data.messages.map((message) => (
-								<TableRow key={message.id}>
-									<TableCell className="font-medium">
+								<TableRow key={message.createdAt}>
+									<TableCell
+										style={{ color: message.color }}
+										className="font-medium"
+									>
 										{message.messageText}
 									</TableCell>
-									<TableCell className="text-right">
+									<TableCell
+										style={{ color: message.color }}
+										className="text-right"
+									>
 										{new Date(message.createdAt).toLocaleString('en-US', {
 											timeStyle: 'short',
 											dateStyle: 'short'
