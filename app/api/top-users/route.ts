@@ -1,12 +1,8 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import { getDatabase } from '@/lib/db';
 
 export async function GET() {
+	const db = await getDatabase();
 	try {
-		const db = await open({
-			filename: './database.db',
-			driver: sqlite3.Database
-		});
 		const messages = await db.all(`
 			SELECT u.userId, COUNT(*) AS messageCount
 			FROM messages m
