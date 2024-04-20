@@ -44,9 +44,9 @@ export default function UserMessages() {
 	});
 
 	return (
-		<main className="grid min-h-screen place-items-center">
+		<main className="grid min-h-screen">
 			{query.isLoading && (
-				<Table className="cursor-default">
+				<Table className="cursor-default place-self-start">
 					<TableCaption>Messages</TableCaption>
 					<TableHeader>
 						<TableRow>
@@ -79,7 +79,7 @@ export default function UserMessages() {
 						<TableCaption>Messages</TableCaption>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="w-[500px]">Message</TableHead>
+								<TableHead>Message</TableHead>
 								<TableHead className="text-right">Created At</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -88,7 +88,7 @@ export default function UserMessages() {
 								<TableRow key={message.createdAt}>
 									<TableCell
 										style={{ color: message.color }}
-										className="font-medium"
+										className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
 									>
 										{message.messageText}
 									</TableCell>
@@ -106,7 +106,7 @@ export default function UserMessages() {
 						</TableBody>
 					</Table>
 					{query.data.totalPages > 1 && (
-						<Pagination className="pb-7">
+						<Pagination className="place-self-end pb-7">
 							<PaginationContent>
 								<PaginationItem>
 									<PaginationPrevious
