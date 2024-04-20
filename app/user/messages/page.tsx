@@ -44,7 +44,7 @@ export default function UserMessages() {
 	});
 
 	return (
-		<main className="grid min-h-screen">
+		<main className="grid min-h-lvh">
 			{query.isLoading && (
 				<Table className="cursor-default place-self-start">
 					<TableCaption>Messages</TableCaption>
