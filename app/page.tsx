@@ -9,8 +9,10 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+	const router = useRouter();
 	const query = useQuery({
 		queryKey: ['top-users'],
 		queryFn: async () => {
@@ -37,7 +39,12 @@ export default function Home() {
 					</TableHeader>
 					<TableBody>
 						{query.data.map((user, index) => (
-							<TableRow key={user.userId}>
+							<TableRow
+								onClick={() =>
+									router.push(`/user/messages?userId=${user.userId}`)
+								}
+								key={user.userId}
+							>
 								<TableCell
 									className={`font-medium ${colorGradientByIndex(index)}`}
 								>
