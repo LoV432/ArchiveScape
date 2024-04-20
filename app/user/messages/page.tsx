@@ -46,7 +46,34 @@ export default function UserMessages() {
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between p-24">
+			{query.isLoading && (
+				<Table className="cursor-default">
+					<TableCaption>Messages</TableCaption>
+					<TableHeader>
+						<TableRow>
+							<TableHead className="w-[500px]">Message</TableHead>
+							<TableHead className="text-right">Created At</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						<TableRow>
+							<TableCell className="font-medium">Loading...</TableCell>
+							<TableCell className="text-right">Loading...</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			)}
 			{query.isError && <p>Error</p>}
+			{query.isPlaceholderData && (
+				<div className="absolute left-0 top-0 h-full w-full bg-neutral-800 bg-opacity-60">
+					<div className="flex h-full w-full items-center justify-center">
+						<div className="lds-ripple">
+							<div></div>
+							<div></div>
+						</div>
+					</div>
+				</div>
+			)}
 			{query.isSuccess && (
 				<>
 					<Table className="cursor-default">
