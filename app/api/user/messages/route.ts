@@ -4,6 +4,7 @@ import { NextRequest } from 'next/server';
 export async function GET(NextRequest: NextRequest) {
 	const { searchParams } = NextRequest.nextUrl;
 	const userId = searchParams.get('userId');
+	const page = searchParams.get('page') || '0';
 	if (!userId || userId === '') {
 		return new Response(JSON.stringify({ error: 'Missing userId' }), {
 			status: 500
@@ -12,10 +13,18 @@ export async function GET(NextRequest: NextRequest) {
 	const db = await getDatabase();
 	try {
 		const messages = await db.all(
-			`SELECT id, messageText, createdAt FROM messages WHERE userId = (SELECT id FROM users_id WHERE userId = ?) ORDER BY createdAt ASC LIMIT 10`,
-			[userId]
+			`SELECT id, messageText, createdAt FROM messages WHERE userId = (SELECT id FROM users_id WHERE userId = ?) ORDER BY createdAt ASC LIMIT 10 OFFSET ?`,
+			[userId, Number(page) * 10]
 		);
-		return new Response(JSON.stringify(messages));
+		const totalPages = Math.ceil(
+			(
+				await db.get(
+					`SELECT COUNT(*) FROM messages WHERE userId = (SELECT id FROM users_id WHERE userId = ?)`,
+					[userId]
+				)
+			)['COUNT(*)'] / 10
+		);
+		return new Response(JSON.stringify({ messages, totalPages }));
 	} catch (error) {
 		console.log(error);
 		return new Response(JSON.stringify([]), { status: 500 });
