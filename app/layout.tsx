@@ -14,7 +14,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		// The theme provider recommends using suppressHydrationWarning
+		// https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
+		<html suppressHydrationWarning lang="en">
 			<body>
 				<QueryProvider>
 					<ThemeProvider
