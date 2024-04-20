@@ -20,13 +20,12 @@ import {
 } from '@/components/ui/pagination';
 
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 export default function UserMessages() {
-	const router = useRouter();
 	const searchParams = useSearchParams();
 	const userId = searchParams.get('userId');
-	const page = searchParams.get('page') || '0';
+	const page = searchParams.get('page') || '1';
 	const query = useQuery({
 		queryKey: ['user-messages', userId, page],
 		queryFn: async () => {
@@ -105,15 +104,11 @@ export default function UserMessages() {
 							<PaginationContent>
 								<PaginationItem>
 									<PaginationPrevious
+										href={`/user/messages?userId=${userId}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+										scroll={false}
 										className={`${
-											page === '0' ? 'cursor-not-allowed' : 'cursor-pointer'
+											page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
 										} select-none`}
-										onClick={() => {
-											if (page === '0') return;
-											router.push(
-												`/user/messages?userId=${userId}&page=${Number(page) - 1}`
-											);
-										}}
 									/>
 								</PaginationItem>
 								<PaginationItem>
@@ -126,17 +121,13 @@ export default function UserMessages() {
 								</PaginationItem>
 								<PaginationItem>
 									<PaginationNext
+										href={`/user/messages?userId=${userId}&page=${Number(page) + 1 > query.data.totalPages ? page : Number(page) + 1}`}
+										scroll={false}
 										className={`${
-											page === String(query.data.totalPages - 1)
+											page === String(query.data.totalPages)
 												? 'cursor-not-allowed'
 												: 'cursor-pointer'
 										} select-none`}
-										onClick={() => {
-											if (page === String(query.data.totalPages - 1)) return;
-											router.push(
-												`/user/messages?userId=${userId}&page=${Number(page) + 1}`
-											);
-										}}
 									/>
 								</PaginationItem>
 							</PaginationContent>

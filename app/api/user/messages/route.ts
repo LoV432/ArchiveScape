@@ -14,7 +14,7 @@ export async function GET(NextRequest: NextRequest) {
 	try {
 		const messages = await db.all(
 			`SELECT id, messageText, createdAt FROM messages WHERE userId = (SELECT id FROM users_id WHERE userId = ?) ORDER BY createdAt ASC LIMIT 10 OFFSET ?`,
-			[userId, Number(page) * 10]
+			[userId, (Number(page) - 1) * 10]
 		);
 		const totalPages = Math.ceil(
 			(
