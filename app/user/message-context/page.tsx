@@ -1,4 +1,6 @@
 'use client';
+import { redirect, useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import {
 	Table,
 	TableBody,
@@ -15,51 +17,53 @@ import {
 	PaginationEllipsis,
 	PaginationItem,
 	PaginationLink,
-	PaginationNext,
-	PaginationPrevious
+	PaginationNewerMessages,
+	PaginationOlderMessages
 } from '@/components/ui/pagination';
-
-import { useQuery } from '@tanstack/react-query';
-import { redirect, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import Link from 'next/link';
 
-export type Message = {
+type Message = {
 	id: number;
 	messageText: string;
 	createdAt: string;
 	color: string;
+	userId: number;
 };
 
-export default function Main() {
+export default function Page() {
 	return (
 		<main className="grid min-h-lvh">
 			<Suspense>
-				<MessagesPage />
+				<Main />
 			</Suspense>
 		</main>
 	);
 }
 
-function MessagesPage() {
+function Main() {
 	const searchParams = useSearchParams();
 	const userId = searchParams.get('userId');
+	const messageId = searchParams.get('messageId');
+	if (!messageId || messageId === '' || isNaN(Number(messageId))) {
+		redirect('/');
+	}
 	if (!userId || userId === '') {
 		redirect('/');
 	}
 	const page = searchParams.get('page') || '1';
+
 	const query = useQuery({
-		queryKey: ['user-messages', userId, page],
+		queryKey: ['user-message-context', userId, page, messageId],
 		queryFn: async () => {
 			const res = await fetch(
-				`/api/user/messages?userId=${userId}&page=${page}`
+				`/api/user/message-context?messageId=${messageId}&userId=${userId}&page=${page}`
 			);
 			if (!res.ok) {
 				throw new Error('Error');
 			}
 			return (await res.json()) as {
 				messages: Message[];
-				totalPages: number;
+				userRelationId: { id: number };
 			};
 		},
 		placeholderData: (prev) => prev
@@ -97,11 +101,14 @@ function MessagesPage() {
 			)}
 			{query.isSuccess && (
 				<>
-					<MessageSection messages={query.data.messages} userId={userId} />
+					<MessageSection
+						messages={query.data.messages}
+						userRelationId={query.data.userRelationId}
+					/>
 					<PaginationSection
-						totalPages={query.data.totalPages}
-						page={page}
 						userId={userId}
+						messageId={messageId}
+						page={page}
 					/>
 				</>
 			)}
@@ -111,71 +118,62 @@ function MessagesPage() {
 
 function MessageSection({
 	messages,
-	userId
+	userRelationId
 }: {
 	messages: Message[];
-	userId: string;
+	userRelationId: { id: number };
 }) {
 	return (
-		<>
-			<Table className="mx-auto max-w-3xl">
-				<TableCaption>Messages</TableCaption>
-				<TableHeader>
-					<TableRow>
-						<TableHead>Message</TableHead>
-						<TableHead className="text-right">Created At</TableHead>
+		<Table className="mx-auto max-w-3xl">
+			<TableCaption>Messages</TableCaption>
+			<TableHeader>
+				<TableRow>
+					<TableHead>Message</TableHead>
+					<TableHead className="text-right">Created At</TableHead>
+				</TableRow>
+			</TableHeader>
+			<TableBody>
+				{messages.map((message) => (
+					<TableRow
+						key={message.id}
+						className={`${message.userId === userRelationId.id ? 'border-4 border-rose-800' : ''}`}
+					>
+						<TableCell
+							style={{ color: message.color }}
+							className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
+						>
+							{message.messageText}
+						</TableCell>
+						<TableCell style={{ color: message.color }} className="text-right">
+							{new Date(message.createdAt).toLocaleString('en-US', {
+								timeStyle: 'short',
+								dateStyle: 'short'
+							})}
+						</TableCell>
 					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{messages.map((message) => (
-						<TableRow key={message.id} className="relative">
-							<TableCell
-								style={{ color: message.color }}
-								className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
-							>
-								<Link
-									href={`/user/message-context?userId=${userId}&messageId=${message.id}`}
-									className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
-								>
-									{message.messageText}
-								</Link>
-							</TableCell>
-							<TableCell
-								style={{ color: message.color }}
-								className="text-right"
-							>
-								{new Date(message.createdAt).toLocaleString('en-US', {
-									timeStyle: 'short',
-									dateStyle: 'short'
-								})}
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</>
+				))}
+			</TableBody>
+		</Table>
 	);
 }
 
 function PaginationSection({
 	userId,
-	page,
-	totalPages
+	messageId,
+	page
 }: {
 	userId: string;
+	messageId: string;
 	page: string;
-	totalPages: number;
 }) {
 	return (
 		<Pagination className="place-self-end pb-7">
 			<PaginationContent>
 				<PaginationItem>
-					<PaginationPrevious
-						href={`/user/messages?userId=${userId}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+					<PaginationOlderMessages
+						href={`/user/message-context?userId=${userId}&messageId=${messageId}&page=${Number(page) - 1}`}
 						scroll={false}
-						className={`${
-							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
+						className={`select-none`}
 					/>
 				</PaginationItem>
 				<PaginationItem>
@@ -185,14 +183,10 @@ function PaginationSection({
 					<PaginationEllipsis />
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationNext
-						href={`/user/messages?userId=${userId}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
+					<PaginationNewerMessages
+						href={`/user/message-context?userId=${userId}&messageId=${messageId}&page=${Number(page) + 1}`}
 						scroll={false}
-						className={`${
-							page === String(totalPages)
-								? 'cursor-not-allowed'
-								: 'cursor-pointer'
-						} select-none`}
+						className={`select-none`}
 					/>
 				</PaginationItem>
 			</PaginationContent>

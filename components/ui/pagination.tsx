@@ -94,6 +94,36 @@ const PaginationNext = ({
 );
 PaginationNext.displayName = 'PaginationNext';
 
+const PaginationNewerMessages = ({
+	className,
+	...props
+}: React.ComponentProps<typeof PaginationLink>) => (
+	<PaginationLink
+		aria-label="Load newer messages"
+		size="default"
+		className={cn('gap-1 pr-2.5', className)}
+		{...props}
+	>
+		<span>Newer Messages</span>
+	</PaginationLink>
+);
+PaginationNewerMessages.displayName = 'PaginationNewerMessages';
+
+const PaginationOlderMessages = ({
+	className,
+	...props
+}: React.ComponentProps<typeof PaginationLink>) => (
+	<PaginationLink
+		aria-label="Load older messages"
+		size="default"
+		className={cn('gap-1 pr-2.5', className)}
+		{...props}
+	>
+		<span>Older Messages</span>
+	</PaginationLink>
+);
+PaginationOlderMessages.displayName = 'PaginationOlderMessages';
+
 const PaginationEllipsis = ({
 	className,
 	...props
@@ -116,5 +146,7 @@ export {
 	PaginationItem,
 	PaginationLink,
 	PaginationNext,
-	PaginationPrevious
+	PaginationPrevious,
+	PaginationNewerMessages,
+	PaginationOlderMessages
 };
