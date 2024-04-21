@@ -46,7 +46,7 @@ export default function UserMessages() {
 	return (
 		<main className="grid min-h-lvh">
 			{query.isLoading && (
-				<Table className="cursor-default place-self-start">
+				<Table className="mx-auto max-w-3xl">
 					<TableCaption>Messages</TableCaption>
 					<TableHeader>
 						<TableRow>
@@ -75,7 +75,7 @@ export default function UserMessages() {
 			)}
 			{query.isSuccess && (
 				<>
-					<Table className="cursor-default">
+					<Table className="mx-auto max-w-3xl">
 						<TableCaption>Messages</TableCaption>
 						<TableHeader>
 							<TableRow>

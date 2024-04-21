@@ -24,11 +24,11 @@ export default function Home() {
 	});
 
 	return (
-		<main className="grid min-h-screen place-items-center">
-			{query.isLoading && <p>Loading...</p>}
+		<main className="grid min-h-screen">
+			{query.isLoading && <div className="place-self-center">Loading...</div>}
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
-				<Table className="cursor-default">
+				<Table className="mx-auto max-w-3xl">
 					<TableCaption>Top Users</TableCaption>
 					<TableHeader>
 						<TableRow>
