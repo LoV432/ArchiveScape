@@ -23,7 +23,12 @@ import { useQuery } from '@tanstack/react-query';
 import { redirect, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
-type Message = { messageText: string; createdAt: string; color: string };
+export type Message = {
+	id: number;
+	messageText: string;
+	createdAt: string;
+	color: string;
+};
 
 export default function Main() {
 	return (
@@ -116,7 +121,7 @@ function MessageSection({ messages }: { messages: Message[] }) {
 				</TableHeader>
 				<TableBody>
 					{messages.map((message) => (
-						<TableRow key={message.createdAt}>
+						<TableRow key={message.id}>
 							<TableCell
 								style={{ color: message.color }}
 								className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
