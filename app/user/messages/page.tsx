@@ -20,11 +20,27 @@ import {
 } from '@/components/ui/pagination';
 
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
+import { redirect, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function UserMessages() {
+type Message = { messageText: string; createdAt: string; color: string };
+
+export default function Main() {
+	return (
+		<main className="grid min-h-lvh">
+			<Suspense>
+				<MessagesPage />
+			</Suspense>
+		</main>
+	);
+}
+
+function MessagesPage() {
 	const searchParams = useSearchParams();
 	const userId = searchParams.get('userId');
+	if (!userId || userId === '') {
+		redirect('/');
+	}
 	const page = searchParams.get('page') || '1';
 	const query = useQuery({
 		queryKey: ['user-messages', userId, page],
@@ -36,7 +52,7 @@ export default function UserMessages() {
 				throw new Error('Error');
 			}
 			return (await res.json()) as {
-				messages: { messageText: string; createdAt: string; color: string }[];
+				messages: Message[];
 				totalPages: number;
 			};
 		},
@@ -44,7 +60,7 @@ export default function UserMessages() {
 	});
 
 	return (
-		<main className="grid min-h-lvh">
+		<>
 			{query.isLoading && (
 				<Table className="mx-auto max-w-3xl">
 					<TableCaption>Messages</TableCaption>
@@ -75,72 +91,94 @@ export default function UserMessages() {
 			)}
 			{query.isSuccess && (
 				<>
-					<Table className="mx-auto max-w-3xl">
-						<TableCaption>Messages</TableCaption>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Message</TableHead>
-								<TableHead className="text-right">Created At</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{query.data.messages.map((message) => (
-								<TableRow key={message.createdAt}>
-									<TableCell
-										style={{ color: message.color }}
-										className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
-									>
-										{message.messageText}
-									</TableCell>
-									<TableCell
-										style={{ color: message.color }}
-										className="text-right"
-									>
-										{new Date(message.createdAt).toLocaleString('en-US', {
-											timeStyle: 'short',
-											dateStyle: 'short'
-										})}
-									</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-					{query.data.totalPages > 1 && (
-						<Pagination className="place-self-end pb-7">
-							<PaginationContent>
-								<PaginationItem>
-									<PaginationPrevious
-										href={`/user/messages?userId=${userId}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
-										scroll={false}
-										className={`${
-											page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
-										} select-none`}
-									/>
-								</PaginationItem>
-								<PaginationItem>
-									<PaginationLink className="cursor-pointer">
-										{page}
-									</PaginationLink>
-								</PaginationItem>
-								<PaginationItem>
-									<PaginationEllipsis />
-								</PaginationItem>
-								<PaginationItem>
-									<PaginationNext
-										href={`/user/messages?userId=${userId}&page=${Number(page) + 1 > query.data.totalPages ? page : Number(page) + 1}`}
-										scroll={false}
-										className={`${
-											page === String(query.data.totalPages)
-												? 'cursor-not-allowed'
-												: 'cursor-pointer'
-										} select-none`}
-									/>
-								</PaginationItem>
-							</PaginationContent>
-						</Pagination>
-					)}
+					<MessageSection messages={query.data.messages} />
+					<PaginationSection
+						totalPages={query.data.totalPages}
+						page={page}
+						userId={userId}
+					/>
 				</>
 			)}
-		</main>
+		</>
+	);
+}
+
+function MessageSection({ messages }: { messages: Message[] }) {
+	return (
+		<>
+			<Table className="mx-auto max-w-3xl">
+				<TableCaption>Messages</TableCaption>
+				<TableHeader>
+					<TableRow>
+						<TableHead>Message</TableHead>
+						<TableHead className="text-right">Created At</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{messages.map((message) => (
+						<TableRow key={message.createdAt}>
+							<TableCell
+								style={{ color: message.color }}
+								className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
+							>
+								{message.messageText}
+							</TableCell>
+							<TableCell
+								style={{ color: message.color }}
+								className="text-right"
+							>
+								{new Date(message.createdAt).toLocaleString('en-US', {
+									timeStyle: 'short',
+									dateStyle: 'short'
+								})}
+							</TableCell>
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+		</>
+	);
+}
+
+function PaginationSection({
+	userId,
+	page,
+	totalPages
+}: {
+	userId: string;
+	page: string;
+	totalPages: number;
+}) {
+	return (
+		<Pagination className="place-self-end pb-7">
+			<PaginationContent>
+				<PaginationItem>
+					<PaginationPrevious
+						href={`/user/messages?userId=${userId}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+						scroll={false}
+						className={`${
+							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
+						} select-none`}
+					/>
+				</PaginationItem>
+				<PaginationItem>
+					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
+				</PaginationItem>
+				<PaginationItem>
+					<PaginationEllipsis />
+				</PaginationItem>
+				<PaginationItem>
+					<PaginationNext
+						href={`/user/messages?userId=${userId}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
+						scroll={false}
+						className={`${
+							page === String(totalPages)
+								? 'cursor-not-allowed'
+								: 'cursor-pointer'
+						} select-none`}
+					/>
+				</PaginationItem>
+			</PaginationContent>
+		</Pagination>
 	);
 }
