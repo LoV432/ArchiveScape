@@ -15,8 +15,8 @@ import {
 	PaginationEllipsis,
 	PaginationItem,
 	PaginationLink,
-	PaginationNext,
-	PaginationPrevious
+	PaginationNewerMessages,
+	PaginationOlderMessages
 } from '@/components/ui/pagination';
 
 import { useQuery } from '@tanstack/react-query';
@@ -170,7 +170,7 @@ function PaginationSection({
 		<Pagination className="place-self-end pb-7">
 			<PaginationContent>
 				<PaginationItem>
-					<PaginationPrevious
+					<PaginationNewerMessages
 						href={`/user/messages?userId=${userId}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						scroll={false}
 						className={`${
@@ -185,7 +185,7 @@ function PaginationSection({
 					<PaginationEllipsis />
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationNext
+					<PaginationOlderMessages
 						href={`/user/messages?userId=${userId}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						scroll={false}
 						className={`${
