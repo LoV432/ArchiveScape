@@ -23,6 +23,8 @@ import { useQuery } from '@tanstack/react-query';
 import { redirect, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import Link from 'next/link';
+import LoadingTable from '@/components/LoadingTable';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 export type Message = {
 	id: number;
@@ -67,34 +69,9 @@ function MessagesPage() {
 
 	return (
 		<>
-			{query.isLoading && (
-				<Table className="mx-auto max-w-3xl">
-					<TableCaption>Messages</TableCaption>
-					<TableHeader>
-						<TableRow>
-							<TableHead className="w-[150px]">Time</TableHead>
-							<TableHead>Message</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						<TableRow>
-							<TableCell className="font-medium">Loading...</TableCell>
-							<TableCell className="text-right">Loading...</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			)}
+			{query.isLoading && <LoadingTable />}
 			{query.isError && <p>Error</p>}
-			{query.isPlaceholderData && (
-				<div className="absolute left-0 top-0 z-50 h-full w-full bg-neutral-800 bg-opacity-60">
-					<div className="grid h-full place-items-center">
-						<div className="lds-ripple">
-							<div></div>
-							<div></div>
-						</div>
-					</div>
-				</div>
-			)}
+			{query.isPlaceholderData && <LoadingOverlay/>}
 			{query.isSuccess && (
 				<>
 					<MessageSection messages={query.data.messages} userId={userId} />
