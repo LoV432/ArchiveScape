@@ -19,7 +19,11 @@ export default function Home() {
 			if (!res.ok) {
 				throw new Error('Error');
 			}
-			return (await res.json()) as { userId: string; messageCount: number }[];
+			return (await res.json()) as {
+				userName: string;
+				userId: number;
+				messageCount: number;
+			}[];
 		}
 	});
 
@@ -44,10 +48,9 @@ export default function Home() {
 								>
 									<Link
 										href={`/user/messages?userId=${user.userId}`}
-										key={user.userId}
 										className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
 									>
-										{user.userId}
+										{user.userName}
 									</Link>
 								</TableCell>
 								<TableCell className="text-right">

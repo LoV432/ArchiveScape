@@ -47,7 +47,7 @@ function Main() {
 	if (!messageId || messageId === '' || isNaN(Number(messageId))) {
 		redirect('/');
 	}
-	if (!userId || userId === '') {
+	if (!userId || userId === '' || isNaN(Number(userId))) {
 		redirect('/');
 	}
 	const page = searchParams.get('page') || '1';
@@ -63,7 +63,6 @@ function Main() {
 			}
 			return (await res.json()) as {
 				messages: Message[];
-				userRelationId: { id: number };
 			};
 		},
 		placeholderData: (prev) => prev
@@ -101,10 +100,7 @@ function Main() {
 			)}
 			{query.isSuccess && (
 				<>
-					<MessageSection
-						messages={query.data.messages}
-						userRelationId={query.data.userRelationId}
-					/>
+					<MessageSection messages={query.data.messages} userId={userId} />
 					<PaginationSection
 						userId={userId}
 						messageId={messageId}
@@ -118,10 +114,10 @@ function Main() {
 
 function MessageSection({
 	messages,
-	userRelationId
+	userId
 }: {
 	messages: Message[];
-	userRelationId: { id: number };
+	userId: string;
 }) {
 	return (
 		<Table className="mx-auto max-w-3xl">
@@ -136,7 +132,7 @@ function MessageSection({
 				{messages.map((message) => (
 					<TableRow
 						key={message.id}
-						className={`${message.userId === userRelationId.id ? 'border-4 border-rose-800' : ''}`}
+						className={`${message.userId === Number(userId) ? 'border-4 border-rose-800' : ''}`}
 					>
 						<TableCell
 							style={{ color: message.color }}

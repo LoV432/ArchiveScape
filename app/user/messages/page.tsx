@@ -44,7 +44,7 @@ export default function Main() {
 function MessagesPage() {
 	const searchParams = useSearchParams();
 	const userId = searchParams.get('userId');
-	if (!userId || userId === '') {
+	if (!userId || userId === '' || isNaN(Number(userId))) {
 		redirect('/');
 	}
 	const page = searchParams.get('page') || '1';

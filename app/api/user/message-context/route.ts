@@ -6,7 +6,7 @@ export async function GET(Request: NextRequest) {
 	const userId = searchParams.get('userId');
 	const messageId = searchParams.get('messageId');
 	const page = searchParams.get('page') || '0';
-	if (!userId || userId === '') {
+	if (!userId || userId === '' || isNaN(Number(userId))) {
 		return new Response(JSON.stringify({ error: 'Missing userId' }), {
 			status: 500
 		});
@@ -34,11 +34,7 @@ export async function GET(Request: NextRequest) {
 			`SELECT messages.id, messageText, createdAt, colors.color, userId FROM messages LEFT JOIN colors ON messages.color = colors.id ORDER BY createdAt ASC LIMIT 10 OFFSET ?`,
 			[offset]
 		);
-		const userRelationId = await db.get(
-			`SELECT users_id.id FROM users_id WHERE userId = ?`,
-			[userId]
-		);
-		return new Response(JSON.stringify({ messages, userRelationId }), {
+		return new Response(JSON.stringify({ messages }), {
 			headers: { 'Content-Type': 'application/json' },
 			status: 200
 		});
