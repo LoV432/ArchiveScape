@@ -75,8 +75,8 @@ function Main() {
 					<TableCaption>Messages</TableCaption>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="w-[500px]">Message</TableHead>
-							<TableHead className="text-right">Created At</TableHead>
+							<TableHead className="w-[150px]">Time</TableHead>
+							<TableHead>Message</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -124,8 +124,8 @@ function MessageSection({
 			<TableCaption>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>
+					<TableHead className="w-[150px]">Time</TableHead>
 					<TableHead>Message</TableHead>
-					<TableHead className="text-right">Created At</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -134,17 +134,17 @@ function MessageSection({
 						key={message.id}
 						className={`${message.userId === Number(userId) ? 'border-4 border-rose-800' : ''}`}
 					>
-						<TableCell
-							style={{ color: message.color }}
-							className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
-						>
-							{message.messageText}
-						</TableCell>
-						<TableCell style={{ color: message.color }} className="text-right">
+						<TableCell style={{ color: message.color }}>
 							{new Date(message.createdAt).toLocaleString('en-US', {
 								timeStyle: 'short',
 								dateStyle: 'short'
 							})}
+						</TableCell>
+						<TableCell
+							style={{ color: message.color }}
+							className="break-words font-medium"
+						>
+							{message.messageText}
 						</TableCell>
 					</TableRow>
 				))}

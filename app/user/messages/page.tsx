@@ -72,8 +72,8 @@ function MessagesPage() {
 					<TableCaption>Messages</TableCaption>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="w-[500px]">Message</TableHead>
-							<TableHead className="text-right">Created At</TableHead>
+							<TableHead className="w-[150px]">Time</TableHead>
+							<TableHead>Message</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -122,16 +122,22 @@ function MessageSection({
 				<TableCaption>Messages</TableCaption>
 				<TableHeader>
 					<TableRow>
+						<TableHead className="w-[150px]">Time</TableHead>
 						<TableHead>Message</TableHead>
-						<TableHead className="text-right">Created At</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
 					{messages.map((message) => (
 						<TableRow key={message.id} className="relative">
+							<TableCell style={{ color: message.color }}>
+								{new Date(message.createdAt).toLocaleString('en-US', {
+									timeStyle: 'short',
+									dateStyle: 'short'
+								})}
+							</TableCell>
 							<TableCell
 								style={{ color: message.color }}
-								className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
+								className="break-words font-medium"
 							>
 								<Link
 									href={`/user/message-context?userId=${userId}&messageId=${message.id}`}
@@ -139,15 +145,6 @@ function MessageSection({
 								>
 									{message.messageText}
 								</Link>
-							</TableCell>
-							<TableCell
-								style={{ color: message.color }}
-								className="text-right"
-							>
-								{new Date(message.createdAt).toLocaleString('en-US', {
-									timeStyle: 'short',
-									dateStyle: 'short'
-								})}
 							</TableCell>
 						</TableRow>
 					))}
