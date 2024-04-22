@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import QueryProvider from '@/components/query-provider';
 import { ThemeProvider } from '@/components/theme-provider';
+import Header from '@/components/Header';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -17,7 +18,7 @@ export default function RootLayout({
 		// The theme provider recommends using suppressHydrationWarning
 		// https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
 		<html suppressHydrationWarning lang="en">
-			<body className="relative">
+			<body className="relative grid h-lvh grid-rows-[auto_1fr]">
 				<QueryProvider>
 					<ThemeProvider
 						attribute="class"
@@ -25,6 +26,7 @@ export default function RootLayout({
 						enableSystem
 						disableTransitionOnChange
 					>
+						<Header />
 						{children}
 					</ThemeProvider>
 				</QueryProvider>

@@ -35,7 +35,7 @@ export type Message = {
 
 export default function Main() {
 	return (
-		<main className="grid min-h-lvh">
+		<main className="grid">
 			<Suspense>
 				<MessagesPage />
 			</Suspense>
@@ -71,7 +71,7 @@ function MessagesPage() {
 		<>
 			{query.isLoading && <LoadingTable />}
 			{query.isError && <p>Error</p>}
-			{query.isPlaceholderData && <LoadingOverlay/>}
+			{query.isPlaceholderData && <LoadingOverlay />}
 			{query.isSuccess && (
 				<>
 					<MessageSection messages={query.data.messages} userId={userId} />

@@ -34,7 +34,7 @@ type Message = {
 
 export default function Page() {
 	return (
-		<main className="grid min-h-lvh">
+		<main className="grid">
 			<Suspense>
 				<Main />
 			</Suspense>

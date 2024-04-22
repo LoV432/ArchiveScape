@@ -28,7 +28,7 @@ export default function Home() {
 	});
 
 	return (
-		<main className="grid min-h-screen">
+		<main className="grid">
 			{query.isLoading && <div className="place-self-center">Loading...</div>}
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
