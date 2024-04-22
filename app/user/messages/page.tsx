@@ -114,7 +114,7 @@ function MessageSection({
 							</TableCell>
 							<TableCell
 								style={{ color: message.colorName }}
-								className="break-words font-medium"
+								className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
 							>
 								<Link
 									href={`/user/message-context?userId=${userId}&messageId=${message.id}`}
