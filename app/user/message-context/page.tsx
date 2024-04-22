@@ -28,7 +28,7 @@ type Message = {
 	id: number;
 	messageText: string;
 	createdAt: string;
-	color: string;
+	colorName: string;
 	userId: number;
 };
 
@@ -111,14 +111,14 @@ function MessageSection({
 						key={message.id}
 						className={`${message.userId === Number(userId) ? 'border-4 border-rose-800' : ''}`}
 					>
-						<TableCell style={{ color: message.color }}>
+						<TableCell style={{ color: message.colorName }}>
 							{new Date(message.createdAt).toLocaleString('en-US', {
 								timeStyle: 'short',
 								dateStyle: 'short'
 							})}
 						</TableCell>
 						<TableCell
-							style={{ color: message.color }}
+							style={{ color: message.colorName }}
 							className="break-words font-medium"
 						>
 							{message.messageText}

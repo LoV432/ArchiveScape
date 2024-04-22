@@ -31,7 +31,7 @@ export async function GET(Request: NextRequest) {
 		const offset = messagePage * 10 + (Number(page) - 1) * 10;
 		// Then we can get the messages for that page
 		const messages = await db.all(
-			`SELECT messages.id, messageText, createdAt, colors.color, userId FROM messages LEFT JOIN colors ON messages.color = colors.id ORDER BY createdAt ASC LIMIT 10 OFFSET ?`,
+			`SELECT messages.id, messageText, createdAt, colors.colorName, userId FROM messages LEFT JOIN colors ON messages.color = colors.id ORDER BY createdAt ASC LIMIT 10 OFFSET ?`,
 			[offset]
 		);
 		return new Response(JSON.stringify({ messages }), {

@@ -13,7 +13,7 @@ export async function GET(NextRequest: NextRequest) {
 	const db = await getDatabase();
 	try {
 		const messages = await db.all(
-			`SELECT messages.id, messageText, createdAt, colors.color FROM messages LEFT JOIN colors ON messages.color = colors.id WHERE userId = ? ORDER BY createdAt DESC LIMIT 10 OFFSET ?`,
+			`SELECT messages.id, messageText, createdAt, colors.colorName FROM messages LEFT JOIN colors ON messages.color = colors.id WHERE userId = ? ORDER BY createdAt DESC LIMIT 10 OFFSET ?`,
 			[userId, (Number(page) - 1) * 10]
 		);
 		const totalPages = Math.ceil(

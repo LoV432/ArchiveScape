@@ -4,10 +4,10 @@ export async function GET() {
 	const db = await getDatabase();
 	try {
 		const topUsers = await db.all(`
-			SELECT u.userId as userName, m.userId, COUNT(*) AS messageCount
+			SELECT u.userName, m.userId, COUNT(*) AS messageCount
 			FROM messages m
-			JOIN users_id u ON m.userId = u.id
-			GROUP BY u.userId
+			JOIN users u ON m.userId = u.id
+			GROUP BY u.userName
 			ORDER BY messageCount DESC
 			LIMIT 10`);
 		return new Response(JSON.stringify(topUsers));
