@@ -24,6 +24,9 @@ import { useRouter } from 'next/navigation';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { Suspense, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import cat from '@/public/cat.gif';
+import scribble from '@/public/scribble.gif';
+import Image from 'next/image';
 
 type Message = {
 	id: string;
@@ -108,6 +111,21 @@ function SearchPage() {
 			</div>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
+			{query.isSuccess &&
+				!query.isRefetching &&
+				query.data.messages.length === 0 && (
+					<div className="flex flex-col place-items-center gap-4">
+						{searchQuery !== '' && (
+							<>
+								<p className="text-xl font-semibold">No results :(</p>
+								<Image src={scribble} alt="cat" width={200} height={200} />
+							</>
+						)}
+						{searchQuery === '' && (
+							<Image src={cat} alt="cat" width={400} height={400} />
+						)}
+					</div>
+				)}
 			{query.isSuccess &&
 				!query.isRefetching &&
 				query.data.messages.length > 0 && (
