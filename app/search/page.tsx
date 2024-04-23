@@ -1,5 +1,4 @@
 'use client';
-
 import { useQuery } from '@tanstack/react-query';
 import {
 	Table,
@@ -24,7 +23,6 @@ import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { Suspense, useEffect, useRef } from 'react';
-import { resolve } from 'path';
 import { Button } from '@/components/ui/button';
 
 type Message = {
@@ -142,7 +140,12 @@ function SearchPage() {
 											style={{ color: message.color_name }}
 											className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
 										>
-											{message.message_text}
+											<Link
+												href={`/user/message-context?userId=${message.user_id}&messageId=${message.id}`}
+												className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+											>
+												{message.message_text}
+											</Link>
 										</TableCell>
 									</TableRow>
 								))}
