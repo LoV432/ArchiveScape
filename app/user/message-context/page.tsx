@@ -26,10 +26,10 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 
 type Message = {
 	id: number;
-	messageText: string;
-	createdAt: string;
-	colorName: string;
-	userId: number;
+	message_text: string;
+	created_at: string;
+	color_name: string;
+	user_id: number;
 };
 
 export default function Page() {
@@ -109,19 +109,19 @@ function MessageSection({
 				{messages.map((message) => (
 					<TableRow
 						key={message.id}
-						className={`${message.userId === Number(userId) ? 'border-4 border-rose-800' : ''}`}
+						className={`${message.user_id === Number(userId) ? '!border-4 border-rose-800' : ''}`}
 					>
-						<TableCell style={{ color: message.colorName }}>
-							{new Date(message.createdAt).toLocaleString('en-US', {
+						<TableCell style={{ color: message.color_name }}>
+							{new Date(message.created_at).toLocaleString('en-US', {
 								timeStyle: 'short',
 								dateStyle: 'short'
 							})}
 						</TableCell>
 						<TableCell
-							style={{ color: message.colorName }}
+							style={{ color: message.color_name }}
 							className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
 						>
-							{message.messageText}
+							{message.message_text}
 						</TableCell>
 					</TableRow>
 				))}

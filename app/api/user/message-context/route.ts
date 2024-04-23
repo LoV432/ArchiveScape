@@ -1,4 +1,4 @@
-import { getDatabase } from '@/lib/db';
+import { db } from '@/lib/db';
 import { NextRequest } from 'next/server';
 
 export async function GET(Request: NextRequest) {
@@ -16,25 +16,26 @@ export async function GET(Request: NextRequest) {
 			status: 500
 		});
 	}
-	const db = await getDatabase();
 
 	try {
 		// Get the row number of the message. This is used to determine what page the message is on
 		// We are using row instead of id because id can have gaps in it
-		const messageIndex = await db.get(
-			`SELECT messageIndex FROM (SELECT messages.id, ROW_NUMBER() OVER (ORDER BY createdAt ASC) AS messageIndex FROM messages) AS messages WHERE messages.id = ?`,
+		const messageIndex = await db.query(
+			`SELECT message_index FROM (SELECT messages.id, ROW_NUMBER() OVER (ORDER BY created_at ASC) AS message_index FROM messages) AS messages WHERE messages.id = $1`,
 			[Number(messageId)]
 		);
 		// Once we have the row number we can determine what page it is on
-		const messagePage = Math.ceil(messageIndex['messageIndex'] / 10 - 1);
+		const messagePage = Math.ceil(
+			messageIndex.rows[0]['message_index'] / 10 - 1
+		);
 		// Then we minus or plus the page number requested by the user to get the offset
 		const offset = messagePage * 10 + (Number(page) - 1) * 10;
 		// Then we can get the messages for that page
-		const messages = await db.all(
-			`SELECT messages.id, messageText, createdAt, colors.colorName, userId FROM messages LEFT JOIN colors ON messages.color = colors.id ORDER BY createdAt ASC LIMIT 10 OFFSET ?`,
+		const messages = await db.query(
+			`SELECT messages.id, message_text, created_at, colors.color_name, user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id ORDER BY created_at ASC LIMIT 10 OFFSET $1`,
 			[offset]
 		);
-		return new Response(JSON.stringify({ messages }), {
+		return new Response(JSON.stringify({ messages: messages.rows }), {
 			headers: { 'Content-Type': 'application/json' },
 			status: 200
 		});

@@ -20,10 +20,12 @@ export default function Home() {
 				throw new Error('Error');
 			}
 			return (await res.json()) as {
-				userName: string;
-				userId: number;
-				messageCount: number;
-			}[];
+				topUsers: {
+					user_name: string;
+					user_id: number;
+					message_count: number;
+				}[];
+			};
 		}
 	});
 
@@ -41,20 +43,20 @@ export default function Home() {
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{query.data.map((user, index) => (
-							<TableRow className="relative" key={user.userId}>
+						{query.data.topUsers.map((user, index) => (
+							<TableRow className="relative" key={user.user_id}>
 								<TableCell
 									className={`font-medium ${colorGradientByIndex(index)}`}
 								>
 									<Link
-										href={`/user/messages?userId=${user.userId}`}
+										href={`/user/messages?userId=${user.user_id}`}
 										className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
 									>
-										{user.userName}
+										{user.user_name}
 									</Link>
 								</TableCell>
 								<TableCell className="text-right">
-									{user.messageCount}
+									{user.message_count}
 								</TableCell>
 							</TableRow>
 						))}

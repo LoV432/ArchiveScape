@@ -1,4 +1,4 @@
-import { getDatabase } from '@/lib/db';
+import { db } from '@/lib/db';
 import { NextRequest } from 'next/server';
 
 export async function GET(NextRequest: NextRequest) {
@@ -10,18 +10,21 @@ export async function GET(NextRequest: NextRequest) {
 			status: 500
 		});
 	}
-	const db = await getDatabase();
 	try {
-		const messages = await db.all(
-			`SELECT messages.id, messageText, createdAt, colors.colorName FROM messages LEFT JOIN colors ON messages.color = colors.id WHERE userId = ? ORDER BY createdAt DESC LIMIT 10 OFFSET ?`,
+		const messages = await db.query(
+			`SELECT messages.id, message_text, created_at, colors.color_name FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = $1 ORDER BY created_at DESC LIMIT 10 OFFSET $2`,
 			[userId, (Number(page) - 1) * 10]
 		);
 		const totalPages = Math.ceil(
 			(
-				await db.get(`SELECT COUNT(*) FROM messages WHERE userId = ?`, [userId])
-			)['COUNT(*)'] / 10
+				await db.query(`SELECT COUNT(*) FROM messages WHERE user_id = $1`, [
+					userId
+				])
+			).rows[0]['count'] / 10
 		);
-		return new Response(JSON.stringify({ messages, totalPages }));
+		return new Response(
+			JSON.stringify({ messages: messages.rows, totalPages })
+		);
 	} catch (error) {
 		console.log(error);
 		return new Response(JSON.stringify([]), { status: 500 });

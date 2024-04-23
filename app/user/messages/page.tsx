@@ -28,9 +28,9 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 
 export type Message = {
 	id: number;
-	messageText: string;
-	createdAt: string;
-	colorName: string;
+	message_text: string;
+	created_at: string;
+	color_name: string;
 };
 
 export default function Main() {
@@ -106,21 +106,21 @@ function MessageSection({
 				<TableBody>
 					{messages.map((message) => (
 						<TableRow key={message.id} className="relative">
-							<TableCell style={{ color: message.colorName }}>
-								{new Date(message.createdAt).toLocaleString('en-US', {
+							<TableCell style={{ color: message.color_name }}>
+								{new Date(message.created_at).toLocaleString('en-US', {
 									timeStyle: 'short',
 									dateStyle: 'short'
 								})}
 							</TableCell>
 							<TableCell
-								style={{ color: message.colorName }}
+								style={{ color: message.color_name }}
 								className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
 							>
 								<Link
 									href={`/user/message-context?userId=${userId}&messageId=${message.id}`}
 									className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
 								>
-									{message.messageText}
+									{message.message_text}
 								</Link>
 							</TableCell>
 						</TableRow>
