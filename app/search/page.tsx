@@ -98,7 +98,7 @@ function SearchPage() {
 						}
 					}}
 				/>
-				<div className="absolute right-0 top-0 h-full w-16 p-2">
+				<div className="absolute right-0 top-0 hidden h-full w-16 p-2 sm:block">
 					<Button
 						onClick={() =>
 							router.push(`/search?search=${searchElementRef.current?.value}`)
