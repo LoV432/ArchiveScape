@@ -111,73 +111,69 @@ function SearchPage() {
 			</div>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isSuccess &&
-				!query.isRefetching &&
-				query.data.messages.length === 0 && (
-					<div className="flex flex-col place-items-center gap-4">
-						{searchQuery !== '' && (
-							<>
-								<p className="text-xl font-semibold">No results :(</p>
-								<Image src={scribble} alt="cat" width={200} height={200} />
-							</>
-						)}
-						{searchQuery === '' && (
-							<Image src={cat} alt="cat" width={400} height={400} />
-						)}
-					</div>
-				)}
-			{query.isSuccess &&
-				!query.isRefetching &&
-				query.data.messages.length > 0 && (
-					<>
-						<Table className="mx-auto max-w-3xl">
-							<TableCaption>Messages</TableCaption>
-							<TableHeader>
-								<TableRow>
-									<TableHead className="mr-0 w-fit pr-0">ID</TableHead>
-									<TableHead className="w-[150px]">Time</TableHead>
-									<TableHead>Message</TableHead>
+			{query.isSuccess && query.data.messages.length === 0 && (
+				<div className="flex flex-col place-items-center gap-4">
+					{searchQuery !== '' && (
+						<>
+							<p className="text-xl font-semibold">No results :(</p>
+							<Image src={scribble} alt="cat" width={200} height={200} />
+						</>
+					)}
+					{searchQuery === '' && (
+						<Image src={cat} alt="cat" width={400} height={400} />
+					)}
+				</div>
+			)}
+			{query.isSuccess && query.data.messages.length > 0 && (
+				<>
+					<Table className="mx-auto max-w-3xl">
+						<TableCaption>Messages</TableCaption>
+						<TableHeader>
+							<TableRow>
+								<TableHead className="mr-0 w-fit pr-0">ID</TableHead>
+								<TableHead className="w-[150px]">Time</TableHead>
+								<TableHead>Message</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{query.data.messages.map((message) => (
+								<TableRow key={message.id} className="relative">
+									<TableCell
+										className="mr-0 w-fit pr-0"
+										style={{ color: message.color_name }}
+									>
+										{message.user_id}
+									</TableCell>
+									<TableCell style={{ color: message.color_name }}>
+										{new Date(message.created_at).toLocaleString('en-US', {
+											timeStyle: 'short',
+											dateStyle: 'short'
+										})}
+									</TableCell>
+									<TableCell
+										style={{ color: message.color_name }}
+										className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
+									>
+										<Link
+											href={`/user/message-context?userId=${message.user_id}&messageId=${message.id}`}
+											className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+										>
+											{message.message_text}
+										</Link>
+									</TableCell>
 								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{query.data.messages.map((message) => (
-									<TableRow key={message.id} className="relative">
-										<TableCell
-											className="mr-0 w-fit pr-0"
-											style={{ color: message.color_name }}
-										>
-											{message.user_id}
-										</TableCell>
-										<TableCell style={{ color: message.color_name }}>
-											{new Date(message.created_at).toLocaleString('en-US', {
-												timeStyle: 'short',
-												dateStyle: 'short'
-											})}
-										</TableCell>
-										<TableCell
-											style={{ color: message.color_name }}
-											className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
-										>
-											<Link
-												href={`/user/message-context?userId=${message.user_id}&messageId=${message.id}`}
-												className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
-											>
-												{message.message_text}
-											</Link>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-						{query.data.totalPages > 1 && (
-							<PaginationSection
-								searchQuery={searchQuery}
-								page={page}
-								totalPages={query.data.totalPages}
-							/>
-						)}
-					</>
-				)}
+							))}
+						</TableBody>
+					</Table>
+					{query.data.totalPages > 1 && (
+						<PaginationSection
+							searchQuery={searchQuery}
+							page={page}
+							totalPages={query.data.totalPages}
+						/>
+					)}
+				</>
+			)}
 		</>
 	);
 }
