@@ -12,13 +12,13 @@ export async function GET(Request: NextRequest) {
 	}
 	try {
 		const messages = await db.query(
-			`SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE message_text LIKE $1 ORDER BY created_at DESC LIMIT 10 OFFSET $2`,
+			`SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE lower(message_text) LIKE lower($1) ORDER BY created_at DESC LIMIT 10 OFFSET $2`,
 			[`%${searchQuery}%`, (Number(page) - 1) * 10]
 		);
 		const totalPages = Math.ceil(
 			(
 				await db.query(
-					`SELECT COUNT(*) FROM messages WHERE message_text LIKE $1`,
+					`SELECT COUNT(*) FROM messages WHERE lower(message_text) LIKE lower($1)`,
 					[`%${searchQuery}%`]
 				)
 			).rows[0]['count'] / 10
