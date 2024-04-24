@@ -23,7 +23,9 @@ export async function GET(Request: NextRequest) {
 				)
 			).rows[0]['count'] / 10
 		);
-		return new Response(JSON.stringify({ messages: messages.rows, totalPages }));
+		return new Response(
+			JSON.stringify({ messages: messages.rows, totalPages })
+		);
 	} catch (error) {
 		console.log(error);
 		return new Response(JSON.stringify([]), { status: 500 });
