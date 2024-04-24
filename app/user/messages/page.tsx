@@ -145,6 +145,7 @@ function PaginationSection({
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationNewerMessages
+						isActive={!(page === '1')}
 						href={`/user/messages?userId=${userId}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						scroll={false}
 						className={`${
@@ -160,6 +161,7 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages
+						isActive={!(page === String(totalPages))}
 						href={`/user/messages?userId=${userId}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						scroll={false}
 						className={`${

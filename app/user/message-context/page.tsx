@@ -148,6 +148,7 @@ function PaginationSection({
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationOlderMessages
+						isActive
 						href={`/user/message-context?userId=${userId}&messageId=${messageId}&page=${Number(page) - 1}`}
 						scroll={false}
 						className={`select-none`}
@@ -161,6 +162,7 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationNewerMessages
+						isActive
 						href={`/user/message-context?userId=${userId}&messageId=${messageId}&page=${Number(page) + 1}`}
 						scroll={false}
 						className={`select-none`}
