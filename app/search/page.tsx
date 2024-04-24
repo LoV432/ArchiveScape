@@ -116,11 +116,23 @@ function SearchPage() {
 					{searchQuery !== '' && (
 						<>
 							<p className="text-xl font-semibold">No results :(</p>
-							<Image src={scribble} alt="cat" width={200} height={200} />
+							<Image
+								unoptimized
+								src={scribble}
+								alt="no search results"
+								width={200}
+								height={200}
+							/>
 						</>
 					)}
 					{searchQuery === '' && (
-						<Image src={cat} alt="cat" width={400} height={400} />
+						<Image
+							unoptimized
+							src={cat}
+							alt="cat waiting patiently"
+							width={400}
+							height={400}
+						/>
 					)}
 				</div>
 			)}
