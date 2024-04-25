@@ -23,6 +23,7 @@ import {
 import { Suspense } from 'react';
 import LoadingTable from '@/components/LoadingTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import TableRowContextMenu from '@/components/TableRowContextMenu';
 
 type Message = {
 	id: number;
@@ -107,27 +108,35 @@ function MessageSection({
 			</TableHeader>
 			<TableBody>
 				{messages.map((message) => (
-					<TableRow
-						style={{
-							// @ts-ignore
-							'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
-						}}
+					<TableRowContextMenu
+						isContextPage
 						key={message.id}
-						className={`${message.user_id === Number(userId) ? `bg-[--highlight] ` : ''}`}
+						user_id={message.user_id}
+						message_id={message.id}
 					>
-						<TableCell style={{ color: message.color_name }}>
-							{new Date(message.created_at).toLocaleString('en-US', {
-								timeStyle: 'short',
-								dateStyle: 'short'
-							})}
-						</TableCell>
-						<TableCell
-							style={{ color: message.color_name }}
-							className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
+						<TableRow
+							tabIndex={0}
+							style={{
+								// @ts-ignore
+								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
+							}}
+							key={message.id}
+							className={`${message.user_id === Number(userId) ? `bg-[--highlight] ` : ''}`}
 						>
-							{message.message_text}
-						</TableCell>
-					</TableRow>
+							<TableCell style={{ color: message.color_name }}>
+								{new Date(message.created_at).toLocaleString('en-US', {
+									timeStyle: 'short',
+									dateStyle: 'short'
+								})}
+							</TableCell>
+							<TableCell
+								style={{ color: message.color_name }}
+								className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
+							>
+								{message.message_text}
+							</TableCell>
+						</TableRow>
+					</TableRowContextMenu>
 				))}
 			</TableBody>
 		</Table>

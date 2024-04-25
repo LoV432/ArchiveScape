@@ -1,5 +1,5 @@
 'use client';
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
 	Table,
 	TableCaption,
@@ -18,7 +18,6 @@ import {
 	PaginationNewerMessages,
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import LoadingOverlay from '@/components/LoadingOverlay';
@@ -27,9 +26,10 @@ import { Button } from '@/components/ui/button';
 import cat from '@/public/cat.gif';
 import scribble from '@/public/scribble.gif';
 import Image from 'next/image';
+import TableRowContextMenu from '@/components/TableRowContextMenu';
 
 type Message = {
-	id: string;
+	id: number;
 	created_at: number;
 	message_text: string;
 	color_name: string;
@@ -151,31 +151,32 @@ function SearchPage() {
 						</TableHeader>
 						<TableBody>
 							{query.data.messages.map((message) => (
-								<TableRow key={message.id} className="relative">
-									<TableCell
-										className="mr-0 w-fit pr-0"
-										style={{ color: message.color_name }}
-									>
-										{message.user_id}
-									</TableCell>
-									<TableCell style={{ color: message.color_name }}>
-										{new Date(message.created_at).toLocaleString('en-US', {
-											timeStyle: 'short',
-											dateStyle: 'short'
-										})}
-									</TableCell>
-									<TableCell
-										style={{ color: message.color_name }}
-										className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
-									>
-										<Link
-											href={`/user/message-context?userId=${message.user_id}&messageId=${message.id}`}
-											className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+								<TableRowContextMenu
+									key={message.id}
+									message_id={message.id}
+									user_id={message.user_id}
+								>
+									<TableRow tabIndex={0} key={message.id} className="relative">
+										<TableCell
+											className="mr-0 w-fit pr-0"
+											style={{ color: message.color_name }}
+										>
+											{message.user_id}
+										</TableCell>
+										<TableCell style={{ color: message.color_name }}>
+											{new Date(message.created_at).toLocaleString('en-US', {
+												timeStyle: 'short',
+												dateStyle: 'short'
+											})}
+										</TableCell>
+										<TableCell
+											style={{ color: message.color_name }}
+											className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
 										>
 											{message.message_text}
-										</Link>
-									</TableCell>
-								</TableRow>
+										</TableCell>
+									</TableRow>
+								</TableRowContextMenu>
 							))}
 						</TableBody>
 					</Table>
