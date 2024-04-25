@@ -31,6 +31,9 @@ export default function Home() {
 
 	return (
 		<main className="grid">
+			<h1 className="place-self-center py-5 text-4xl font-bold tracking-widest sm:text-6xl">
+				TOP 10 USERS
+			</h1>
 			{query.isLoading && <div className="place-self-center">Loading...</div>}
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
