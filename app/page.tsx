@@ -38,7 +38,7 @@ export default function Home() {
 					<TableCaption>Top Users</TableCaption>
 					<TableHeader>
 						<TableRow>
-							<TableHead className="w-[100px]">User</TableHead>
+							<TableHead>User</TableHead>
 							<TableHead className="text-right">Message Count</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -46,16 +46,16 @@ export default function Home() {
 						{query.data.topUsers.map((user, index) => (
 							<TableRow className="relative" key={user.user_id}>
 								<TableCell
-									className={`font-medium ${colorGradientByIndex(index)}`}
+									className={`block max-w-[calc(100vw/1.5)] overflow-hidden text-ellipsis font-medium ${colorGradientByIndex(index)}`}
 								>
 									<Link
 										href={`/user/messages?userId=${user.user_id}`}
-										className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+										className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
 									>
 										{user.user_name}
 									</Link>
 								</TableCell>
-								<TableCell className="text-right">
+								<TableCell className="text-right text-base font-medium sm:text-lg">
 									{user.message_count}
 								</TableCell>
 							</TableRow>

@@ -140,12 +140,12 @@ function SearchPage() {
 				)}
 			{query.isSuccess && query.data.messages.length > 0 && (
 				<>
-					<Table className="mx-auto max-w-3xl">
+					<Table className="mx-auto max-w-3xl text-base">
 						<TableCaption>Messages</TableCaption>
 						<TableHeader>
 							<TableRow>
-								<TableHead className="mr-0 w-fit pr-0">ID</TableHead>
-								<TableHead className="w-[150px]">Time</TableHead>
+								<TableHead>ID</TableHead>
+								<TableHead>Time</TableHead>
 								<TableHead>Message</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -163,15 +163,24 @@ function SearchPage() {
 										>
 											{message.user_id}
 										</TableCell>
-										<TableCell style={{ color: message.color_name }}>
-											{new Date(message.created_at).toLocaleString('en-US', {
-												timeStyle: 'short',
-												dateStyle: 'short'
-											})}
+										<TableCell
+											className="w-[130px]"
+											style={{ color: message.color_name }}
+										>
+											<div>
+												{new Date(message.created_at).toLocaleString('en-US', {
+													dateStyle: 'short'
+												})}
+											</div>
+											<div>
+												{new Date(message.created_at).toLocaleString('en-US', {
+													timeStyle: 'short'
+												})}
+											</div>
 										</TableCell>
 										<TableCell
 											style={{ color: message.color_name }}
-											className="max-w-[150px] break-words font-medium sm:max-w-[500px]"
+											className="max-w-[150px] break-words sm:max-w-[500px]"
 										>
 											{message.message_text}
 										</TableCell>
