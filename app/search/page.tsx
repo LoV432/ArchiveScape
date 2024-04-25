@@ -1,5 +1,5 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 import {
 	Table,
 	TableCaption,
@@ -111,31 +111,33 @@ function SearchPage() {
 			</div>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isSuccess && query.data.messages.length === 0 && (
-				<div className="flex flex-col place-items-center gap-4">
-					{searchQuery !== '' && (
-						<>
-							<p className="text-xl font-semibold">No results :(</p>
+			{query.isSuccess &&
+				!query.isRefetching &&
+				query.data.messages.length === 0 && (
+					<div className="flex flex-col place-items-center gap-4">
+						{searchQuery !== '' && (
+							<>
+								<p className="text-xl font-semibold">No results :(</p>
+								<Image
+									unoptimized
+									src={scribble}
+									alt="no search results"
+									width={200}
+									height={200}
+								/>
+							</>
+						)}
+						{searchQuery === '' && (
 							<Image
 								unoptimized
-								src={scribble}
-								alt="no search results"
-								width={200}
-								height={200}
+								src={cat}
+								alt="cat waiting patiently"
+								width={400}
+								height={400}
 							/>
-						</>
-					)}
-					{searchQuery === '' && (
-						<Image
-							unoptimized
-							src={cat}
-							alt="cat waiting patiently"
-							width={400}
-							height={400}
-						/>
-					)}
-				</div>
-			)}
+						)}
+					</div>
+				)}
 			{query.isSuccess && query.data.messages.length > 0 && (
 				<>
 					<Table className="mx-auto max-w-3xl">
