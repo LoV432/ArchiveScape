@@ -18,7 +18,7 @@ export default function RootLayout({
 		// The theme provider recommends using suppressHydrationWarning
 		// https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
 		<html suppressHydrationWarning lang="en">
-			<body className="relative grid h-lvh grid-rows-[auto_1fr]">
+			<body className="relative grid min-h-screen grid-rows-[auto_1fr]">
 				<QueryProvider>
 					<ThemeProvider
 						attribute="class"
