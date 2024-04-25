@@ -101,7 +101,7 @@ const PaginationNewerMessages = ({
 	<PaginationLink
 		aria-label="Load newer messages"
 		size="default"
-		className={cn('gap-1 pr-2.5', className)}
+		className={cn('gap-1', className)}
 		{...props}
 	>
 		<span>Newer Messages</span>
@@ -116,7 +116,7 @@ const PaginationOlderMessages = ({
 	<PaginationLink
 		aria-label="Load older messages"
 		size="default"
-		className={cn('gap-1 pr-2.5', className)}
+		className={cn('gap-1', className)}
 		{...props}
 	>
 		<span>Older Messages</span>
