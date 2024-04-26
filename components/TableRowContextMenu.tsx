@@ -40,7 +40,8 @@ export default function TableRowContextMenu({
 				<ContextMenuItem
 					onClick={() => {
 						router.push(
-							`/users/${user_id}/messages/${message_id}/message-context`
+							`/users/${user_id}/messages/${message_id}/message-context`,
+							{ scroll: !isContextPage }
 						);
 					}}
 				>
