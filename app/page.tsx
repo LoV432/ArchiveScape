@@ -38,7 +38,7 @@ export default function Home() {
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
 				<Table className="mx-auto max-w-3xl">
-					<TableCaption>Top Users</TableCaption>
+					<TableCaption hidden>Top Users</TableCaption>
 					<TableHeader>
 						<TableRow>
 							<TableHead>User</TableHead>

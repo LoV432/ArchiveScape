@@ -22,8 +22,15 @@ export async function GET(NextRequest: NextRequest) {
 				])
 			).rows[0]['count'] / 10
 		);
+		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
+			userId
+		]);
 		return new Response(
-			JSON.stringify({ messages: messages.rows, totalPages })
+			JSON.stringify({
+				messages: messages.rows,
+				totalPages,
+				user_name: user.rows[0].user_name
+			})
 		);
 	} catch (error) {
 		console.log(error);

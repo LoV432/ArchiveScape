@@ -35,10 +35,19 @@ export async function GET(Request: NextRequest) {
 			`SELECT messages.id, message_text, created_at, colors.color_name, user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id ORDER BY created_at ASC LIMIT 10 OFFSET $1`,
 			[offset]
 		);
-		return new Response(JSON.stringify({ messages: messages.rows }), {
-			headers: { 'Content-Type': 'application/json' },
-			status: 200
-		});
+		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
+			userId
+		]);
+		return new Response(
+			JSON.stringify({
+				messages: messages.rows,
+				user_name: user.rows[0].user_name
+			}),
+			{
+				headers: { 'Content-Type': 'application/json' },
+				status: 200
+			}
+		);
 	} catch (error) {
 		console.log(error);
 		return new Response(JSON.stringify([]), { status: 500 });

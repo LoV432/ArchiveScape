@@ -62,6 +62,7 @@ function MessagesPage() {
 			return (await res.json()) as {
 				messages: Message[];
 				totalPages: number;
+				user_name: string;
 			};
 		},
 		placeholderData: (prev) => prev
@@ -74,6 +75,10 @@ function MessagesPage() {
 			{query.isPlaceholderData && <LoadingOverlay />}
 			{query.isSuccess && (
 				<>
+					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+						<p className="pb-1">All Messages From</p>{' '}
+						<p>{query.data.user_name}</p>
+					</h1>
 					<MessageSection messages={query.data.messages} userId={userId} />
 					<PaginationSection
 						totalPages={query.data.totalPages}
@@ -96,7 +101,7 @@ function MessageSection({
 	return (
 		<>
 			<Table className="mx-auto max-w-3xl text-base">
-				<TableCaption>Messages</TableCaption>
+				<TableCaption hidden>Messages</TableCaption>
 				<TableHeader>
 					<TableRow>
 						<TableHead>Time</TableHead>

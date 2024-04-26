@@ -141,7 +141,7 @@ function SearchPage() {
 			{query.isSuccess && query.data.messages.length > 0 && (
 				<>
 					<Table className="mx-auto max-w-3xl text-base">
-						<TableCaption>Messages</TableCaption>
+						<TableCaption hidden>Messages</TableCaption>
 						<TableHeader>
 							<TableRow>
 								<TableHead>ID</TableHead>

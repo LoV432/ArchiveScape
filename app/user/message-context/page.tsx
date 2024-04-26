@@ -66,6 +66,7 @@ function Main() {
 			}
 			return (await res.json()) as {
 				messages: Message[];
+				user_name: string;
 			};
 		},
 		placeholderData: (prev) => prev
@@ -78,6 +79,10 @@ function Main() {
 			{query.isPlaceholderData && <LoadingOverlay />}
 			{query.isSuccess && (
 				<>
+					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+						<p className="pb-2">Highlighted User</p>
+						<p>{query.data.user_name}</p>
+					</h1>
 					<MessageSection messages={query.data.messages} userId={userId} />
 					<PaginationSection
 						userId={userId}
@@ -99,7 +104,7 @@ function MessageSection({
 }) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
-			<TableCaption>Messages</TableCaption>
+			<TableCaption hidden>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>
 					<TableHead>Time</TableHead>
