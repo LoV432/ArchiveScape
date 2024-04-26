@@ -3,6 +3,7 @@ import './globals.css';
 import QueryProvider from '@/components/query-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
+import BreadcrumbComponent from '@/components/BreadCrumb';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -18,7 +19,7 @@ export default function RootLayout({
 		// The theme provider recommends using suppressHydrationWarning
 		// https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
 		<html suppressHydrationWarning lang="en">
-			<body className="relative grid min-h-screen grid-rows-[auto_1fr] font-mono">
+			<body className="relative grid min-h-screen grid-rows-[auto_auto_1fr] font-mono">
 				<QueryProvider>
 					<ThemeProvider
 						attribute="class"
@@ -26,6 +27,7 @@ export default function RootLayout({
 						disableTransitionOnChange
 					>
 						<Header />
+						<BreadcrumbComponent />
 						{children}
 					</ThemeProvider>
 				</QueryProvider>
