@@ -30,9 +30,9 @@ export default function Header() {
 					<NavigationMenuItem>
 						<Link href="/" legacyBehavior passHref>
 							<NavigationMenuLink
-								className={`${navigationMenuTriggerStyle()} text-center text-xl font-bold`}
+								className={`${navigationMenuTriggerStyle()} text-center text-xl font-bold tracking-widest`}
 							>
-								Ventscape Archive
+								ArchiveScape
 							</NavigationMenuLink>
 						</Link>
 					</NavigationMenuItem>
