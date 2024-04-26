@@ -52,7 +52,7 @@ export default function Home() {
 									className={`block max-w-[calc(100vw/1.5)] overflow-hidden text-ellipsis font-medium ${colorGradientByIndex(index)}`}
 								>
 									<Link
-										href={`/user/messages?userId=${user.user_id}`}
+										href={`/users/${user.user_id}/messages`}
 										className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
 									>
 										{user.user_name}

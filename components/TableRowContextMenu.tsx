@@ -40,7 +40,7 @@ export default function TableRowContextMenu({
 				<ContextMenuItem
 					onClick={() => {
 						router.push(
-							`/user/message-context?userId=${user_id}&messageId=${message_id}`
+							`/users/${user_id}/messages/${message_id}/message-context`
 						);
 					}}
 				>
@@ -48,7 +48,7 @@ export default function TableRowContextMenu({
 				</ContextMenuItem>
 				<ContextMenuSeparator />
 				<ContextMenuItem
-					onClick={() => router.push(`/user/messages?userId=${user_id}`)}
+					onClick={() => router.push(`/users/${user_id}/messages`)}
 				>
 					Show All Messages From User
 				</ContextMenuItem>

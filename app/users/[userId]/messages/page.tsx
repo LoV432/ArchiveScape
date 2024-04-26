@@ -1,6 +1,4 @@
 'use client';
-import { redirect, useSearchParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
 import {
 	Table,
 	TableBody,
@@ -20,52 +18,50 @@ import {
 	PaginationNewerMessages,
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
+
+import { useQuery } from '@tanstack/react-query';
+import { redirect, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import Link from 'next/link';
 import LoadingTable from '@/components/LoadingTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
-import TableRowContextMenu from '@/components/TableRowContextMenu';
 
-type Message = {
+export type Message = {
 	id: number;
 	message_text: string;
 	created_at: string;
 	color_name: string;
-	user_id: number;
 };
 
-export default function Page() {
+export default function Main({ params }: { params: { userId: string } }) {
+	const { userId } = params;
+	if (!userId || userId === '' || isNaN(Number(userId))) {
+		redirect('/');
+	}
 	return (
 		<main className="grid">
 			<Suspense>
-				<Main />
+				<MessagesPage userId={userId} />
 			</Suspense>
 		</main>
 	);
 }
 
-function Main() {
+function MessagesPage({ userId }: { userId: string }) {
 	const searchParams = useSearchParams();
-	const userId = searchParams.get('userId');
-	const messageId = searchParams.get('messageId');
-	if (!messageId || messageId === '' || isNaN(Number(messageId))) {
-		redirect('/');
-	}
-	if (!userId || userId === '' || isNaN(Number(userId))) {
-		redirect('/');
-	}
 	const page = searchParams.get('page') || '1';
-
 	const query = useQuery({
-		queryKey: ['user-message-context', userId, page, messageId],
+		queryKey: ['user-messages', userId, page],
 		queryFn: async () => {
 			const res = await fetch(
-				`/api/user/message-context?messageId=${messageId}&userId=${userId}&page=${page}`
+				`/api/user/messages?userId=${userId}&page=${page}`
 			);
 			if (!res.ok) {
 				throw new Error('Error');
 			}
 			return (await res.json()) as {
 				messages: Message[];
+				totalPages: number;
 				user_name: string;
 			};
 		},
@@ -80,14 +76,14 @@ function Main() {
 			{query.isSuccess && (
 				<>
 					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-						<p className="pb-2">Highlighted User</p>
+						<p className="pb-1">All Messages From</p>{' '}
 						<p>{query.data.user_name}</p>
 					</h1>
 					<MessageSection messages={query.data.messages} userId={userId} />
 					<PaginationSection
-						userId={userId}
-						messageId={messageId}
+						totalPages={query.data.totalPages}
 						page={page}
+						userId={userId}
 					/>
 				</>
 			)}
@@ -103,31 +99,18 @@ function MessageSection({
 	userId: string;
 }) {
 	return (
-		<Table className="mx-auto max-w-3xl text-base">
-			<TableCaption hidden>Messages</TableCaption>
-			<TableHeader>
-				<TableRow>
-					<TableHead>Time</TableHead>
-					<TableHead>Message</TableHead>
-				</TableRow>
-			</TableHeader>
-			<TableBody>
-				{messages.map((message) => (
-					<TableRowContextMenu
-						isContextPage
-						key={message.id}
-						user_id={message.user_id}
-						message_id={message.id}
-					>
-						<TableRow
-							tabIndex={0}
-							style={{
-								// @ts-ignore
-								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
-							}}
-							key={message.id}
-							className={`${message.user_id === Number(userId) ? `bg-[--highlight] ` : ''}`}
-						>
+		<>
+			<Table className="mx-auto max-w-3xl text-base">
+				<TableCaption hidden>Messages</TableCaption>
+				<TableHeader>
+					<TableRow>
+						<TableHead>Time</TableHead>
+						<TableHead>Message</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{messages.map((message) => (
+						<TableRow key={message.id} className="relative">
 							<TableCell
 								className="w-[130px]"
 								style={{ color: message.color_name }}
@@ -147,34 +130,41 @@ function MessageSection({
 								style={{ color: message.color_name }}
 								className="max-w-[150px] break-words sm:max-w-[500px]"
 							>
-								{message.message_text}
+								<Link
+									href={`/users/${userId}/messages/${message.id}/message-context`}
+									className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+								>
+									{message.message_text}
+								</Link>
 							</TableCell>
 						</TableRow>
-					</TableRowContextMenu>
-				))}
-			</TableBody>
-		</Table>
+					))}
+				</TableBody>
+			</Table>
+		</>
 	);
 }
 
 function PaginationSection({
 	userId,
-	messageId,
-	page
+	page,
+	totalPages
 }: {
 	userId: string;
-	messageId: string;
 	page: string;
+	totalPages: number;
 }) {
 	return (
 		<Pagination className="place-self-end pb-7">
 			<PaginationContent>
 				<PaginationItem>
-					<PaginationOlderMessages
-						isActive
-						href={`/user/message-context?userId=${userId}&messageId=${messageId}&page=${Number(page) - 1}`}
+					<PaginationNewerMessages
+						isActive={!(page === '1')}
+						href={`/users/${userId}/messages?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						scroll={false}
-						className={`select-none`}
+						className={`${
+							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
+						} select-none`}
 					/>
 				</PaginationItem>
 				<PaginationItem>
@@ -184,24 +174,18 @@ function PaginationSection({
 					<PaginationEllipsis />
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationNewerMessages
-						isActive
-						href={`/user/message-context?userId=${userId}&messageId=${messageId}&page=${Number(page) + 1}`}
+					<PaginationOlderMessages
+						isActive={!(page === String(totalPages))}
+						href={`/users/${userId}/messages?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						scroll={false}
-						className={`select-none`}
+						className={`${
+							page === String(totalPages)
+								? 'cursor-not-allowed'
+								: 'cursor-pointer'
+						} select-none`}
 					/>
 				</PaginationItem>
 			</PaginationContent>
 		</Pagination>
 	);
 }
-
-const mapToHex = {
-	'#b3001b': '179,0,27,0.1',
-	'#c073de': '199,115,222,0.15',
-	'#edd892': '237,216,146,0.15',
-	'#3685b5': '54,133,181,0.15',
-	'#7bf1a8': '127,241,168,0.1',
-	'#FE938C': '254,147,140,0.1',
-	'#3BF4FB': '59,244,251,0.15'
-};
