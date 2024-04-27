@@ -95,7 +95,7 @@ export default function Header() {
 					<SheetContent className="w-fit min-w-[300px]" side="left">
 						<SheetHeader>
 							<SheetDescription className="pt-2">
-								<NavigationMenuList className="float-left flex-col gap-2 space-x-0">
+								<NavigationMenuList className="float-left flex-col gap-5 space-x-0">
 									<NavigationMenuItem
 										className="pb-3"
 										onClick={() => setIsOpen(false)}
