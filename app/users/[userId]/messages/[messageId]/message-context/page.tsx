@@ -25,6 +25,7 @@ import LoadingTable from '@/components/LoadingTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
+import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 
 type Message = {
 	id: number;
@@ -208,7 +209,9 @@ function PaginationSection({
 					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationEllipsis />
+					<GoToPageEllipsis
+						link={`/users/${userId}/messages/${messageId}/message-context?`}
+					/>
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationNewerMessages

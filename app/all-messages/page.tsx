@@ -18,7 +18,6 @@ import {
 import {
 	Pagination,
 	PaginationContent,
-	PaginationEllipsis,
 	PaginationItem,
 	PaginationLink,
 	PaginationNewerMessages,
@@ -26,6 +25,7 @@ import {
 } from '@/components/ui/pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
+import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 
 export default function Page() {
 	return (
@@ -181,7 +181,7 @@ function PaginationSection({
 					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationEllipsis />
+					<GoToPageEllipsis link={`/all-messages?user_id=${highlightedUser}`} />
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages

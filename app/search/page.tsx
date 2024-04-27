@@ -27,6 +27,7 @@ import cat from '@/public/cat.gif';
 import scribble from '@/public/scribble.gif';
 import Image from 'next/image';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
+import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 
 type Message = {
 	id: number;
@@ -228,7 +229,7 @@ function PaginationSection({
 					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationEllipsis />
+					<GoToPageEllipsis link={`/search?search=${searchQuery}`} />
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages

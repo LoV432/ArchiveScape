@@ -25,6 +25,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import LoadingTable from '@/components/LoadingTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 
 export type Message = {
 	id: number;
@@ -171,7 +172,7 @@ function PaginationSection({
 					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationEllipsis />
+					<GoToPageEllipsis link={`/users/${userId}/messages?`} />
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages

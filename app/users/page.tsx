@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/pagination';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 
 type User = {
 	id: number;
@@ -130,7 +131,7 @@ function PaginationSection({
 					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationEllipsis />
+					<GoToPageEllipsis link={`/users?`} />
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationNext
