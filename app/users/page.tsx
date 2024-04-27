@@ -19,8 +19,8 @@ import {
 	PaginationEllipsis,
 	PaginationItem,
 	PaginationLink,
-	PaginationNewerMessages,
-	PaginationOlderMessages
+	PaginationNext,
+	PaginationPrevious
 } from '@/components/ui/pagination';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -117,7 +117,7 @@ function PaginationSection({
 		<Pagination className="place-self-end pb-7">
 			<PaginationContent>
 				<PaginationItem>
-					<PaginationNewerMessages
+					<PaginationPrevious
 						isActive={!(page === '1')}
 						href={`/users?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						scroll={false}
@@ -133,7 +133,7 @@ function PaginationSection({
 					<PaginationEllipsis />
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationOlderMessages
+					<PaginationNext
 						isActive
 						href={`/users?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						scroll={false}

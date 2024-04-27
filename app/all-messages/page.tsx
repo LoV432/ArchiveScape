@@ -138,7 +138,7 @@ function PaginationSection({
 		<Pagination className="place-self-end pb-7">
 			<PaginationContent>
 				<PaginationItem>
-					<PaginationOlderMessages
+					<PaginationNewerMessages
 						isActive
 						href={`/all-messages?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						className={`${
@@ -153,7 +153,7 @@ function PaginationSection({
 					<PaginationEllipsis />
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationNewerMessages
+					<PaginationOlderMessages
 						isActive
 						href={`/all-messages?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						className={`select-none`}
