@@ -25,6 +25,7 @@ import {
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
+import { mapToHex } from '@/lib/utils';
 
 export default function Page() {
 	return (
@@ -47,6 +48,7 @@ type Message = {
 function AllMessagesPage() {
 	const searchParams = useSearchParams();
 	const page = searchParams.get('page') || '1';
+	const highlightedUser = searchParams.get('user_id');
 	const query = useQuery({
 		queryKey: ['all-messages', page],
 		queryFn: async () => {
@@ -72,15 +74,31 @@ function AllMessagesPage() {
 					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 						<p className="pb-1">All Messages</p>
 					</h1>
-					<MessageSection messages={query.data.messages} />
-					<PaginationSection totalPages={query.data.totalPages} page={page} />
+					<MessageSection
+						messages={query.data.messages}
+						page={page}
+						highlightedUser={highlightedUser}
+					/>
+					<PaginationSection
+						totalPages={query.data.totalPages}
+						highlightedUser={highlightedUser}
+						page={page}
+					/>
 				</>
 			)}
 		</>
 	);
 }
 
-function MessageSection({ messages }: { messages: Message[] }) {
+function MessageSection({
+	messages,
+	page,
+	highlightedUser
+}: {
+	messages: Message[];
+	page: string;
+	highlightedUser: string | null;
+}) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
 			<TableCaption hidden>Messages</TableCaption>
@@ -96,8 +114,19 @@ function MessageSection({ messages }: { messages: Message[] }) {
 						key={message.id}
 						user_id={message.user_id}
 						message_id={message.id}
+						isAllMessagesPage
+						isContextPage
+						page={Number(page)}
 					>
-						<TableRow tabIndex={0} key={message.id}>
+						<TableRow
+							tabIndex={0}
+							style={{
+								// @ts-ignore
+								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
+							}}
+							className={`${message.user_id === Number(highlightedUser) ? `bg-[--highlight] ` : ''}`}
+							key={message.id}
+						>
 							<TableCell
 								className="w-[130px]"
 								style={{ color: message.color_name }}
@@ -129,10 +158,12 @@ function MessageSection({ messages }: { messages: Message[] }) {
 
 function PaginationSection({
 	totalPages,
-	page
+	page,
+	highlightedUser
 }: {
 	totalPages: number;
 	page: string;
+	highlightedUser: string | null;
 }) {
 	return (
 		<Pagination className="place-self-end pb-7">
@@ -140,7 +171,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationNewerMessages
 						isActive
-						href={`/all-messages?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+						href={`/all-messages?user_id=${highlightedUser}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						className={`${
 							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
@@ -155,7 +186,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationOlderMessages
 						isActive
-						href={`/all-messages?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
+						href={`/all-messages?user_id=${highlightedUser}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						className={`select-none`}
 					/>
 				</PaginationItem>
