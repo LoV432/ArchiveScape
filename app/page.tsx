@@ -39,7 +39,7 @@ export default function Home() {
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
 				<>
-					<Table className="mx-auto -mb-14 max-w-3xl">
+					<Table className="mx-auto max-w-3xl">
 						<TableCaption hidden>Top Users</TableCaption>
 						<TableHeader>
 							<TableRow>
@@ -67,7 +67,7 @@ export default function Home() {
 							))}
 						</TableBody>
 					</Table>
-					<Link className="place-self-center" href="/users">
+					<Link className="justify-self-center" href="/users">
 						<Button variant="outline">Show All</Button>
 					</Link>
 				</>
