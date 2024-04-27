@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 		`SELECT users.id, users.user_name, COUNT(*) AS message_count
         FROM users
         INNER JOIN messages m ON m.user_id = users.id
-        GROUP BY users.id, users.user_name ORDER BY message_count DESC OFFSET $1 LIMIT 10;`,
+        GROUP BY users.id, users.user_name ORDER BY message_count DESC, users.user_name DESC OFFSET $1 LIMIT 10;`,
 		[Number(page) * 10 - 10]
 	);
 	return new Response(JSON.stringify({ users: usersWithMessagesCount.rows }));
