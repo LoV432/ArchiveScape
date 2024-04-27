@@ -51,7 +51,7 @@ function UsersPage() {
 			if (!res.ok) {
 				throw new Error('Error');
 			}
-			return (await res.json()) as { users: User[] };
+			return (await res.json()) as { users: User[]; totalPages: number };
 		},
 		placeholderData: (prev) => prev
 	});
@@ -66,7 +66,7 @@ function UsersPage() {
 						<p className="pb-2">All Users</p>
 					</h1>
 					<UsersTable users={query.data.users} />
-					<PaginationSection page={page} />
+					<PaginationSection page={page} totalPages={query.data.totalPages} />
 				</>
 			)}
 		</>
@@ -106,7 +106,13 @@ function UsersTable({ users }: { users: User[] }) {
 	);
 }
 
-function PaginationSection({ page }: { page: string }) {
+function PaginationSection({
+	page,
+	totalPages
+}: {
+	page: string;
+	totalPages: number;
+}) {
 	return (
 		<Pagination className="place-self-end pb-7">
 			<PaginationContent>
@@ -129,7 +135,7 @@ function PaginationSection({ page }: { page: string }) {
 				<PaginationItem>
 					<PaginationOlderMessages
 						isActive
-						href={`/users?page=${Number(page) + 1}`}
+						href={`/users?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						scroll={false}
 						className={`select-none`}
 					/>
