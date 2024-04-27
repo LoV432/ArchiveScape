@@ -17,9 +17,11 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Header() {
 	const currentPath = usePathname();
+	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<header className="sticky top-0 z-10 mb-2 w-full border-b border-muted bg-background px-2 py-2 sm:px-5">
 			<NavigationMenu className="hidden w-full max-w-[initial] gap-2 sm:flex">
@@ -79,7 +81,7 @@ export default function Header() {
 				</Link>
 			</NavigationMenu>
 			<NavigationMenu className="w-full max-w-full justify-start sm:hidden">
-				<Sheet>
+				<Sheet open={isOpen} onOpenChange={setIsOpen}>
 					<SheetTrigger>
 						<Image
 							priority
@@ -94,7 +96,10 @@ export default function Header() {
 						<SheetHeader>
 							<SheetDescription className="pt-2">
 								<NavigationMenuList className="float-left flex-col gap-2 space-x-0">
-									<NavigationMenuItem className="pb-3">
+									<NavigationMenuItem
+										className="pb-3"
+										onClick={() => setIsOpen(false)}
+									>
 										<Link href="/" legacyBehavior passHref>
 											<div className="flex items-center gap-3">
 												<Image
@@ -115,6 +120,7 @@ export default function Header() {
 									</NavigationMenuItem>
 									<NavigationMenuItem className="w-full text-left">
 										<Link
+											onClick={() => setIsOpen(false)}
 											href="/users"
 											className={`text-lg font-semibold ${currentPath === '/users' ? 'text-primary' : 'text-zinc-400'}`}
 										>
@@ -123,18 +129,11 @@ export default function Header() {
 									</NavigationMenuItem>
 									<NavigationMenuItem className="w-full text-left">
 										<Link
+											onClick={() => setIsOpen(false)}
 											href="/all-messages"
 											className={`text-lg font-semibold ${currentPath === '/all-messages' ? 'text-primary' : 'text-zinc-400'}`}
 										>
 											Messages
-										</Link>
-									</NavigationMenuItem>
-									<NavigationMenuItem className="w-full text-left">
-										<Link
-											href="/search"
-											className={`text-lg font-semibold ${currentPath === '/search' ? 'text-primary' : 'text-zinc-400'}`}
-										>
-											Search
 										</Link>
 									</NavigationMenuItem>
 								</NavigationMenuList>
