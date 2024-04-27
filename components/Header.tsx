@@ -9,8 +9,10 @@ import {
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+	const currentPath = usePathname();
 	return (
 		<header className="sticky top-0 z-10 mb-2 w-full border-b border-muted bg-background px-5 py-2">
 			<NavigationMenu className="w-full max-w-[initial] gap-2">
@@ -33,6 +35,24 @@ export default function Header() {
 								className={`${navigationMenuTriggerStyle()} text-center text-xl font-bold tracking-widest`}
 							>
 								ArchiveScape
+							</NavigationMenuLink>
+						</Link>
+					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<Link href="/users" legacyBehavior passHref>
+							<NavigationMenuLink
+								className={`${navigationMenuTriggerStyle()} text-lg font-semibold ${currentPath === '/users' ? 'text-primary' : 'text-zinc-400'}`}
+							>
+								Users
+							</NavigationMenuLink>
+						</Link>
+					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<Link href="/all-messages" legacyBehavior passHref>
+							<NavigationMenuLink
+								className={`${navigationMenuTriggerStyle()} text-lg font-semibold ${currentPath === '/all-messages' ? 'text-primary' : 'text-zinc-400'}`}
+							>
+								Messages
 							</NavigationMenuLink>
 						</Link>
 					</NavigationMenuItem>
