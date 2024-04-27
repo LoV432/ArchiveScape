@@ -78,20 +78,24 @@ function SearchPage() {
 				}, 10);
 			}
 		});
+		if ('ontouchstart' in window) {
+			searchElementRef.current?.setAttribute('placeholder', 'Search');
+		} else {
+			searchElementRef.current?.focus();
+		}
 	}, []);
 	return (
 		<>
 			<div className="relative mx-auto mt-10 block h-14 w-2/3 max-w-[800px]">
 				<input
 					type="text"
-					placeholder={`Start typing...`}
+					placeholder="Search"
 					className="h-full w-full rounded border border-gray-300 border-opacity-35 text-center text-2xl font-bold focus-visible:border-opacity-70 focus-visible:outline-none"
 					defaultValue={searchQuery}
 					onFocus={(e) =>
 						e.target.setAttribute('placeholder', 'Start typing...')
 					}
 					onBlur={(e) => e.target.setAttribute('placeholder', 'Search')}
-					autoFocus
 					ref={searchElementRef}
 					onKeyUp={(e: any) => {
 						if (e.key === 'Enter') {
