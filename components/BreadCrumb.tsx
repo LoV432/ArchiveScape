@@ -1,6 +1,6 @@
 'use client';
 
-// TODO: This works but holy shit this is an awful way to do this. I need to find a better solution
+// TODO: This is a bit better, but it's not great.
 
 import {
 	Breadcrumb,
@@ -15,12 +15,11 @@ import {
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import Link from 'next/link';
 
 import { usePathname } from 'next/navigation';
+import { Fragment } from 'react';
 
 export default function BreadcrumbComponent() {
 	const currentPath = usePathname();
@@ -37,31 +36,27 @@ export default function BreadcrumbComponent() {
 						<BreadcrumbSeparator />
 					</>
 				)}
-				{pathList?.map((path, index) => (
-					<>
-						{index == pathList.length - 1 ? (
-							<BreadcrumbItem>
-								<BreadcrumbPage>{path.replace('-', ' ')}</BreadcrumbPage>
-							</BreadcrumbItem>
-						) : (
-							<>
-								{isNaN(Number(path)) ? (
-									<BreadcrumbItem>
-										<BreadcrumbLink
-											href={`/${pathList.slice(0, index + 1).join('/')}`}
-										>
-											{path.replace('-', ' ')}
-										</BreadcrumbLink>
-									</BreadcrumbItem>
-								) : (
-									path.replace('-', ' ')
-								)}
-
-								<BreadcrumbSeparator />
-							</>
-						)}
-					</>
+				{pathList?.slice(0, -1).map((path, index) => (
+					<Fragment key={path}>
+						<BreadcrumbItem>
+							{isNaN(Number(path)) ? (
+								<BreadcrumbLink
+									href={`/${pathList.slice(0, index + 1).join('/')}`}
+								>
+									{path.replace('-', ' ')}
+								</BreadcrumbLink>
+							) : (
+								<>{path}</>
+							)}
+						</BreadcrumbItem>
+						<BreadcrumbSeparator />
+					</Fragment>
 				))}
+				<BreadcrumbItem>
+					<BreadcrumbPage>
+						{pathList[pathList.length - 1].replace('-', ' ')}
+					</BreadcrumbPage>
+				</BreadcrumbItem>
 			</BreadcrumbList>
 			<BreadcrumbList className="flex text-base capitalize sm:hidden">
 				{currentPath !== '/' && (
@@ -72,56 +67,57 @@ export default function BreadcrumbComponent() {
 						<BreadcrumbSeparator />
 					</>
 				)}
-				{pathList.length > 0 && (
+				{pathList.length > 2 && (
 					<>
-						{pathList.length > 2 && (
-							<>
-								<BreadcrumbItem>
-									<BreadcrumbLink href={`/${pathList.slice(0, 2).join('/')}`}>
-										{pathList[0].replace('-', ' ')}
-									</BreadcrumbLink>
-								</BreadcrumbItem>
-								<BreadcrumbItem>
-									<DropdownMenu>
-										<DropdownMenuTrigger>
-											<BreadcrumbEllipsis />
-										</DropdownMenuTrigger>
-										<DropdownMenuContent className="capitalize" align="start">
-											{pathList?.map((path, index) => (
-												<>
-													{index !== pathList.length - 1 && index !== 0 && (
-														<>
-															{isNaN(Number(path)) ? (
-																<Link
-																	href={`/${pathList.slice(0, index + 1).join('/')}`}
-																>
-																	<DropdownMenuItem>
-																		{path.replace('-', ' ')}
-																	</DropdownMenuItem>
-																</Link>
-															) : (
-																<DropdownMenuItem>
-																	{path.replace('-', ' ')}
-																</DropdownMenuItem>
-															)}
-														</>
-													)}
-												</>
-											))}
-										</DropdownMenuContent>
-										<BreadcrumbSeparator />
-									</DropdownMenu>
-								</BreadcrumbItem>
-							</>
-						)}
 						<BreadcrumbItem>
-							<BreadcrumbPage>
-								{pathList[pathList.length - 1].replace('-', ' ')}
-							</BreadcrumbPage>
+							<BreadcrumbLink href={`/${pathList.slice(0, 1).join('/')}`}>
+								{pathList[0].replace('-', ' ')}
+							</BreadcrumbLink>
 						</BreadcrumbItem>
+						<BreadcrumbItem>
+							<BreadcrumbDropDown>
+								{pathList
+									?.slice(1, -1)
+									.map((path, index) => (
+										<BreadcrumbItem key={path}>
+											{isNaN(Number(path)) ? (
+												<BreadcrumbLink
+													href={`/${pathList.slice(0, index + 2).join('/')}`}
+												>
+													{path.replace('-', ' ')}
+												</BreadcrumbLink>
+											) : (
+												<>{path}</>
+											)}
+										</BreadcrumbItem>
+									))}
+							</BreadcrumbDropDown>
+						</BreadcrumbItem>
+						<BreadcrumbSeparator />
 					</>
 				)}
+				<BreadcrumbItem>
+					<BreadcrumbPage>
+						{pathList[pathList.length - 1].replace('-', ' ')}
+					</BreadcrumbPage>
+				</BreadcrumbItem>
 			</BreadcrumbList>
 		</Breadcrumb>
+	);
+}
+
+function BreadcrumbDropDown({ children }: { children: React.ReactNode }) {
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger>
+				<BreadcrumbEllipsis />
+			</DropdownMenuTrigger>
+			<DropdownMenuContent
+				className="flex flex-col gap-2 pl-4 capitalize"
+				align="start"
+			>
+				{children}
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 }
