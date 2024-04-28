@@ -67,13 +67,18 @@ export default function BreadcrumbComponent() {
 						<BreadcrumbSeparator />
 					</>
 				)}
-				{pathList.length > 2 && (
+				{pathList.length > 1 && (
 					<>
 						<BreadcrumbItem>
 							<BreadcrumbLink href={`/${pathList.slice(0, 1).join('/')}`}>
 								{pathList[0].replace('-', ' ')}
 							</BreadcrumbLink>
 						</BreadcrumbItem>
+						<BreadcrumbSeparator />
+					</>
+				)}
+				{pathList.length > 2 && (
+					<>
 						<BreadcrumbItem>
 							<BreadcrumbDropDown>
 								{pathList
