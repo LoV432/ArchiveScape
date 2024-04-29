@@ -112,24 +112,22 @@ function NavLogo({
 	className?: string;
 }) {
 	return (
-		<Link href="/" legacyBehavior passHref>
-			<div
-				onClick={onClick}
-				className={`${className} flex cursor-pointer items-center gap-3`}
-			>
-				<Image
-					priority
-					className="h-6 w-6"
-					src="/logo.png"
-					alt="logo"
-					width={24}
-					height={24}
-				/>
-				<NavigationMenuLink className="text-xl font-bold tracking-widest text-white">
-					ArchiveScape
-				</NavigationMenuLink>
-			</div>
-		</Link>
+		<div
+			onClick={onClick}
+			className={`${className} flex cursor-pointer items-center gap-3`}
+		>
+			<Image
+				priority
+				className="h-6 w-6"
+				src="/logo.png"
+				alt="logo"
+				width={24}
+				height={24}
+			/>
+			<Link href="/" className="text-xl font-bold tracking-widest text-white">
+				ArchiveScape
+			</Link>
+		</div>
 	);
 }
 
