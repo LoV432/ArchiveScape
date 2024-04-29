@@ -84,12 +84,12 @@ export default function Header() {
 									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItemAnimatedSwear
-									link="/stats/word-cloud"
+									link="#"
 									currentPath={currentPath}
 									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItem
-									link="/stats/word-cloud"
+									link="#"
 									currentPath={currentPath}
 									name="Most Used ❤️"
 									onClick={() => setIsOpen(false)}
