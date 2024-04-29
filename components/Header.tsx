@@ -51,27 +51,23 @@ export default function Header() {
 						/>
 					</SheetTrigger>
 					<SheetContent className="w-fit min-w-[300px]" side="right">
-						<SheetHeader>
-							<SheetDescription className="pt-2">
-								<NavLogo className="pb-8" onClick={() => setIsOpen(false)} />
-								<NavigationMenuList className="float-left flex-col gap-5 space-x-0">
-									<NavMenuItem
-										link="/users"
-										currentPath={currentPath}
-										name="Users"
-										isMobile
-										onClick={() => setIsOpen(false)}
-									/>
-									<NavMenuItem
-										link="/all-messages"
-										currentPath={currentPath}
-										name="All Messages"
-										isMobile
-										onClick={() => setIsOpen(false)}
-									/>
-								</NavigationMenuList>
-							</SheetDescription>
-						</SheetHeader>
+						<NavLogo className="pb-8 pt-2" onClick={() => setIsOpen(false)} />
+						<NavigationMenuList className="float-left flex-col gap-5 space-x-0">
+							<NavMenuItem
+								link="/users"
+								currentPath={currentPath}
+								name="Users"
+								isMobile
+								onClick={() => setIsOpen(false)}
+							/>
+							<NavMenuItem
+								link="/all-messages"
+								currentPath={currentPath}
+								name="All Messages"
+								isMobile
+								onClick={() => setIsOpen(false)}
+							/>
+						</NavigationMenuList>
 					</SheetContent>
 				</Sheet>
 			</NavigationMenu>
