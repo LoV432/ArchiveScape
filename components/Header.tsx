@@ -35,11 +35,7 @@ export default function Header() {
 							currentPath={currentPath}
 							name="Most Used Words"
 						/>
-						<NavDropDownItem
-							link="#"
-							currentPath={currentPath}
-							name="Most Used #@!#$"
-						/>
+						<NavDropDownItemAnimatedSwear link="#" currentPath={currentPath} />
 						<NavDropDownItem
 							link="#"
 							currentPath={currentPath}
@@ -86,10 +82,9 @@ export default function Header() {
 									currentPath={currentPath}
 									name="Most Used Words"
 								/>
-								<NavDropDownItem
+								<NavDropDownItemAnimatedSwear
 									link="/stats/word-cloud"
 									currentPath={currentPath}
-									name="Most Used #@!#$"
 								/>
 								<NavDropDownItem
 									link="/stats/word-cloud"
@@ -149,6 +144,25 @@ function NavDropDownItem({
 				className={`${navigationMenuTriggerStyle()} w-full min-w-max text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
 			>
 				{name}
+			</NavigationMenuLink>
+		</Link>
+	);
+}
+
+function NavDropDownItemAnimatedSwear({
+	link,
+	currentPath
+}: {
+	link: string;
+	currentPath: string;
+}) {
+	return (
+		<Link href={link} legacyBehavior passHref>
+			<NavigationMenuLink
+				className={`${navigationMenuTriggerStyle()} w-full min-w-max text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
+			>
+				Most used&nbsp;
+				<div className="inline-block after:animate-[animatedSwearText_4s_infinite]"></div>
 			</NavigationMenuLink>
 		</Link>
 	);
