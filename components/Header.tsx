@@ -81,15 +81,18 @@ export default function Header() {
 									link="/clouds/words-cloud"
 									currentPath={currentPath}
 									name="Most Used Words"
+									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItemAnimatedSwear
 									link="/stats/word-cloud"
 									currentPath={currentPath}
+									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItem
 									link="/stats/word-cloud"
 									currentPath={currentPath}
 									name="Most Used ❤️"
+									onClick={() => setIsOpen(false)}
 								/>
 							</NavDropDown>
 						</NavigationMenuList>
@@ -132,15 +135,18 @@ function NavMenuItem({
 function NavDropDownItem({
 	link,
 	currentPath,
-	name
+	name,
+	onClick
 }: {
 	link: string;
 	currentPath: string;
 	name: string;
+	onClick?: () => void;
 }) {
 	return (
 		<Link href={link} legacyBehavior passHref>
 			<NavigationMenuLink
+				{...{ onClick }}
 				className={`${navigationMenuTriggerStyle()} w-full min-w-max text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
 			>
 				{name}
@@ -151,14 +157,17 @@ function NavDropDownItem({
 
 function NavDropDownItemAnimatedSwear({
 	link,
-	currentPath
+	currentPath,
+	onClick
 }: {
 	link: string;
 	currentPath: string;
+	onClick?: () => void;
 }) {
 	return (
 		<Link href={link} legacyBehavior passHref>
 			<NavigationMenuLink
+				{...{ onClick }}
 				className={`${navigationMenuTriggerStyle()} w-full min-w-max text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
 			>
 				Most used&nbsp;
