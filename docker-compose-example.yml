@@ -1,0 +1,11 @@
+services:
+  archivescape:
+    image: archivescape:latest
+    ports:
+      - 3000:3000
+    environment:
+      - 'PG_USER='
+      - 'PG_HOST='
+      - 'PG_DATABASE='
+      - 'PG_PASSWORD='
+      - 'PG_PORT='
