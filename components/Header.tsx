@@ -1,18 +1,14 @@
 'use client';
 import {
 	NavigationMenu,
+	NavigationMenuContent,
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
+	NavigationMenuTrigger,
 	navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
-import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTrigger
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -33,10 +29,27 @@ export default function Header() {
 						currentPath={currentPath}
 						name="Messages"
 					/>
+					<NavDropDown name="Clouds">
+						<NavDropDownItem
+							link="/clouds/words-cloud"
+							currentPath={currentPath}
+							name="Most Used Words"
+						/>
+						<NavDropDownItem
+							link="#"
+							currentPath={currentPath}
+							name="Most Used #@!#$"
+						/>
+						<NavDropDownItem
+							link="#"
+							currentPath={currentPath}
+							name="Most Used ❤️"
+						/>
+					</NavDropDown>
 				</NavigationMenuList>
 				<SearchButton />
 			</NavigationMenu>
-			<NavigationMenu className="w-full max-w-full justify-start gap-3 py-1 sm:hidden">
+			<NavigationMenu className="w-full max-w-full justify-start gap-3 py-1 text-left sm:hidden">
 				<NavLogo className="mr-auto" />
 				<SearchButton isMobile />
 				<Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -67,6 +80,23 @@ export default function Header() {
 								isMobile
 								onClick={() => setIsOpen(false)}
 							/>
+							<NavDropDown isMobile name="Clouds">
+								<NavDropDownItem
+									link="/clouds/words-cloud"
+									currentPath={currentPath}
+									name="Most Used Words"
+								/>
+								<NavDropDownItem
+									link="/stats/word-cloud"
+									currentPath={currentPath}
+									name="Most Used #@!#$"
+								/>
+								<NavDropDownItem
+									link="/stats/word-cloud"
+									currentPath={currentPath}
+									name="Most Used ❤️"
+								/>
+							</NavDropDown>
 						</NavigationMenuList>
 					</SheetContent>
 				</Sheet>
@@ -91,7 +121,7 @@ function NavMenuItem({
 	return (
 		<NavigationMenuItem
 			{...{ onClick }}
-			className={`${isMobile ? 'w-full text-left' : ''}`}
+			className={`${isMobile ? 'w-full' : ''}`}
 		>
 			<Link href={link} legacyBehavior passHref>
 				<NavigationMenuLink
@@ -101,6 +131,26 @@ function NavMenuItem({
 				</NavigationMenuLink>
 			</Link>
 		</NavigationMenuItem>
+	);
+}
+
+function NavDropDownItem({
+	link,
+	currentPath,
+	name
+}: {
+	link: string;
+	currentPath: string;
+	name: string;
+}) {
+	return (
+		<Link href={link} legacyBehavior passHref>
+			<NavigationMenuLink
+				className={`${navigationMenuTriggerStyle()} w-full min-w-max text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
+			>
+				{name}
+			</NavigationMenuLink>
+		</Link>
 	);
 }
 
@@ -128,6 +178,29 @@ function NavLogo({
 				ArchiveScape
 			</Link>
 		</div>
+	);
+}
+
+function NavDropDown({
+	children,
+	name,
+	isMobile = false
+}: {
+	children: React.ReactNode;
+	name: string;
+	isMobile?: boolean;
+}) {
+	return (
+		<NavigationMenuItem className={`${isMobile ? 'w-full' : ''}`}>
+			<NavigationMenuTrigger
+				className={`${isMobile ? 'flex flex-row place-items-center' : navigationMenuTriggerStyle()} text-lg font-semibold text-zinc-400`}
+			>
+				{name}
+			</NavigationMenuTrigger>
+			<NavigationMenuContent className="flex flex-col border border-muted bg-background">
+				{children}
+			</NavigationMenuContent>
+		</NavigationMenuItem>
 	);
 }
 
