@@ -35,7 +35,10 @@ export default function Header() {
 							currentPath={currentPath}
 							name="Most Used Words"
 						/>
-						<NavDropDownItemAnimatedSwear link="#" currentPath={currentPath} />
+						<NavDropDownItemAnimatedSwear
+							link="/clouds/swears-cloud"
+							currentPath={currentPath}
+						/>
 						<NavDropDownItem
 							link="/clouds/emojis-cloud"
 							currentPath={currentPath}
@@ -84,7 +87,7 @@ export default function Header() {
 									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItemAnimatedSwear
-									link="#"
+									link="/clouds/swears-cloud"
 									currentPath={currentPath}
 									onClick={() => setIsOpen(false)}
 								/>
