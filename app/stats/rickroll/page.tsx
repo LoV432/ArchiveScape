@@ -21,7 +21,7 @@ export default async function Page() {
 				style={{
 					color: lastDate.rows[0].color_name
 				}}
-				className="text-2xl font-extrabold text-[var(--highlight)] sm:text-4xl"
+				className="text-xl font-extrabold text-[var(--highlight)] sm:text-4xl"
 			>
 				{lastDate.rows[0].user_name}
 			</Link>
