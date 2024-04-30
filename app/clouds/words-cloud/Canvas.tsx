@@ -68,7 +68,7 @@ export default function Canvas({
 		};
 	});
 	return (
-		<div className="grid h-5/6 w-[95vw] place-self-center">
+		<div className="mx-auto grid h-5/6 w-[95vw] justify-center sm:place-self-center">
 			<canvas ref={canvasRef} id="word-cloud"></canvas>
 		</div>
 	);
