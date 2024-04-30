@@ -18,11 +18,11 @@ export async function swearCloudList() {
 
 	let allSwearsList: string[] = [];
 	let allSwearsCount: Record<string, number> = {};
-	const threeHoursAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 3);
+	const threeDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 3);
 
 	const allMessages = await db.query(
 		`SELECT message_text FROM messages WHERE created_at > $1 ORDER BY created_at DESC`,
-		[threeHoursAgo.toUTCString()]
+		[threeDaysAgo.toUTCString()]
 	);
 	allMessages.rows.forEach((message: Message) => {
 		allSwearsList.push(...message.message_text.split(' '));
