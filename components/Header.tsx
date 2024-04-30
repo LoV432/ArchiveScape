@@ -37,7 +37,7 @@ export default function Header() {
 						/>
 						<NavDropDownItemAnimatedSwear link="#" currentPath={currentPath} />
 						<NavDropDownItem
-							link="#"
+							link="/clouds/emojis-cloud"
 							currentPath={currentPath}
 							name="Most Used ❤️"
 						/>
@@ -89,7 +89,7 @@ export default function Header() {
 									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItem
-									link="#"
+									link="/clouds/emojis-cloud"
 									currentPath={currentPath}
 									name="Most Used ❤️"
 									onClick={() => setIsOpen(false)}
