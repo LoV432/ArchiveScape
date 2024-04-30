@@ -67,11 +67,13 @@ export default function Home() {
 							))}
 						</TableBody>
 					</Table>
-					<Link className="justify-self-center" href="/users">
-						<Button variant="outline">Show All</Button>
-					</Link>
 				</>
 			)}
+			<Link className="my-3 justify-self-center" href="/users">
+				<Button tabIndex={-1} variant="outline">
+					Show All
+				</Button>
+			</Link>
 		</main>
 	);
 }
