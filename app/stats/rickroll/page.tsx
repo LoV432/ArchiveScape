@@ -1,0 +1,37 @@
+import { db } from '@/lib/db';
+import ClientPage from './page.client';
+import Link from 'next/link';
+export const dynamic = 'force-dynamic';
+
+export default async function Page() {
+	const lastDate = await db.query(
+		`SELECT *, users.user_name, colors.color_name, messages.id FROM messages LEFT JOIN colors ON messages.color_id = colors.id JOIN users ON messages.user_id = users.id  WHERE message_text LIKE '%https://www.youtube.com/watch?v=dQw4w9WgXcQ%' ORDER BY created_at DESC LIMIT 1`
+	);
+	return (
+		<div className="mx-5 my-auto flex h-1/2 max-w-[100vw] flex-col place-items-center gap-7 text-center sm:gap-10">
+			<p className="break-words text-4xl font-extrabold sm:text-7xl">
+				Last Rickroll:
+			</p>
+			<div className="break-words text-2xl font-extrabold sm:text-4xl">
+				<ClientPage time={lastDate.rows[0].created_at} />
+			</div>
+			<p className="text-2xl font-extrabold sm:text-4xl">By</p>
+			<Link
+				href={`/users/${lastDate.rows[0].user_id}/messages/${lastDate.rows[0].id}/message-context`}
+				style={{
+					color: lastDate.rows[0].color_name
+				}}
+				className="text-2xl font-extrabold text-[var(--highlight)] sm:text-4xl"
+			>
+				{lastDate.rows[0].user_name}
+			</Link>
+			<Link
+				target="_blank"
+				href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+				className="text-4xl font-extrabold"
+			>
+				🎙️
+			</Link>
+		</div>
+	);
+}

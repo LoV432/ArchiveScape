@@ -45,6 +45,13 @@ export default function Header() {
 							name="Most Used ❤️"
 						/>
 					</NavDropDown>
+					<NavDropDown name="Stats">
+						<NavDropDownItem
+							link="/stats/rickroll"
+							currentPath={currentPath}
+							name="Rickroll"
+						/>
+					</NavDropDown>
 				</NavigationMenuList>
 				<SearchButton />
 			</NavigationMenu>
@@ -95,6 +102,14 @@ export default function Header() {
 									link="/clouds/emojis-cloud"
 									currentPath={currentPath}
 									name="Most Used ❤️"
+									onClick={() => setIsOpen(false)}
+								/>
+							</NavDropDown>
+							<NavDropDown isMobile name="Stats">
+								<NavDropDownItem
+									link="/stats/rickroll"
+									currentPath={currentPath}
+									name="Rickroll"
 									onClick={() => setIsOpen(false)}
 								/>
 							</NavDropDown>
