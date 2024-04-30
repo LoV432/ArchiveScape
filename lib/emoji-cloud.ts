@@ -17,7 +17,7 @@ export async function emojiCloudList() {
 
 	let allEmojisList: string[] = [];
 	let allEmojisCount: Record<string, number> = {};
-	const threeHoursAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 6);
+	const threeHoursAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 3);
 
 	const allMessages = await db.query(
 		`SELECT message_text FROM messages WHERE created_at > $1 ORDER BY created_at DESC`,

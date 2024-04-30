@@ -47,12 +47,11 @@ export default function Canvas({
 					]
 				},
 				options: {
+					responsive: true,
+					maintainAspectRatio: false,
 					onClick(_, elements) {
 						if (!elements[0]?.index) return;
 						router.push(`/search?search=${emojis[elements[0].index].x}`);
-					},
-					layout: {
-						padding: 10
 					},
 					plugins: {
 						tooltip: {

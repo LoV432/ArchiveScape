@@ -1,5 +1,5 @@
 'use client';
-import { Chart, LinearScale } from 'chart.js';
+import { Chart, LinearScale, Tooltip } from 'chart.js';
 import { WordCloudController, WordElement } from 'chartjs-chart-wordcloud';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -23,7 +23,7 @@ export default function Canvas({
 				.map((d) => ({ x: d.x, y: Math.round(d.y * normalizationFactor) }));
 		}
 
-		Chart.register(WordCloudController, WordElement, LinearScale);
+		Chart.register(WordCloudController, WordElement, LinearScale, Tooltip);
 		const chart = new Chart(
 			canvasRef.current?.getContext('2d') as CanvasRenderingContext2D,
 			{
@@ -49,11 +49,11 @@ export default function Canvas({
 					]
 				},
 				options: {
+					responsive: true,
+					maintainAspectRatio: false,
 					onClick(_, elements) {
+						if (!elements[0]?.index) return;
 						router.push(`/search?search=${words[elements[0].index].x}`);
-					},
-					layout: {
-						padding: 10
 					},
 					plugins: {
 						tooltip: {
