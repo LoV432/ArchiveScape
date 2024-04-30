@@ -52,7 +52,7 @@ export default function Canvas({
 					responsive: true,
 					maintainAspectRatio: false,
 					onClick(_, elements) {
-						if (!elements[0]?.index) return;
+						if (elements.length === 0) return;
 						router.push(`/search?search=${words[elements[0].index].x}`);
 					},
 					plugins: {
