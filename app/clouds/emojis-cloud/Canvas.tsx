@@ -34,6 +34,7 @@ export default function Canvas({
 						{
 							data: emojisRef.current,
 							fit: true,
+							normalized: false,
 							parsing: false,
 							padding: 5,
 							rotate: 0,
@@ -67,7 +68,7 @@ export default function Canvas({
 	});
 	return (
 		<div className="mx-auto grid h-5/6 w-[95vw] justify-center sm:place-self-center">
-			<canvas ref={canvasRef} id="word-cloud"></canvas>
+			<canvas ref={canvasRef} id="emoji-cloud"></canvas>
 		</div>
 	);
 }

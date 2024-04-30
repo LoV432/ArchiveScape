@@ -17,10 +17,11 @@ export default function Canvas({
 			const maxCount = Math.max(
 				...Object.values(swearsRef.current).map((d) => d.y)
 			);
-			const normalizationFactor = 70 / maxCount;
-			swearsRef.current = swearsRef.current
-				.slice(0, 100)
-				.map((d) => ({ x: d.x, y: Math.round(d.y * normalizationFactor) }));
+			const normalizationFactor = 30 / maxCount;
+			swearsRef.current = swearsRef.current.map((d) => ({
+				x: d.x,
+				y: Math.round(d.y * normalizationFactor)
+			}));
 		}
 
 		Chart.register(WordCloudController, WordElement, LinearScale, Tooltip);
@@ -34,6 +35,7 @@ export default function Canvas({
 						{
 							data: swearsRef.current,
 							fit: true,
+							normalized: false,
 							parsing: false,
 							padding: 5,
 							rotate: 0,
@@ -67,7 +69,7 @@ export default function Canvas({
 	});
 	return (
 		<div className="mx-auto grid h-5/6 w-[95vw] justify-center sm:place-self-center">
-			<canvas ref={canvasRef} id="word-cloud"></canvas>
+			<canvas ref={canvasRef} id="swear-cloud"></canvas>
 		</div>
 	);
 }
