@@ -7,8 +7,10 @@ export const dynamic = 'force-dynamic';
 export default async function Page() {
 	const words = await wordCloudList();
 	return (
-		<Suspense fallback={<LoadingOverlay />}>
-			<Canvas words={words} />
-		</Suspense>
+		<main className="grid">
+			<Suspense fallback={<LoadingOverlay />}>
+				<Canvas words={words} />
+			</Suspense>
+		</main>
 	);
 }
