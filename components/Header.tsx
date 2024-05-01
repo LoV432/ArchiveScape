@@ -29,22 +29,11 @@ export default function Header() {
 						currentPath={currentPath}
 						name="Messages"
 					/>
-					<NavDropDown name="Clouds">
-						<NavDropDownItem
-							link="/clouds/words-cloud"
-							currentPath={currentPath}
-							name="Most Used Words"
-						/>
-						<NavDropDownItemAnimatedSwear
-							link="/clouds/swears-cloud"
-							currentPath={currentPath}
-						/>
-						<NavDropDownItem
-							link="/clouds/emojis-cloud"
-							currentPath={currentPath}
-							name="Most Used ❤️"
-						/>
-					</NavDropDown>
+					<NavDropDownItem
+						link="/clouds/words-cloud"
+						currentPath={currentPath}
+						name="Most Used Words"
+					/>
 					<NavDropDown name="Stats">
 						<NavDropDownItem
 							link="/stats/rickroll"
@@ -86,25 +75,12 @@ export default function Header() {
 								isMobile
 								onClick={() => setIsOpen(false)}
 							/>
-							<NavDropDown isMobile name="Clouds">
-								<NavDropDownItem
-									link="/clouds/words-cloud"
-									currentPath={currentPath}
-									name="Most Used Words"
-									onClick={() => setIsOpen(false)}
-								/>
-								<NavDropDownItemAnimatedSwear
-									link="/clouds/swears-cloud"
-									currentPath={currentPath}
-									onClick={() => setIsOpen(false)}
-								/>
-								<NavDropDownItem
-									link="/clouds/emojis-cloud"
-									currentPath={currentPath}
-									name="Most Used ❤️"
-									onClick={() => setIsOpen(false)}
-								/>
-							</NavDropDown>
+							<NavDropDownItem
+								link="/clouds/words-cloud"
+								currentPath={currentPath}
+								name="Most Used Words"
+								onClick={() => setIsOpen(false)}
+							/>
 							<NavDropDown isMobile name="Stats">
 								<NavDropDownItem
 									link="/stats/rickroll"
