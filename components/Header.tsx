@@ -29,8 +29,8 @@ export default function Header() {
 						currentPath={currentPath}
 						name="Messages"
 					/>
-					<NavDropDownItem
-						link="/clouds/words-cloud"
+					<NavMenuItem
+						link="/words-cloud"
 						currentPath={currentPath}
 						name="Most Used Words"
 					/>
@@ -39,6 +39,11 @@ export default function Header() {
 							link="/stats/rickroll"
 							currentPath={currentPath}
 							name="Rickroll"
+						/>
+						<NavDropDownItem
+							link="/stats/links"
+							currentPath={currentPath}
+							name="Links"
 						/>
 					</NavDropDown>
 				</NavigationMenuList>
@@ -75,10 +80,11 @@ export default function Header() {
 								isMobile
 								onClick={() => setIsOpen(false)}
 							/>
-							<NavDropDownItem
-								link="/clouds/words-cloud"
+							<NavMenuItem
+								link="/words-cloud"
 								currentPath={currentPath}
 								name="Most Used Words"
+								isMobile
 								onClick={() => setIsOpen(false)}
 							/>
 							<NavDropDown isMobile name="Stats">
@@ -86,6 +92,12 @@ export default function Header() {
 									link="/stats/rickroll"
 									currentPath={currentPath}
 									name="Rickroll"
+									onClick={() => setIsOpen(false)}
+								/>
+								<NavDropDownItem
+									link="/stats/links"
+									currentPath={currentPath}
+									name="Links"
 									onClick={() => setIsOpen(false)}
 								/>
 							</NavDropDown>
