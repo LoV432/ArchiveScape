@@ -16,7 +16,7 @@ export default function ClientPage({ time }: { time: Date }) {
 			time.toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })
 		);
 		setIsCorrectTime(true);
-	});
+	}, [time]);
 	return (
 		<div className="relative">
 			<p className={`${isCorrectTime ? '' : 'opacity-0'}`}>{dateTime}</p>
