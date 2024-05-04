@@ -2,6 +2,7 @@ import { emojiBarList } from '@/lib/emoji-cloud';
 import EmojiBar from './page.client';
 import { Suspense } from 'react';
 import LoadingOverlay from '@/components/LoadingOverlay';
+export const dynamic = 'force-dynamic';
 
 export default async function Page() {
 	const emojis = await emojiBarList();

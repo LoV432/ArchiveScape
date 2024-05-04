@@ -99,7 +99,7 @@ export default function EmojiBar({
 			);
 			chart.destroy();
 		};
-	}, []);
+	});
 
 	return (
 		<main className="mx-auto grid h-full w-[90vw] max-w-[1000px] place-items-center">
