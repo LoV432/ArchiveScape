@@ -45,6 +45,11 @@ export default function Header() {
 							currentPath={currentPath}
 							name="Links"
 						/>
+						<NavDropDownItem
+							link="/stats/emojis"
+							currentPath={currentPath}
+							name="Emojis"
+						/>
 					</NavDropDown>
 				</NavigationMenuList>
 				<SearchButton />
@@ -98,6 +103,12 @@ export default function Header() {
 									link="/stats/links"
 									currentPath={currentPath}
 									name="Links"
+									onClick={() => setIsOpen(false)}
+								/>
+								<NavDropDownItem
+									link="/stats/emojis"
+									currentPath={currentPath}
+									name="Emojis"
 									onClick={() => setIsOpen(false)}
 								/>
 							</NavDropDown>

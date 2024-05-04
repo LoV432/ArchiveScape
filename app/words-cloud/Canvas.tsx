@@ -64,6 +64,7 @@ export default function Canvas({
 			}
 		);
 		return () => {
+			Chart.unregister(WordCloudController, WordElement, LinearScale, Tooltip);
 			chart.destroy();
 		};
 	});

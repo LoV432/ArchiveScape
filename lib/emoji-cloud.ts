@@ -5,23 +5,26 @@ type Message = {
 };
 
 // TODO: Check if we can use React/Next.js built-in caching stuff?
-let emojiCloudListCache: { x: string; y: number }[] = [];
+let emojiBarListCache: {
+	emoji: string;
+	count: number;
+}[] = [];
 let lastUpdated = 0;
 
-export async function emojiCloudList() {
+export async function emojiBarList() {
 	const now = Date.now();
-	if (now - lastUpdated < 1000 * 60 * 5 && emojiCloudListCache.length > 0) {
-		return emojiCloudListCache;
+	if (now - lastUpdated < 1000 * 60 * 5 && emojiBarListCache.length > 0) {
+		return emojiBarListCache;
 	}
 	lastUpdated = now;
 
 	let allEmojisList: string[] = [];
 	let allEmojisCount: Record<string, number> = {};
-	const threeDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 3);
+	const twentyDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 20);
 
 	const allMessages = await db.query(
 		`SELECT message_text FROM messages WHERE created_at > $1 ORDER BY created_at DESC`,
-		[threeDaysAgo.toUTCString()]
+		[twentyDaysAgo.toUTCString()]
 	);
 	allMessages.rows.forEach((message: Message) => {
 		allEmojisList.push(
@@ -33,14 +36,13 @@ export async function emojiCloudList() {
 		// If it does exist, it increments the value by 1
 		allEmojisCount[word] = (allEmojisCount[word] || 0) + 1;
 	});
-	const maxCount = Math.max(...Object.values(allEmojisCount));
-	const normalizationFactor = 100 / maxCount; // Used to normalize the count to be between 0 and 100
 	const allEmojisCountArray = Object.entries(allEmojisCount)
 		.sort((a, b) => b[1] - a[1])
-		.map(([word, count]) => ({
-			x: word,
-			y: count * normalizationFactor
+		.slice(0, 10)
+		.map(([emoji, count]) => ({
+			emoji,
+			count
 		}));
-	emojiCloudListCache = allEmojisCountArray;
+	emojiBarListCache = allEmojisCountArray;
 	return allEmojisCountArray;
 }
