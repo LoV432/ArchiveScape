@@ -102,7 +102,7 @@ export default function EmojiBar({
 	});
 
 	return (
-		<main className="mx-auto grid h-full w-[90vw] max-w-[1000px] place-items-center">
+		<main className="mx-auto flex h-full w-[90vw] max-w-[1000px] flex-col justify-center">
 			<canvas ref={canvasRef} id="emoji"></canvas>
 		</main>
 	);
