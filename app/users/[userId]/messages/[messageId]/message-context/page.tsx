@@ -201,7 +201,6 @@ function PaginationSection({
 					<PaginationOlderMessages
 						isActive
 						href={`/users/${userId}/messages/${messageId}/message-context?page=${Number(page) - 1}`}
-						scroll={false}
 						className={`select-none`}
 					/>
 				</PaginationItem>
@@ -217,7 +216,6 @@ function PaginationSection({
 					<PaginationNewerMessages
 						isActive
 						href={`/users/${userId}/messages/${messageId}/message-context?page=${Number(page) + 1}`}
-						scroll={false}
 						className={`select-none`}
 					/>
 				</PaginationItem>

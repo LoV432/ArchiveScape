@@ -121,7 +121,6 @@ function PaginationSection({
 					<PaginationPrevious
 						isActive={!(page === '1')}
 						href={`/users?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
-						scroll={false}
 						className={`${
 							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
@@ -137,7 +136,6 @@ function PaginationSection({
 					<PaginationNext
 						isActive
 						href={`/users?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
-						scroll={false}
 						className={`select-none`}
 					/>
 				</PaginationItem>
