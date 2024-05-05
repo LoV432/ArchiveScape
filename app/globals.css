@@ -126,7 +126,7 @@
 	}
 }
 
-@keyframes animatedSwearText {
+/* @keyframes animatedSwearText {
 	0% {
 		content: '#@!#$';
 	}
@@ -159,5 +159,26 @@
 	}
 	100% {
 		content: '#@!#$';
+	}
+} */
+
+#countdown svg {
+	transform: rotateY(-180deg) rotateZ(-90deg);
+}
+
+#countdown svg circle {
+	stroke-dasharray: 113px;
+	stroke-dashoffset: 0px;
+	stroke-linecap: round;
+	stroke-width: 5px;
+	fill: none;
+}
+
+@keyframes countdown {
+	from {
+		stroke-dashoffset: 0px;
+	}
+	to {
+		stroke-dashoffset: 113px;
 	}
 }

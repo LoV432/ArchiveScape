@@ -30,6 +30,11 @@ export default function Header() {
 						name="Messages"
 					/>
 					<NavMenuItem
+						link="/random-message"
+						currentPath={currentPath}
+						name="Random Message"
+					/>
+					<NavMenuItem
 						link="/words-cloud"
 						currentPath={currentPath}
 						name="Most Used Words"
@@ -82,6 +87,13 @@ export default function Header() {
 								link="/all-messages"
 								currentPath={currentPath}
 								name="All Messages"
+								isMobile
+								onClick={() => setIsOpen(false)}
+							/>
+							<NavMenuItem
+								link="/random-message"
+								currentPath={currentPath}
+								name="Random Message"
 								isMobile
 								onClick={() => setIsOpen(false)}
 							/>
