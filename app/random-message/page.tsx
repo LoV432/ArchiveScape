@@ -11,7 +11,7 @@ type RandomMessage = {
 
 export default function Page() {
 	let updateMessageInterval: NodeJS.Timeout;
-	const [nextFetch, setNextFetch] = useState(5000);
+	const [nextFetch, setNextFetch] = useState([0] as number[]);
 	const timerCircleRef = useRef<SVGCircleElement>(null);
 	const query = useQuery({
 		queryKey: ['random-message'],
@@ -21,7 +21,9 @@ export default function Page() {
 				throw new Error('Error');
 			}
 			const response = (await res.json()) as RandomMessage;
-			setNextFetch(response.message.length * 30 + 5000);
+			// We are adding timestamp to force rerender.
+			// Otherwise it will fail to rerender if last message and current message had the same length
+			setNextFetch([response.message.length * 30 + 5000, new Date().getTime()]);
 			return response;
 		},
 		placeholderData: (prev) => prev
@@ -30,8 +32,8 @@ export default function Page() {
 		clearTimeout(updateMessageInterval);
 		updateMessageInterval = setTimeout(() => {
 			query.refetch();
-		}, nextFetch);
-		restartAnimation(timerCircleRef, nextFetch / 1000);
+		}, nextFetch[0]);
+		restartAnimation(timerCircleRef, nextFetch[0] / 1000);
 		return () => {
 			clearTimeout(updateMessageInterval);
 		};
