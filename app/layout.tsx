@@ -4,6 +4,7 @@ import QueryProvider from '@/components/query-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
 import BreadcrumbComponent from '@/components/BreadCrumb';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
 	title: 'Home | ArchiveScape',
@@ -19,6 +20,11 @@ export default function RootLayout({
 		// The theme provider recommends using suppressHydrationWarning
 		// https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
 		<html suppressHydrationWarning lang="en">
+			<Script
+				src="https://analytics-public.monib.xyz/js/script.js"
+				data-domain="archivescape.monib.xyz"
+				defer
+			></Script>
 			<body className="relative grid min-h-screen grid-rows-[auto_auto_1fr] font-mono">
 				<QueryProvider>
 					<ThemeProvider
