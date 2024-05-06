@@ -20,7 +20,6 @@ import {
 	PaginationNewerMessages,
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
-import LoadingTable from '@/components/LoadingTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
@@ -52,9 +51,9 @@ export default function AllMessagesWithLinks() {
 	});
 	return (
 		<>
-			{query.isLoading && <LoadingTable />}
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
+			{query.isLoading && <LoadingOverlay />}
 			{query.isSuccess && (
 				<>
 					<MessageSection messages={query.data.links} page={page} />

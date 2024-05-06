@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 import { Metadata } from 'next/types';
 import Main from './page.client';
 
@@ -22,9 +21,7 @@ export default function Page({
 	}
 	return (
 		<main className="grid">
-			<Suspense>
-				<Main userId={userId} messageId={messageId} />
-			</Suspense>
+			<Main userId={userId} messageId={messageId} />
 		</main>
 	);
 }

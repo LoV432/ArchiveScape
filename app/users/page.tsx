@@ -1,5 +1,4 @@
 import { Metadata } from 'next/types';
-import { Suspense } from 'react';
 import UsersPage from './page.client';
 
 export const metadata: Metadata = {
@@ -10,9 +9,7 @@ export const metadata: Metadata = {
 export default function Page() {
 	return (
 		<main className="grid">
-			<Suspense>
-				<UsersPage />
-			</Suspense>
+			<UsersPage />
 		</main>
 	);
 }

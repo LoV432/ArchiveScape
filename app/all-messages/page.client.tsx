@@ -1,7 +1,6 @@
 'use client';
 
 import LoadingOverlay from '@/components/LoadingOverlay';
-import LoadingTable from '@/components/LoadingTable';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -55,9 +54,9 @@ export default function AllMessagesPage() {
 
 	return (
 		<>
-			{query.isLoading && <LoadingTable />}
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
+			{query.isLoading && <LoadingOverlay />}
 			{query.isSuccess && (
 				<>
 					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">

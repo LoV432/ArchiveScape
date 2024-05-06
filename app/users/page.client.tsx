@@ -1,8 +1,6 @@
 'use client';
 import LoadingOverlay from '@/components/LoadingOverlay';
-import LoadingTable from '@/components/LoadingTable';
 import { useQuery } from '@tanstack/react-query';
-import { Suspense } from 'react';
 import {
 	Table,
 	TableBody,
@@ -48,7 +46,7 @@ export default function UsersPage() {
 	return (
 		<>
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
+			{query.isLoading && <LoadingOverlay />}
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
 				<>

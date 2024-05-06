@@ -21,7 +21,6 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import LoadingTable from '@/components/LoadingTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 
@@ -55,9 +54,9 @@ export default function MessagesPage({ userId }: { userId: string }) {
 
 	return (
 		<>
-			{query.isLoading && <LoadingTable />}
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
+			{query.isLoading && <LoadingOverlay />}
 			{query.isSuccess && (
 				<>
 					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">

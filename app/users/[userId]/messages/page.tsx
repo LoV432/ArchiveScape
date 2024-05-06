@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 import { Metadata } from 'next/types';
 import MessagesPage from './page.client';
 
@@ -15,9 +14,7 @@ export default function Main({ params }: { params: { userId: string } }) {
 	}
 	return (
 		<main className="grid">
-			<Suspense>
-				<MessagesPage userId={userId} />
-			</Suspense>
+			<MessagesPage userId={userId} />
 		</main>
 	);
 }

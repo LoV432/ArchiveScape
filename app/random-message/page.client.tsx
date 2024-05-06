@@ -16,7 +16,7 @@ type RandomMessage = {
 };
 
 export default function RandomMessage() {
-	let updateMessageInterval: NodeJS.Timeout;
+	const updateMessageInterval = useRef<NodeJS.Timeout>();
 	const [nextFetch, setNextFetch] = useState([0] as number[]);
 	const timerCircleRef = useRef<SVGCircleElement>(null);
 	const query = useQuery({
@@ -32,19 +32,23 @@ export default function RandomMessage() {
 			setNextFetch([response.message.length * 30 + 5000, new Date().getTime()]);
 			return response;
 		},
-		placeholderData: (prev) => prev
+		refetchOnWindowFocus: false,
+		placeholderData: undefined,
+		initialData: undefined,
+		gcTime: 0
 	});
 	useEffect(() => {
-		clearTimeout(updateMessageInterval);
-		updateMessageInterval = setTimeout(() => {
+		clearTimeout(updateMessageInterval.current);
+		updateMessageInterval.current = setTimeout(() => {
 			query.refetch();
 		}, nextFetch[0]);
 		restartAnimation(timerCircleRef, nextFetch[0] / 1000);
 		return () => {
-			clearTimeout(updateMessageInterval);
+			clearTimeout(updateMessageInterval.current);
 		};
 	}, [nextFetch]);
-	if (!query.data) return <LoadingOverlay />;
+	if (query.isLoading) return <LoadingOverlay />;
+	if (query.isError) return <p>Error</p>;
 	return (
 		<div className="mx-auto px-10 pt-24 text-center sm:pt-44">
 			<div id="countdown" className="relative h-8 w-full pb-24 text-center">

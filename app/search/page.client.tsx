@@ -105,6 +105,7 @@ export default function SearchPage() {
 			</div>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
+			{query.isLoading && <LoadingOverlay />}
 			{query.isSuccess &&
 				!query.isRefetching &&
 				query.data.messages.length === 0 && (

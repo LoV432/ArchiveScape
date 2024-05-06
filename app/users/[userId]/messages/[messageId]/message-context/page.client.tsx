@@ -19,7 +19,6 @@ import {
 	PaginationNewerMessages,
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
-import LoadingTable from '@/components/LoadingTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
@@ -86,7 +85,8 @@ export default function Main({
 	return (
 		<>
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
+			{query.isLoading && <LoadingOverlay />}
+
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
 				<>

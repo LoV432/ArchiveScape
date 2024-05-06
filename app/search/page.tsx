@@ -1,5 +1,4 @@
 import { Metadata } from 'next/types';
-import { Suspense } from 'react';
 import SearchPage from './page.client';
 
 export const metadata: Metadata = {
@@ -10,9 +9,7 @@ export const metadata: Metadata = {
 export default function Page() {
 	return (
 		<main className="grid">
-			<Suspense>
-				<SearchPage />
-			</Suspense>
+			<SearchPage />
 		</main>
 	);
 }
