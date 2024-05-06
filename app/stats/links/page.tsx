@@ -2,7 +2,13 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 import { Suspense } from 'react';
 import AllMessagesWithLinks from './page.client';
 import { db } from '@/lib/db';
+import { Metadata } from 'next/types';
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+	title: 'Links Sent By Users | ArchiveScape',
+	description: 'An archive of all messages sent on https://www.ventscape.life/'
+};
 
 export default async function Page() {
 	const topDomain = await getTopDomain();

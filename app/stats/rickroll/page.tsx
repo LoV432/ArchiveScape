@@ -1,7 +1,13 @@
 import { db } from '@/lib/db';
 import ClientPage from './page.client';
 import Link from 'next/link';
+import { Metadata } from 'next/types';
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+	title: 'Last Rickroll | ArchiveScape',
+	description: 'An archive of all messages sent on https://www.ventscape.life/'
+};
 
 export default async function Page() {
 	const lastDate = await db.query(
