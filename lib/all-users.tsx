@@ -1,9 +1,12 @@
 import { db } from '@/lib/db';
-import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
-	const searchParams = request.nextUrl.searchParams;
-	const page = searchParams.get('page') || '0';
+export type User = {
+	id: number;
+	user_name: string;
+	message_count: number;
+};
+
+export async function getAllUsers(page: number) {
 	const usersWithMessagesCount = await db.query(
 		`SELECT users.id, users.user_name, COUNT(*) AS message_count
         FROM users
@@ -15,7 +18,5 @@ export async function GET(request: NextRequest) {
 	const totalPages = Math.ceil(
 		(await db.query('SELECT COUNT(*) FROM users')).rows[0]['count'] / 10
 	);
-	return new Response(
-		JSON.stringify({ users: usersWithMessagesCount.rows, totalPages })
-	);
+	return { users: usersWithMessagesCount.rows as User[], totalPages };
 }

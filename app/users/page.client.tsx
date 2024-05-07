@@ -1,6 +1,4 @@
 'use client';
-import LoadingOverlay from '@/components/LoadingOverlay';
-import { useQuery } from '@tanstack/react-query';
 import {
 	Table,
 	TableBody,
@@ -22,42 +20,22 @@ import {
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
-import LoadingTable from '@/components/LoadingTable';
+import { User } from '@/lib/all-users';
 
-type User = {
-	id: number;
-	user_name: string;
-	message_count: number;
-};
-
-export default function UsersPage() {
+export default function UsersPage({
+	data
+}: {
+	data: { users: User[]; totalPages: number };
+}) {
 	const searchParams = useSearchParams();
 	const page = searchParams.get('page') || '1';
-	const query = useQuery({
-		queryKey: ['users', page],
-		queryFn: async () => {
-			const res = await fetch(`/api/users?page=${page}`);
-			if (!res.ok) {
-				throw new Error('Error');
-			}
-			return (await res.json()) as { users: User[]; totalPages: number };
-		},
-		placeholderData: (prev) => prev
-	});
 	return (
 		<>
-			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
-			{query.isError && <p>Error</p>}
-			{query.isSuccess && (
-				<>
-					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-						<p className="pb-2">All Users</p>
-					</h1>
-					<UsersTable users={query.data.users} />
-					<PaginationSection page={page} totalPages={query.data.totalPages} />
-				</>
-			)}
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-2">All Users</p>
+			</h1>
+			<UsersTable users={data.users} />
+			<PaginationSection page={page} totalPages={data.totalPages} />
 		</>
 	);
 }
