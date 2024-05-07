@@ -1,21 +1,44 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
-import MessagesPage from './page.client';
+import dynamic from 'next/dynamic';
+const MessagesPage = dynamic(() => import('./page.client'), {
+	ssr: false
+});
 import { Suspense } from 'react';
+import { getUserMessages } from '@/lib/user-messages';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 export const metadata: Metadata = {
 	title: 'Messages By User | ArchiveScape',
 	description: 'An archive of all messages sent on https://www.ventscape.life/'
 };
 
-export default function Main({ params }: { params: { userId: string } }) {
+export default function Main({
+	params,
+	searchParams
+}: {
+	params: { userId: string };
+	searchParams: { page: string };
+}) {
 	const { userId } = params;
 	if (!userId || userId === '' || isNaN(Number(userId))) {
 		redirect('/');
 	}
+	const page = Number(searchParams.page) || 1;
 	return (
-		<Suspense>
-			<MessagesPage userId={userId} />
+		<Suspense key={`${userId}-${page}/messages`} fallback={<LoadingOverlay />}>
+			<MessagesByUser userId={userId} page={page} />
 		</Suspense>
 	);
+}
+
+async function MessagesByUser({
+	userId,
+	page
+}: {
+	userId: string;
+	page: number;
+}) {
+	const data = await getUserMessages(Number(userId), page);
+	return <MessagesPage data={data} userId={Number(userId)} page={page} />;
 }

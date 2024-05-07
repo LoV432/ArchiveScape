@@ -18,60 +18,34 @@ import {
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
 
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import LoadingOverlay from '@/components/LoadingOverlay';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
-import LoadingTable from '@/components/LoadingTable';
+import { Message } from '@/lib/all-messages';
 
-type Message = {
-	id: number;
-	message_text: string;
-	created_at: string;
-	color_name: string;
-};
-
-export default function MessagesPage({ userId }: { userId: string }) {
-	const searchParams = useSearchParams();
-	const page = searchParams.get('page') || '1';
-	const query = useQuery({
-		queryKey: ['user-messages', userId, page],
-		queryFn: async () => {
-			const res = await fetch(
-				`/api/user/messages?userId=${userId}&page=${page}`
-			);
-			if (!res.ok) {
-				throw new Error('Error');
-			}
-			return (await res.json()) as {
-				messages: Message[];
-				totalPages: number;
-				user_name: string;
-			};
-		},
-		placeholderData: (prev) => prev
-	});
-
+export default function MessagesPage({
+	data,
+	userId,
+	page
+}: {
+	data: {
+		messages: Message[];
+		totalPages: number;
+		user_name: string;
+	};
+	userId: number;
+	page: number;
+}) {
 	return (
 		<>
-			{query.isError && <p>Error</p>}
-			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
-			{query.isSuccess && (
-				<>
-					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-						<p className="pb-1">All Messages From</p>{' '}
-						<p>{query.data.user_name}</p>
-					</h1>
-					<MessageSection messages={query.data.messages} userId={userId} />
-					<PaginationSection
-						totalPages={query.data.totalPages}
-						page={page}
-						userId={userId}
-					/>
-				</>
-			)}
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-1">All Messages From</p> <p>{data.user_name}</p>
+			</h1>
+			<MessageSection messages={data.messages} userId={userId} />
+			<PaginationSection
+				totalPages={data.totalPages}
+				page={page}
+				userId={userId}
+			/>
 		</>
 	);
 }
@@ -81,7 +55,7 @@ function MessageSection({
 	userId
 }: {
 	messages: Message[];
-	userId: string;
+	userId: number;
 }) {
 	return (
 		<>
@@ -135,8 +109,8 @@ function PaginationSection({
 	page,
 	totalPages
 }: {
-	userId: string;
-	page: string;
+	userId: number;
+	page: number;
 	totalPages: number;
 }) {
 	return (
@@ -144,10 +118,10 @@ function PaginationSection({
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationNewerMessages
-						isActive={!(page === '1')}
+						isActive={!(page === 1)}
 						href={`/users/${userId}/messages?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						className={`${
-							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
+							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
 					/>
 				</PaginationItem>
@@ -159,12 +133,10 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages
-						isActive={!(page === String(totalPages))}
+						isActive={!(page === totalPages)}
 						href={`/users/${userId}/messages?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
 						className={`${
-							page === String(totalPages)
-								? 'cursor-not-allowed'
-								: 'cursor-pointer'
+							page === totalPages ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
 					/>
 				</PaginationItem>
