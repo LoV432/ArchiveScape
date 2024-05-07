@@ -6,6 +6,7 @@ import {
 	ContextMenuTrigger,
 	ContextMenuSeparator
 } from '@/components/ui/context-menu';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function TableRowContextMenu({
@@ -44,19 +45,19 @@ export default function TableRowContextMenu({
 				{children}
 			</ContextMenuTrigger>
 			<ContextMenuContent className="max-w-[50vw]">
-				<ContextMenuItem
-					onClick={() => {
-						router.push(contextLink, { scroll: !isContextPage });
-					}}
+				<Link
+					className="h-full w-full"
+					href={contextLink}
+					{...(isContextPage ? { scroll: false } : {})}
 				>
-					{isContextPage ? 'Highlight This User' : 'Show Message Context'}
-				</ContextMenuItem>
+					<ContextMenuItem>
+						{isContextPage ? 'Highlight This User' : 'Show Message Context'}
+					</ContextMenuItem>
+				</Link>
 				<ContextMenuSeparator />
-				<ContextMenuItem
-					onClick={() => router.push(`/users/${user_id}/messages`)}
-				>
-					Show All Messages From User
-				</ContextMenuItem>
+				<Link className="h-full w-full" href={`/users/${user_id}/messages`}>
+					<ContextMenuItem>Show All Messages From User</ContextMenuItem>
+				</Link>
 			</ContextMenuContent>
 		</ContextMenu>
 	);
