@@ -1,7 +1,4 @@
 'use client';
-
-import LoadingOverlay from '@/components/LoadingOverlay';
-import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import {
 	Table,
@@ -24,57 +21,31 @@ import {
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
-import LoadingTable from '@/components/LoadingTable';
+import { Message } from '@/lib/all-messages';
 
-type Message = {
-	id: number;
-	created_at: string;
-	message_text: string;
-	user_id: number;
-	color_name: string;
-};
-
-export default function AllMessagesPage() {
+export default function AllMessagesPage({
+	data
+}: {
+	data: { messages: Message[]; totalPages: number };
+}) {
 	const searchParams = useSearchParams();
 	const page = searchParams.get('page') || '1';
 	const highlightedUser = searchParams.get('user_id');
-	const query = useQuery({
-		queryKey: ['all-messages', page],
-		queryFn: async () => {
-			const res = await fetch(`/api/all-messages?page=${page}`);
-			if (!res.ok) {
-				throw new Error('Error');
-			}
-			return (await res.json()) as {
-				messages: Message[];
-				totalPages: number;
-			};
-		},
-		placeholderData: (prev) => prev
-	});
-
 	return (
 		<>
-			{query.isError && <p>Error</p>}
-			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
-			{query.isSuccess && (
-				<>
-					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-						<p className="pb-1">All Messages</p>
-					</h1>
-					<MessageSection
-						messages={query.data.messages}
-						page={page}
-						highlightedUser={highlightedUser}
-					/>
-					<PaginationSection
-						totalPages={query.data.totalPages}
-						highlightedUser={highlightedUser}
-						page={page}
-					/>
-				</>
-			)}
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-1">All Messages</p>
+			</h1>
+			<MessageSection
+				messages={data.messages}
+				page={page}
+				highlightedUser={highlightedUser}
+			/>
+			<PaginationSection
+				totalPages={data.totalPages}
+				highlightedUser={highlightedUser}
+				page={page}
+			/>
 		</>
 	);
 }
