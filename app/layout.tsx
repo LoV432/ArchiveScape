@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
 import BreadcrumbComponent from '@/components/BreadCrumb';
 import Script from 'next/script';
+import SpinnerProvider from '@/components/spinner-provider';
 
 export const metadata: Metadata = {
 	title: 'Home | ArchiveScape',
@@ -32,9 +33,11 @@ export default function RootLayout({
 						defaultTheme="dark"
 						disableTransitionOnChange
 					>
-						<Header />
-						<BreadcrumbComponent />
-						{children}
+						<SpinnerProvider>
+							<Header />
+							<BreadcrumbComponent />
+							{children}
+						</SpinnerProvider>
 					</ThemeProvider>
 				</QueryProvider>
 			</body>
