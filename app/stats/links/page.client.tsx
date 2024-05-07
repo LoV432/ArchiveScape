@@ -23,6 +23,7 @@ import {
 import LoadingOverlay from '@/components/LoadingOverlay';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
+import LoadingTable from '@/components/LoadingTable';
 
 type Message = {
 	id: number;
@@ -53,7 +54,7 @@ export default function AllMessagesWithLinks() {
 		<>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingOverlay />}
+			{query.isLoading && <LoadingTable />}
 			{query.isSuccess && (
 				<>
 					<MessageSection messages={query.data.links} page={page} />

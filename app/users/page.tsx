@@ -1,5 +1,6 @@
 import { Metadata } from 'next/types';
 import UsersPage from './page.client';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
 	title: 'All Users | ArchiveScape',
@@ -8,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function Page() {
 	return (
-		<main className="grid">
+		<Suspense>
 			<UsersPage />
-		</main>
+		</Suspense>
 	);
 }

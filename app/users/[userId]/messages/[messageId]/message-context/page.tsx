@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
 import Main from './page.client';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
 	title: 'Message Context | ArchiveScape',
@@ -20,8 +21,8 @@ export default function Page({
 		redirect('/');
 	}
 	return (
-		<main className="grid">
+		<Suspense>
 			<Main userId={userId} messageId={messageId} />
-		</main>
+		</Suspense>
 	);
 }

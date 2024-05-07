@@ -22,6 +22,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
+import LoadingTable from '@/components/LoadingTable';
 
 type User = {
 	id: number;
@@ -46,7 +47,7 @@ export default function UsersPage() {
 	return (
 		<>
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingOverlay />}
+			{query.isLoading && <LoadingTable />}
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
 				<>

@@ -24,6 +24,7 @@ import {
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
+import LoadingTable from '@/components/LoadingTable';
 
 type Message = {
 	id: number;
@@ -56,7 +57,7 @@ export default function AllMessagesPage() {
 		<>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingOverlay />}
+			{query.isLoading && <LoadingTable />}
 			{query.isSuccess && (
 				<>
 					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">

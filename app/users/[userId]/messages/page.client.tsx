@@ -23,6 +23,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
+import LoadingTable from '@/components/LoadingTable';
 
 type Message = {
 	id: number;
@@ -56,7 +57,7 @@ export default function MessagesPage({ userId }: { userId: string }) {
 		<>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingOverlay />}
+			{query.isLoading && <LoadingTable />}
 			{query.isSuccess && (
 				<>
 					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">

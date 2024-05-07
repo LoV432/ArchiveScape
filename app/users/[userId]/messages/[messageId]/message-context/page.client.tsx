@@ -23,6 +23,7 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
+import LoadingTable from '@/components/LoadingTable';
 
 type Message = {
 	id: number;
@@ -85,8 +86,7 @@ export default function Main({
 	return (
 		<>
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingOverlay />}
-
+			{query.isLoading && <LoadingTable />}
 			{query.isError && <p>Error</p>}
 			{query.isSuccess && (
 				<>

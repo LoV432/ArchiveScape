@@ -27,6 +27,7 @@ import scribble from '@/public/scribble.gif';
 import Image from 'next/image';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
+import LoadingTable from '@/components/LoadingTable';
 
 type Message = {
 	id: number;
@@ -105,7 +106,7 @@ export default function SearchPage() {
 			</div>
 			{query.isError && <p>Error</p>}
 			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingOverlay />}
+			{query.isLoading && <LoadingTable />}
 			{query.isSuccess &&
 				!query.isRefetching &&
 				query.data.messages.length === 0 && (

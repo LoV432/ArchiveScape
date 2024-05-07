@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import AllMessagesWithLinks from './page.client';
 import TopDomain from './top-domain.server';
 export const dynamic = 'force-dynamic';
@@ -15,9 +16,13 @@ export default async function Page() {
 				Most Sent Domain:
 			</h1>
 			<p className="pb-3 text-center text-2xl text-rose-700 sm:text-5xl">
-				<TopDomain />
+				<Suspense>
+					<TopDomain />
+				</Suspense>
 			</p>
-			<AllMessagesWithLinks />
+			<Suspense>
+				<AllMessagesWithLinks />
+			</Suspense>
 		</main>
 	);
 }

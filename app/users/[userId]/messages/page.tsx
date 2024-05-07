@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
 import MessagesPage from './page.client';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
 	title: 'Messages By User | ArchiveScape',
@@ -13,8 +14,8 @@ export default function Main({ params }: { params: { userId: string } }) {
 		redirect('/');
 	}
 	return (
-		<main className="grid">
+		<Suspense>
 			<MessagesPage userId={userId} />
-		</main>
+		</Suspense>
 	);
 }

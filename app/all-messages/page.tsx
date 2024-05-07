@@ -1,5 +1,6 @@
 import { Metadata } from 'next/types';
 import AllMessagesPage from './page.client';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
 	title: 'All Messages | ArchiveScape',
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-	return <AllMessagesPage />;
+	return (
+		<Suspense>
+			<AllMessagesPage />
+		</Suspense>
+	);
 }
