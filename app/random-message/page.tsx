@@ -1,6 +1,7 @@
 import { Metadata } from 'next/types';
 import RandomMessage from './page.client';
 import { getRandomMessage } from '@/lib/random-message';
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
 	title: 'Random Message | ArchiveScape',
