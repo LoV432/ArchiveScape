@@ -1,14 +1,5 @@
 'use client';
 import {
-	Table,
-	TableCaption,
-	TableHeader,
-	TableRow,
-	TableHead,
-	TableBody,
-	TableCell
-} from '@/components/ui/table';
-import {
 	Pagination,
 	PaginationContent,
 	PaginationItem,
@@ -22,16 +13,10 @@ import { Button } from '@/components/ui/button';
 import cat from '@/public/cat.gif';
 import scribble from '@/public/scribble.gif';
 import Image from 'next/image';
-import TableRowContextMenu from '@/components/TableRowContextMenu';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
-
-type Message = {
-	id: number;
-	created_at: number;
-	message_text: string;
-	color_name: string;
-	user_id: number;
-};
+import dynamic from 'next/dynamic';
+import LoadingTable from '@/components/LoadingTable';
+import { Message } from '@/lib/all-messages';
 
 export default function SearchPage({
 	data,
@@ -44,6 +29,10 @@ export default function SearchPage({
 }) {
 	const searchElementRef = useRef<HTMLInputElement>(null);
 	const router = useRouter();
+	const MessageSection = dynamic(() => import('./messages.client'), {
+		ssr: false,
+		loading: () => <LoadingTable />
+	});
 	useEffect(() => {
 		document.addEventListener('keydown', (e) => {
 			if (e.key === '`' || e.key === '/') {
@@ -115,55 +104,7 @@ export default function SearchPage({
 			)}
 			{data.messages.length > 0 && (
 				<>
-					<Table className="mx-auto mt-10 max-w-3xl text-base">
-						<TableCaption hidden>Messages</TableCaption>
-						<TableHeader>
-							<TableRow>
-								<TableHead>ID</TableHead>
-								<TableHead>Time</TableHead>
-								<TableHead>Message</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{data.messages.map((message) => (
-								<TableRowContextMenu
-									key={message.id}
-									message_id={message.id}
-									user_id={message.user_id}
-								>
-									<TableRow tabIndex={0} key={message.id} className="relative">
-										<TableCell
-											className="mr-0 w-fit pr-0"
-											style={{ color: message.color_name }}
-										>
-											{message.user_id}
-										</TableCell>
-										<TableCell
-											className="w-[130px]"
-											style={{ color: message.color_name }}
-										>
-											<div>
-												{new Date(message.created_at).toLocaleString('en-US', {
-													dateStyle: 'short'
-												})}
-											</div>
-											<div>
-												{new Date(message.created_at).toLocaleString('en-US', {
-													timeStyle: 'short'
-												})}
-											</div>
-										</TableCell>
-										<TableCell
-											style={{ color: message.color_name }}
-											className="max-w-[150px] break-words sm:max-w-[500px]"
-										>
-											{message.message_text}
-										</TableCell>
-									</TableRow>
-								</TableRowContextMenu>
-							))}
-						</TableBody>
-					</Table>
+					<MessageSection messages={data.messages} />
 					{data.totalPages > 1 && (
 						<PaginationSection
 							searchQuery={searchQuery}
