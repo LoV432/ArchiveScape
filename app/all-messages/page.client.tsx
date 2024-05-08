@@ -33,9 +33,6 @@ export default function AllMessagesPage({
 	const highlightedUser = searchParams.get('user_id');
 	return (
 		<>
-			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-				<p className="pb-1">All Messages</p>
-			</h1>
 			<MessageSection
 				messages={data.messages}
 				page={page}

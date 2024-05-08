@@ -28,5 +28,12 @@ export default function Page({
 
 async function AllMessages({ page }: { page: number }) {
 	const data = await getAllMessages(page);
-	return <AllMessagesPage data={data} />;
+	return (
+		<>
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-1">All Messages</p>
+			</h1>
+			<AllMessagesPage data={data} />
+		</>
+	);
 }

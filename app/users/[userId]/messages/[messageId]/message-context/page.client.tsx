@@ -38,10 +38,6 @@ export default function Main({
 }) {
 	return (
 		<>
-			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-				<p className="pb-2">Highlighted User</p>
-				<p>{data.user_name}</p>
-			</h1>
 			<MessageSection messages={data.messages} userId={userId} />
 			<PaginationSection userId={userId} messageId={messageId} page={page} />
 		</>

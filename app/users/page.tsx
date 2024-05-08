@@ -23,5 +23,12 @@ export default function Page({
 
 async function AllUsers({ page }: { page: number }) {
 	const data = await getAllUsers(page);
-	return <UsersPage data={data} />;
+	return (
+		<>
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-2">All Users</p>
+			</h1>
+			<UsersPage data={data} />
+		</>
+	);
 }

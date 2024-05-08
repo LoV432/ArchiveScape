@@ -5,7 +5,6 @@ const MessagesPage = dynamic(() => import('./page.client'), {
 	ssr: false,
 	loading: () => <LoadingTable />
 });
-import { Suspense } from 'react';
 import { getUserMessages } from '@/lib/user-messages';
 import LoadingTable from '@/components/LoadingTable';
 
@@ -41,5 +40,12 @@ async function MessagesByUser({
 	page: number;
 }) {
 	const data = await getUserMessages(Number(userId), page);
-	return <MessagesPage data={data} userId={Number(userId)} page={page} />;
+	return (
+		<>
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-1">All Messages From</p> <p>{data.user_name}</p>
+			</h1>
+			<MessagesPage data={data} userId={Number(userId)} page={page} />
+		</>
+	);
 }

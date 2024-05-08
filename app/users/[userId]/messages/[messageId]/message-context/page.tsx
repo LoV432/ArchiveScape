@@ -4,7 +4,6 @@ const Main = dynamic(() => import('./page.client'), {
 	ssr: false,
 	loading: () => <LoadingTable />
 });
-import { Suspense } from 'react';
 import { getMessageContext } from '@/lib/message-context';
 import dynamic from 'next/dynamic';
 import LoadingTable from '@/components/LoadingTable';
@@ -53,5 +52,13 @@ async function ContextPage({
 	page: number;
 }) {
 	const data = await getMessageContext(userId, messageId, page);
-	return <Main data={data} userId={userId} messageId={messageId} page={page} />;
+	return (
+		<>
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-2">Highlighted User</p>
+				<p>{data.user_name}</p>
+			</h1>
+			<Main data={data} userId={userId} messageId={messageId} page={page} />
+		</>
+	);
 }

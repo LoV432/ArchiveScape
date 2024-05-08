@@ -31,9 +31,6 @@ export default function UsersPage({
 	const page = searchParams.get('page') || '1';
 	return (
 		<>
-			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-				<p className="pb-2">All Users</p>
-			</h1>
 			<UsersTable users={data.users} />
 			<PaginationSection page={page} totalPages={data.totalPages} />
 		</>
@@ -43,7 +40,7 @@ export default function UsersPage({
 function UsersTable({ users }: { users: User[] }) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
-			<TableCaption>All Users</TableCaption>
+			<TableCaption hidden>All Users</TableCaption>
 			<TableHeader>
 				<TableRow>
 					<TableHead>User Name</TableHead>

@@ -37,9 +37,6 @@ export default function MessagesPage({
 }) {
 	return (
 		<>
-			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-				<p className="pb-1">All Messages From</p> <p>{data.user_name}</p>
-			</h1>
 			<MessageSection messages={data.messages} userId={userId} />
 			<PaginationSection
 				totalPages={data.totalPages}
