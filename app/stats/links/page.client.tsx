@@ -1,7 +1,4 @@
 'use client';
-
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
 import {
 	Table,
 	TableBody,
@@ -20,47 +17,21 @@ import {
 	PaginationNewerMessages,
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
-import LoadingOverlay from '@/components/LoadingOverlay';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
-import LoadingTable from '@/components/LoadingTable';
+import { Message } from '@/lib/all-messages';
 
-type Message = {
-	id: number;
-	created_at: string;
-	message_text: string;
-	user_id: number;
-	color_name: string;
-};
-
-export default function AllMessagesWithLinks() {
-	const searchParams = useSearchParams();
-	const page = searchParams.get('page') || '1';
-	const query = useQuery({
-		queryKey: ['all-links', page],
-		queryFn: async () => {
-			const res = await fetch(`/api/stats/links?page=${page}`);
-			if (!res.ok) {
-				throw new Error('Error');
-			}
-			return (await res.json()) as {
-				links: Message[];
-				totalPages: number;
-			};
-		},
-		placeholderData: (prev) => prev
-	});
+export default function AllMessagesWithLinks({
+	data,
+	page
+}: {
+	data: { links: Message[]; totalPages: number };
+	page: number;
+}) {
 	return (
 		<>
-			{query.isError && <p>Error</p>}
-			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
-			{query.isSuccess && (
-				<>
-					<MessageSection messages={query.data.links} page={page} />
-					<PaginationSection totalPages={query.data.totalPages} page={page} />
-				</>
-			)}
+			<MessageSection messages={data.links} page={page} />
+			<PaginationSection totalPages={data.totalPages} page={page} />
 		</>
 	);
 }
@@ -70,7 +41,7 @@ function MessageSection({
 	page
 }: {
 	messages: Message[];
-	page: string;
+	page: number;
 }) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
@@ -87,7 +58,6 @@ function MessageSection({
 						key={message.id}
 						user_id={message.user_id}
 						message_id={message.id}
-						isContextPage
 						page={Number(page)}
 					>
 						<TableRow tabIndex={0} key={message.id}>
@@ -125,7 +95,7 @@ function PaginationSection({
 	page
 }: {
 	totalPages: number;
-	page: string;
+	page: number;
 }) {
 	return (
 		<Pagination className="place-self-end pb-7">
@@ -133,9 +103,9 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationNewerMessages
 						isActive
-						href={`/stats/links?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+						href={`/stats/links?page=${page - 1 >= 1 ? page - 1 : page}`}
 						className={`${
-							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
+							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
 					/>
 				</PaginationItem>
@@ -148,7 +118,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationOlderMessages
 						isActive
-						href={`/stats/links?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
+						href={`/stats/links?page=${page + 1 > totalPages ? page : page + 1}`}
 						className={`select-none`}
 					/>
 				</PaginationItem>
