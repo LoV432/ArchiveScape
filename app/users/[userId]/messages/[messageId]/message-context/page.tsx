@@ -33,13 +33,13 @@ export default function Page({
 		page = 1;
 	}
 	return (
-		<Suspense>
+		<div className="grid">
 			<ContextPage
 				userId={Number(userId)}
 				messageId={Number(messageId)}
 				page={page}
 			/>
-		</Suspense>
+		</div>
 	);
 }
 

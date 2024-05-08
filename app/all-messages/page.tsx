@@ -20,9 +20,9 @@ export default function Page({
 }) {
 	const page = Number(searchParams.page) || 1;
 	return (
-		<Suspense>
+		<div className="grid">
 			<AllMessages page={page} />
-		</Suspense>
+		</div>
 	);
 }
 

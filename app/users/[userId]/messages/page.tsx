@@ -27,9 +27,9 @@ export default function Main({
 	}
 	const page = Number(searchParams.page) || 1;
 	return (
-		<Suspense>
+		<div className="grid">
 			<MessagesByUser userId={userId} page={page} />
-		</Suspense>
+		</div>
 	);
 }
 

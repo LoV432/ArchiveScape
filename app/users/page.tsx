@@ -15,9 +15,9 @@ export default function Page({
 }) {
 	const page = Number(searchParams.page) || 1;
 	return (
-		<Suspense>
+		<div className="grid">
 			<AllUsers page={page} />
-		</Suspense>
+		</div>
 	);
 }
 
