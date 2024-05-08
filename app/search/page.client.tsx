@@ -1,5 +1,4 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
 import {
 	Table,
 	TableCaption,
@@ -17,9 +16,7 @@ import {
 	PaginationNewerMessages,
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import LoadingOverlay from '@/components/LoadingOverlay';
+import { useRouter } from 'next13-progressbar';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import cat from '@/public/cat.gif';
@@ -27,7 +24,6 @@ import scribble from '@/public/scribble.gif';
 import Image from 'next/image';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
-import LoadingTable from '@/components/LoadingTable';
 
 type Message = {
 	id: number;
@@ -37,29 +33,17 @@ type Message = {
 	user_id: number;
 };
 
-export default function SearchPage() {
-	const searchParams = useSearchParams();
-	const searchQuery = searchParams.get('search') || '';
-	const page = searchParams.get('page') || '1';
-	const router = useRouter();
+export default function SearchPage({
+	data,
+	searchQuery,
+	page
+}: {
+	data: { messages: Message[]; totalPages: number };
+	page: number;
+	searchQuery: string;
+}) {
 	const searchElementRef = useRef<HTMLInputElement>(null);
-	const query = useQuery({
-		queryKey: ['search', searchQuery, page],
-		queryFn: async () => {
-			if (searchQuery === '') {
-				return { messages: [], totalPages: 0 };
-			}
-			const res = await fetch(`/api/search?search=${searchQuery}&page=${page}`);
-			if (!res.ok) {
-				throw new Error('Error');
-			}
-			return (await res.json()) as {
-				messages: Message[];
-				totalPages: number;
-			};
-		},
-		placeholderData: (prev) => prev
-	});
+	const router = useRouter();
 	useEffect(() => {
 		document.addEventListener('keydown', (e) => {
 			if (e.key === '`' || e.key === '/') {
@@ -104,39 +88,34 @@ export default function SearchPage() {
 					</Button>
 				</div>
 			</div>
-			{query.isError && <p>Error</p>}
-			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
-			{query.isSuccess &&
-				!query.isRefetching &&
-				query.data.messages.length === 0 && (
-					<div className="flex flex-col place-items-center gap-4">
-						{searchQuery !== '' && (
-							<>
-								<p className="text-xl font-semibold">No results :(</p>
-								<Image
-									unoptimized
-									src={scribble}
-									alt="no search results"
-									width={200}
-									height={200}
-								/>
-							</>
-						)}
-						{searchQuery === '' && (
+			{data.messages.length === 0 && (
+				<div className="flex flex-col place-items-center gap-4">
+					{searchQuery !== '' && (
+						<>
+							<p className="text-xl font-semibold">No results :(</p>
 							<Image
 								unoptimized
-								src={cat}
-								alt="cat waiting patiently"
-								width={400}
-								height={400}
+								src={scribble}
+								alt="no search results"
+								width={200}
+								height={200}
 							/>
-						)}
-					</div>
-				)}
-			{query.isSuccess && query.data.messages.length > 0 && (
+						</>
+					)}
+					{searchQuery === '' && (
+						<Image
+							unoptimized
+							src={cat}
+							alt="cat waiting patiently"
+							width={400}
+							height={400}
+						/>
+					)}
+				</div>
+			)}
+			{data.messages.length > 0 && (
 				<>
-					<Table className="mx-auto max-w-3xl text-base">
+					<Table className="mx-auto mt-10 max-w-3xl text-base">
 						<TableCaption hidden>Messages</TableCaption>
 						<TableHeader>
 							<TableRow>
@@ -146,7 +125,7 @@ export default function SearchPage() {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{query.data.messages.map((message) => (
+							{data.messages.map((message) => (
 								<TableRowContextMenu
 									key={message.id}
 									message_id={message.id}
@@ -185,11 +164,11 @@ export default function SearchPage() {
 							))}
 						</TableBody>
 					</Table>
-					{query.data.totalPages > 1 && (
+					{data.totalPages > 1 && (
 						<PaginationSection
 							searchQuery={searchQuery}
 							page={page}
-							totalPages={query.data.totalPages}
+							totalPages={data.totalPages}
 						/>
 					)}
 				</>
@@ -204,7 +183,7 @@ function PaginationSection({
 	totalPages
 }: {
 	searchQuery: string;
-	page: string;
+	page: number;
 	totalPages: number;
 }) {
 	return (
@@ -212,10 +191,10 @@ function PaginationSection({
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationNewerMessages
-						isActive={!(page === '1')}
-						href={`/search?search=${searchQuery}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+						isActive={!(page === 1)}
+						href={`/search?search=${searchQuery}&page=${page - 1 >= 1 ? page - 1 : page}`}
 						className={`${
-							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
+							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
 					/>
 				</PaginationItem>
@@ -227,12 +206,10 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages
-						isActive={!(page === String(totalPages))}
-						href={`/search?search=${searchQuery}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
+						isActive={!(page === totalPages)}
+						href={`/search?search=${searchQuery}&page=${page + 1 > totalPages ? page : page + 1}`}
 						className={`${
-							page === String(totalPages)
-								? 'cursor-not-allowed'
-								: 'cursor-pointer'
+							page === totalPages ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
 					/>
 				</PaginationItem>

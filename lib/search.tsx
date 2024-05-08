@@ -1,14 +1,8 @@
 import { db } from '@/lib/db';
-import { NextRequest } from 'next/server';
 
-export async function GET(Request: NextRequest) {
-	const { searchParams } = Request.nextUrl;
-	const searchQuery = searchParams.get('search');
-	const page = searchParams.get('page') || '0';
+export async function getSearch(searchQuery: string, page: number) {
 	if (!searchQuery || searchQuery === '') {
-		return new Response(JSON.stringify({ error: 'Missing searchQuery' }), {
-			status: 500
-		});
+		return { messages: [], totalPages: 0 };
 	}
 	try {
 		const messages = await db.query(
@@ -23,11 +17,12 @@ export async function GET(Request: NextRequest) {
 				)
 			).rows[0]['count'] / 10
 		);
-		return new Response(
-			JSON.stringify({ messages: messages.rows, totalPages })
-		);
+		return {
+			messages: messages.rows,
+			totalPages
+		};
 	} catch (error) {
 		console.log(error);
-		return new Response(JSON.stringify([]), { status: 500 });
+		throw new Error('Error');
 	}
 }
