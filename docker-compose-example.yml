@@ -9,3 +9,4 @@ services:
       - 'PG_DATABASE='
       - 'PG_PASSWORD='
       - 'PG_PORT='
+      - 'ITEMS_PER_PAGE='
