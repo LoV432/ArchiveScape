@@ -10,16 +10,16 @@ import {
 
 export default function LoadingTable() {
 	return (
-		<Table className="mx-auto max-w-3xl">
+		<Table className="mx-auto min-h-[80vh] max-w-3xl">
 			<TableCaption>Messages</TableCaption>
 			<TableHeader>
-				<TableRow>
+				<TableRow className="hover:bg-transparent">
 					<TableHead className="w-[150px]">Time</TableHead>
 					<TableHead>Message</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
-				<TableRow>
+				<TableRow className="hover:bg-transparent">
 					<TableCell className="font-medium">Loading...</TableCell>
 					<TableCell className="text-right">Loading...</TableCell>
 				</TableRow>
