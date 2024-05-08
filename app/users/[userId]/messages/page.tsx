@@ -7,7 +7,6 @@ const MessagesPage = dynamic(() => import('./page.client'), {
 });
 import { Suspense } from 'react';
 import { getUserMessages } from '@/lib/user-messages';
-import LoadingOverlay from '@/components/LoadingOverlay';
 import LoadingTable from '@/components/LoadingTable';
 
 export const metadata: Metadata = {
@@ -28,7 +27,7 @@ export default function Main({
 	}
 	const page = Number(searchParams.page) || 1;
 	return (
-		<Suspense key={`${userId}-${page}/messages`} fallback={<LoadingOverlay />}>
+		<Suspense>
 			<MessagesByUser userId={userId} page={page} />
 		</Suspense>
 	);

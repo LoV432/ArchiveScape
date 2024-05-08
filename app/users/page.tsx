@@ -2,7 +2,6 @@ import { Metadata } from 'next/types';
 import UsersPage from './page.client';
 import { Suspense } from 'react';
 import { getAllUsers } from '@/lib/all-users';
-import LoadingOverlay from '@/components/LoadingOverlay';
 
 export const metadata: Metadata = {
 	title: 'All Users | ArchiveScape',
@@ -16,7 +15,7 @@ export default function Page({
 }) {
 	const page = Number(searchParams.page) || 1;
 	return (
-		<Suspense key={page} fallback={<LoadingOverlay />}>
+		<Suspense>
 			<AllUsers page={page} />
 		</Suspense>
 	);

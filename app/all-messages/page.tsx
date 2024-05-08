@@ -1,10 +1,11 @@
 import { Metadata } from 'next/types';
 import { Suspense } from 'react';
 import { getAllMessages } from '@/lib/all-messages';
-import LoadingOverlay from '@/components/LoadingOverlay';
 import dynamic from 'next/dynamic';
+import LoadingTable from '@/components/LoadingTable';
 const AllMessagesPage = dynamic(() => import('./page.client'), {
-	ssr: false
+	ssr: false,
+	loading: () => <LoadingTable />
 });
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default function Page({
 }) {
 	const page = Number(searchParams.page) || 1;
 	return (
-		<Suspense key={page} fallback={<LoadingOverlay />}>
+		<Suspense>
 			<AllMessages page={page} />
 		</Suspense>
 	);
