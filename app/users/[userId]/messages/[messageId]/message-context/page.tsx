@@ -1,7 +1,13 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
-import Main from './page.client';
+const Main = dynamic(() => import('./page.client'), {
+	ssr: false,
+	loading: () => <LoadingTable />
+});
 import { Suspense } from 'react';
+import { getMessageContext } from '@/lib/message-context';
+import dynamic from 'next/dynamic';
+import LoadingTable from '@/components/LoadingTable';
 
 export const metadata: Metadata = {
 	title: 'Message Context | ArchiveScape',
@@ -9,9 +15,11 @@ export const metadata: Metadata = {
 };
 
 export default function Page({
-	params
+	params,
+	searchParams
 }: {
 	params: { userId: string; messageId: string };
+	searchParams: { page: string };
 }) {
 	const { userId, messageId } = params;
 	if (!messageId || messageId === '' || isNaN(Number(messageId))) {
@@ -20,9 +28,30 @@ export default function Page({
 	if (!userId || userId === '' || isNaN(Number(userId))) {
 		redirect('/');
 	}
+	let page = Number(searchParams.page);
+	if (isNaN(page)) {
+		page = 1;
+	}
 	return (
 		<Suspense>
-			<Main userId={userId} messageId={messageId} />
+			<ContextPage
+				userId={Number(userId)}
+				messageId={Number(messageId)}
+				page={page}
+			/>
 		</Suspense>
 	);
+}
+
+async function ContextPage({
+	userId,
+	messageId,
+	page
+}: {
+	userId: number;
+	messageId: number;
+	page: number;
+}) {
+	const data = await getMessageContext(userId, messageId, page);
+	return <Main data={data} userId={userId} messageId={messageId} page={page} />;
 }

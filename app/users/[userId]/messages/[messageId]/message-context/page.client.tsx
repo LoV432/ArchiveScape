@@ -1,6 +1,4 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	Table,
 	TableBody,
@@ -19,89 +17,33 @@ import {
 	PaginationNewerMessages,
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
-import LoadingOverlay from '@/components/LoadingOverlay';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
-import LoadingTable from '@/components/LoadingTable';
-
-type Message = {
-	id: number;
-	message_text: string;
-	created_at: string;
-	color_name: string;
-	user_id: number;
-};
+import { Message } from '@/lib/all-messages';
 
 export default function Main({
+	data,
 	userId,
-	messageId
+	messageId,
+	page
 }: {
-	userId: string;
-	messageId: string;
+	data: {
+		messages: Message[];
+		user_name: string;
+	};
+	userId: number;
+	messageId: number;
+	page: number;
 }) {
-	const searchParams = useSearchParams();
-	const page = searchParams.get('page') || '1';
-	const queryClient = useQueryClient();
-	const query = useQuery({
-		queryKey: ['user-message-context', page, messageId, userId],
-		queryFn: async () => {
-			const res = await fetch(
-				`/api/user/message-context?messageId=${messageId}&userId=${userId}&page=${page}`
-			);
-			if (!res.ok) {
-				throw new Error('Error');
-			}
-			return (await res.json()) as {
-				messages: Message[];
-				user_name: string;
-			};
-		},
-		placeholderData: (prev) => {
-			const lastQueryData = queryClient.getQueriesData({
-				queryKey: ['user-message-context']
-			});
-			try {
-				// This is a hacky way to get the last query data
-				// It searches for all queries with ['user-message-context'] and returns an array
-				// Then it returns the last query
-				// We are using -2 because the last query is the current query
-				return lastQueryData[lastQueryData.length - 2][
-					lastQueryData[0].length - 1
-				] as {
-					messages: Message[];
-					user_name: string;
-				};
-			} catch {
-				return prev as
-					| {
-							messages: Message[];
-							user_name: string;
-					  }
-					| undefined;
-			}
-		}
-	});
-
 	return (
 		<>
-			{query.isPlaceholderData && <LoadingOverlay />}
-			{query.isLoading && <LoadingTable />}
-			{query.isError && <p>Error</p>}
-			{query.isSuccess && (
-				<>
-					<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-						<p className="pb-2">Highlighted User</p>
-						<p>{query.data.user_name}</p>
-					</h1>
-					<MessageSection messages={query.data.messages} userId={userId} />
-					<PaginationSection
-						userId={userId}
-						messageId={messageId}
-						page={page}
-					/>
-				</>
-			)}
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-2">Highlighted User</p>
+				<p>{data.user_name}</p>
+			</h1>
+			<MessageSection messages={data.messages} userId={userId} />
+			<PaginationSection userId={userId} messageId={messageId} page={page} />
 		</>
 	);
 }
@@ -111,7 +53,7 @@ function MessageSection({
 	userId
 }: {
 	messages: Message[];
-	userId: string;
+	userId: number;
 }) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
@@ -137,7 +79,7 @@ function MessageSection({
 								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
 							}}
 							key={message.id}
-							className={`${message.user_id === Number(userId) ? `bg-[--highlight] ` : ''}`}
+							className={`${message.user_id === userId ? `bg-[--highlight] ` : ''}`}
 						>
 							<TableCell
 								className="w-[130px]"
@@ -173,9 +115,9 @@ function PaginationSection({
 	messageId,
 	page
 }: {
-	userId: string;
-	messageId: string;
-	page: string;
+	userId: number;
+	messageId: number;
+	page: number;
 }) {
 	return (
 		<Pagination className="place-self-end pb-7">
@@ -183,7 +125,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationOlderMessages
 						isActive
-						href={`/users/${userId}/messages/${messageId}/message-context?page=${Number(page) - 1}`}
+						href={`/users/${userId}/messages/${messageId}/message-context?page=${page - 1}`}
 						className={`select-none`}
 					/>
 				</PaginationItem>
@@ -198,7 +140,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationNewerMessages
 						isActive
-						href={`/users/${userId}/messages/${messageId}/message-context?page=${Number(page) + 1}`}
+						href={`/users/${userId}/messages/${messageId}/message-context?page=${page + 1}`}
 						className={`select-none`}
 					/>
 				</PaginationItem>
