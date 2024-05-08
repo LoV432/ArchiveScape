@@ -10,7 +10,7 @@ import {
 
 export default function LoadingTable() {
 	return (
-		<Table className="mx-auto min-h-[80vh] max-w-3xl">
+		<Table className="mx-auto max-w-3xl">
 			<TableCaption>Messages</TableCaption>
 			<TableHeader>
 				<TableRow className="hover:bg-transparent">

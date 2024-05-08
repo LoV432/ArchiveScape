@@ -21,6 +21,7 @@ import {
 import Link from 'next/link';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { Message } from '@/lib/all-messages';
+import ScrollToTop from '@/components/ScrollToTop';
 
 export default function MessagesPage({
 	data,
@@ -37,6 +38,7 @@ export default function MessagesPage({
 }) {
 	return (
 		<>
+			<ScrollToTop />
 			<MessageSection messages={data.messages} userId={userId} />
 			<PaginationSection
 				totalPages={data.totalPages}

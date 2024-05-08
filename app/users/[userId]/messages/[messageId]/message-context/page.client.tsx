@@ -21,6 +21,7 @@ import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { Message } from '@/lib/all-messages';
+import { useEffect } from 'react';
 
 export default function Main({
 	data,
@@ -38,7 +39,11 @@ export default function Main({
 }) {
 	return (
 		<>
-			<MessageSection messages={data.messages} userId={userId} />
+			<MessageSection
+				messages={data.messages}
+				userId={userId}
+				messageId={messageId}
+			/>
 			<PaginationSection userId={userId} messageId={messageId} page={page} />
 		</>
 	);
@@ -46,11 +51,20 @@ export default function Main({
 
 function MessageSection({
 	messages,
-	userId
+	userId,
+	messageId
 }: {
 	messages: Message[];
 	userId: number;
+	messageId: number;
 }) {
+	useEffect(() => {
+		const selectedMessage = document.querySelector(`#id-${messageId}`);
+		console.log(selectedMessage);
+		if (selectedMessage) {
+			selectedMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	}, []);
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
 			<TableCaption hidden>Messages</TableCaption>
@@ -69,6 +83,7 @@ function MessageSection({
 						message_id={message.id}
 					>
 						<TableRow
+							id={`id-${message.id.toString()}`}
 							tabIndex={0}
 							style={{
 								// @ts-ignore
