@@ -97,9 +97,9 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationNext
-						isActive
+						isActive={!(Number(page) === totalPages)}
 						href={`/users?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
-						className={`select-none`}
+						className={`select-none ${Number(page) === totalPages ? 'cursor-not-allowed' : ''}`}
 					/>
 				</PaginationItem>
 			</PaginationContent>

@@ -127,7 +127,7 @@ function PaginationSection({
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationNewerMessages
-						isActive
+						isActive={!(page === '1')}
 						href={`/all-messages?user_id=${highlightedUser}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
 						className={`${
 							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
@@ -142,9 +142,9 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages
-						isActive
+						isActive={!(Number(page) === totalPages)}
 						href={`/all-messages?user_id=${highlightedUser}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
-						className={`select-none`}
+						className={`select-none ${Number(page) === totalPages ? 'cursor-not-allowed' : ''}`}
 					/>
 				</PaginationItem>
 			</PaginationContent>
