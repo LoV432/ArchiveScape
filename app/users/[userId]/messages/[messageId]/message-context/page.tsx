@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 	description: 'An archive of all messages sent on https://www.ventscape.life/'
 };
 
-export default function Page({
+export default async function Page({
 	params,
 	searchParams
 }: {
@@ -31,34 +31,19 @@ export default function Page({
 	if (isNaN(page)) {
 		page = 1;
 	}
+	const data = await getMessageContext(Number(userId), Number(messageId), page);
 	return (
 		<div className="grid">
-			<ContextPage
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-2">Highlighted User</p>
+				<p>{data.user_name}</p>
+			</h1>
+			<Main
+				data={data}
 				userId={Number(userId)}
 				messageId={Number(messageId)}
 				page={page}
 			/>
 		</div>
-	);
-}
-
-async function ContextPage({
-	userId,
-	messageId,
-	page
-}: {
-	userId: number;
-	messageId: number;
-	page: number;
-}) {
-	const data = await getMessageContext(userId, messageId, page);
-	return (
-		<>
-			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-				<p className="pb-2">Highlighted User</p>
-				<p>{data.user_name}</p>
-			</h1>
-			<Main data={data} userId={userId} messageId={messageId} page={page} />
-		</>
 	);
 }

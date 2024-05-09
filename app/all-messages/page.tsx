@@ -1,5 +1,4 @@
 import { Metadata } from 'next/types';
-import { Suspense } from 'react';
 import { getAllMessages } from '@/lib/all-messages';
 import dynamic from 'next/dynamic';
 import LoadingTable from '@/components/LoadingTable';
@@ -13,27 +12,24 @@ export const metadata: Metadata = {
 	description: 'An archive of all messages sent on https://www.ventscape.life/'
 };
 
-export default function Page({
+export default async function Page({
 	searchParams
 }: {
-	searchParams: { page: string };
+	searchParams: { page: string; user_id: number };
 }) {
 	const page = Number(searchParams.page) || 1;
-	return (
-		<div className="grid">
-			<AllMessages page={page} />
-		</div>
-	);
-}
-
-async function AllMessages({ page }: { page: number }) {
+	const highlightedUser = Number(searchParams.user_id) || null;
 	const data = await getAllMessages(page);
 	return (
-		<>
+		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-1">All Messages</p>
 			</h1>
-			<AllMessagesPage data={data} />
-		</>
+			<AllMessagesPage
+				data={data}
+				page={page}
+				highlightedUser={highlightedUser}
+			/>
+		</div>
 	);
 }

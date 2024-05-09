@@ -1,5 +1,4 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
 import {
 	Table,
 	TableBody,
@@ -24,13 +23,14 @@ import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { Message } from '@/lib/all-messages';
 
 export default function AllMessagesPage({
-	data
+	data,
+	page,
+	highlightedUser
 }: {
 	data: { messages: Message[]; totalPages: number };
+	page: number;
+	highlightedUser: number | null;
 }) {
-	const searchParams = useSearchParams();
-	const page = searchParams.get('page') || '1';
-	const highlightedUser = searchParams.get('user_id');
 	return (
 		<>
 			<MessageSection
@@ -53,8 +53,8 @@ function MessageSection({
 	highlightedUser
 }: {
 	messages: Message[];
-	page: string;
-	highlightedUser: string | null;
+	page: number;
+	highlightedUser: number | null;
 }) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
@@ -73,7 +73,7 @@ function MessageSection({
 						message_id={message.id}
 						isAllMessagesPage
 						isContextPage
-						page={Number(page)}
+						page={page}
 					>
 						<TableRow
 							tabIndex={0}
@@ -81,7 +81,7 @@ function MessageSection({
 								// @ts-ignore
 								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
 							}}
-							className={`${message.user_id === Number(highlightedUser) ? `bg-[--highlight] ` : ''}`}
+							className={`${message.user_id === highlightedUser ? `bg-[--highlight] ` : ''}`}
 							key={message.id}
 						>
 							<TableCell
@@ -119,18 +119,18 @@ function PaginationSection({
 	highlightedUser
 }: {
 	totalPages: number;
-	page: string;
-	highlightedUser: string | null;
+	page: number;
+	highlightedUser: number | null;
 }) {
 	return (
 		<Pagination className="place-self-end pb-7">
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationNewerMessages
-						isActive={!(page === '1')}
-						href={`/all-messages?user_id=${highlightedUser}&page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+						isActive={!(page === 1)}
+						href={`/all-messages?user_id=${highlightedUser}&page=${page - 1 >= 1 ? page - 1 : page}`}
 						className={`${
-							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
+							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
 					/>
 				</PaginationItem>
@@ -142,9 +142,9 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationOlderMessages
-						isActive={!(Number(page) === totalPages)}
-						href={`/all-messages?user_id=${highlightedUser}&page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
-						className={`select-none ${Number(page) === totalPages ? 'cursor-not-allowed' : ''}`}
+						isActive={!(page === totalPages)}
+						href={`/all-messages?user_id=${highlightedUser}&page=${page + 1 > totalPages ? page : page + 1}`}
+						className={`select-none ${page === totalPages ? 'cursor-not-allowed' : ''}`}
 					/>
 				</PaginationItem>
 			</PaginationContent>

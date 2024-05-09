@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 	description: 'An archive of all messages sent on https://www.ventscape.life/'
 };
 
-export default function Main({
+export default async function Main({
 	params,
 	searchParams
 }: {
@@ -25,27 +25,13 @@ export default function Main({
 		redirect('/');
 	}
 	const page = Number(searchParams.page) || 1;
-	return (
-		<div className="grid">
-			<MessagesByUser userId={userId} page={page} />
-		</div>
-	);
-}
-
-async function MessagesByUser({
-	userId,
-	page
-}: {
-	userId: string;
-	page: number;
-}) {
 	const data = await getUserMessages(Number(userId), page);
 	return (
-		<>
+		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-1">All Messages From</p> <p>{data.user_name}</p>
 			</h1>
 			<MessagesPage data={data} userId={Number(userId)} page={page} />
-		</>
+		</div>
 	);
 }

@@ -17,18 +17,17 @@ import {
 	PaginationNext,
 	PaginationPrevious
 } from '@/components/ui/pagination';
-import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { User } from '@/lib/all-users';
 
 export default function UsersPage({
-	data
+	data,
+	page
 }: {
 	data: { users: User[]; totalPages: number };
+	page: number
 }) {
-	const searchParams = useSearchParams();
-	const page = searchParams.get('page') || '1';
 	return (
 		<>
 			<UsersTable users={data.users} />
@@ -74,7 +73,7 @@ function PaginationSection({
 	page,
 	totalPages
 }: {
-	page: string;
+	page: number;
 	totalPages: number;
 }) {
 	return (
@@ -82,10 +81,10 @@ function PaginationSection({
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationPrevious
-						isActive={!(page === '1')}
-						href={`/users?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+						isActive={!(page === 1)}
+						href={`/users?page=${page - 1 >= 1 ? page - 1 : page}`}
 						className={`${
-							page === '1' ? 'cursor-not-allowed' : 'cursor-pointer'
+							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
 					/>
 				</PaginationItem>
@@ -97,9 +96,9 @@ function PaginationSection({
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationNext
-						isActive={!(Number(page) === totalPages)}
-						href={`/users?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
-						className={`select-none ${Number(page) === totalPages ? 'cursor-not-allowed' : ''}`}
+						isActive={!(page === totalPages)}
+						href={`/users?page=${page + 1 > totalPages ? page : page + 1}`}
+						className={`select-none ${page === totalPages ? 'cursor-not-allowed' : ''}`}
 					/>
 				</PaginationItem>
 			</PaginationContent>

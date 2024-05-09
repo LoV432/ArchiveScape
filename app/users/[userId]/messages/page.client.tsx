@@ -118,7 +118,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationNewerMessages
 						isActive={!(page === 1)}
-						href={`/users/${userId}/messages?page=${Number(page) - 1 >= 1 ? Number(page) - 1 : page}`}
+						href={`/users/${userId}/messages?page=${page - 1 >= 1 ? page - 1 : page}`}
 						className={`${
 							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
@@ -133,7 +133,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationOlderMessages
 						isActive={!(page === totalPages)}
-						href={`/users/${userId}/messages?page=${Number(page) + 1 > totalPages ? page : Number(page) + 1}`}
+						href={`/users/${userId}/messages?page=${page + 1 > totalPages ? page : page + 1}`}
 						className={`${
 							page === totalPages ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
