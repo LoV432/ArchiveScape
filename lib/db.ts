@@ -2,9 +2,9 @@ import pg from 'pg';
 const { Pool } = pg;
 
 pg.types.setTypeParser(1114, function (stringValue) {
-	// TODO: Better way to do this?
-	const date = new Date(stringValue);
-	return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+	// TODO: This seems like a better way to do this, but is it?
+	// https://stackoverflow.com/questions/20712291/use-node-postgres-to-get-postgres-timestamp-without-timezone-in-utc
+	return new Date(`${stringValue} +0000`);
 });
 
 export const db = new Pool({
