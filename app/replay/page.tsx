@@ -1,8 +1,10 @@
 'use client';
 
 import {
+	Dispatch,
 	MutableRefObject,
 	RefObject,
+	SetStateAction,
 	useEffect,
 	useRef,
 	useState
@@ -15,22 +17,20 @@ export default function ReplayPage() {
 	const deleteReplay = useRef<String[]>([]);
 	const [playReplayState, setPlayReplayState] = useState<Replay[]>([]);
 	const replayElementRef = useRef<HTMLDivElement>(null);
+	const playIntervalRef = useRef<NodeJS.Timeout>();
 	useEffect(() => {
-		(async () => {
-			try {
-				const req = await fetch('/api/replay?time=2024-05-10T05:10:25Z');
-				const res = await req.json();
-				setReplay(res);
-			} catch (e) {
-				console.log(e);
-			}
-		})();
+		try {
+			getSetReplay(setReplay);
+		} catch (e) {
+			console.log(e);
+		}
 	}, []);
 	useEffect(() => {
 		if (!replay.length) return;
+		if (playIntervalRef.current) clearInterval(playIntervalRef.current);
 		let index = 0;
 		let startingTime = new Date().getTime();
-		const interval = setInterval(() => {
+		playIntervalRef.current = setInterval(() => {
 			const now = new Date().getTime();
 			const timeDiff = now - startingTime;
 			if (index < replay.length && timeDiff > replay[index].time) {
@@ -46,10 +46,10 @@ export default function ReplayPage() {
 			}
 		}, 200);
 		if (index >= replay.length) {
-			clearInterval(interval);
+			clearInterval(playIntervalRef.current);
 		}
 		return () => {
-			clearInterval(interval);
+			clearInterval(playIntervalRef.current);
 		};
 	}, [replay]);
 	return (
@@ -87,42 +87,36 @@ function Message({
 		left: Math.floor(Math.random() * parentWidth - 100) + 'px'
 	});
 
+	function randomizePosition() {
+		setChildPosition({
+			top: Math.floor(Math.random() * parentHeight - 100) + 'px',
+			left: Math.floor(Math.random() * parentWidth - 100) + 'px'
+		});
+	}
+
 	useEffect(() => {
 		setTimeout(() => {
 			let messageReady = true;
 			if (!childElementref.current) return;
 			if (!replayElementRef.current) return;
-			const childRect = childElementref.current.getBoundingClientRect();
-			const parentRect = replayElementRef.current.getBoundingClientRect();
 			if (
-				childRect.top < parentRect.top ||
-				childRect.left < parentRect.left ||
-				childRect.bottom > parentRect.bottom ||
-				childRect.right > parentRect.right
+				checkOverflowFromParent(
+					replayElementRef.current,
+					childElementref.current
+				)
 			) {
-				setChildPosition({
-					top: Math.floor(Math.random() * parentHeight - 100) + 'px',
-					left: Math.floor(Math.random() * parentWidth - 100) + 'px'
-				});
+				randomizePosition();
 				messageReady = false;
 			}
-			const allOtherMessages =
-				replayElementRef.current.querySelectorAll('.venter');
+			const allOtherMessages: HTMLDivElement[] =
+				replayElementRef.current.querySelectorAll(
+					'.venter'
+				) as unknown as HTMLDivElement[];
 			allOtherMessages.forEach((el) => {
+				if (!childElementref.current) return;
 				if (el.id === `id-${message.message_text + message.time}`) return;
-				const rect = el.getBoundingClientRect();
-				if (
-					!(
-						childRect.right < rect.left ||
-						childRect.left > rect.right ||
-						childRect.bottom < rect.top ||
-						childRect.top > rect.bottom
-					)
-				) {
-					setChildPosition({
-						top: Math.floor(Math.random() * parentHeight - 100) + 'px',
-						left: Math.floor(Math.random() * parentWidth - 100) + 'px'
-					});
+				if (checkOverlapBetweenMessages(childElementref.current, el)) {
+					randomizePosition();
 					messageReady = false;
 				}
 			});
@@ -149,5 +143,42 @@ function Message({
 		>
 			{message.message_text}
 		</div>
+	);
+}
+
+async function getSetReplay(setReplay: Dispatch<SetStateAction<Replay[]>>) {
+	try {
+		const res = await fetch('/api/replay');
+		if (!res.ok) {
+			throw new Error('Failed to fetch data');
+		}
+		const data = (await res.json()) as Replay[];
+		setReplay(data);
+	} catch (error) {
+		console.log(error);
+		throw new Error('Error');
+	}
+}
+
+function checkOverflowFromParent(
+	parent: HTMLDivElement,
+	child: HTMLDivElement
+) {
+	const parentRect = parent.getBoundingClientRect();
+	const childRect = child.getBoundingClientRect();
+	return childRect.right > parentRect.right || childRect.left < parentRect.left;
+}
+
+function checkOverlapBetweenMessages(
+	child1: HTMLDivElement,
+	child2: HTMLDivElement
+) {
+	const child1Rec = child1.getBoundingClientRect();
+	const child2Rec = child2.getBoundingClientRect();
+	return !(
+		child2Rec.right < child1Rec.left ||
+		child2Rec.left > child1Rec.right ||
+		child2Rec.bottom < child1Rec.top ||
+		child2Rec.top > child1Rec.bottom
 	);
 }
