@@ -73,9 +73,9 @@ export default function Header() {
 							<path
 								fill="none"
 								stroke="white"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="32"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="32"
 								d="M160 144h288M160 256h288M160 368h288"
 							/>
 							<circle
@@ -84,9 +84,9 @@ export default function Header() {
 								r="16"
 								fill="none"
 								stroke="white"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="32"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="32"
 							/>
 							<circle
 								cx="80"
@@ -94,9 +94,9 @@ export default function Header() {
 								r="16"
 								fill="none"
 								stroke="white"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="32"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="32"
 							/>
 							<circle
 								cx="80"
@@ -104,9 +104,9 @@ export default function Header() {
 								r="16"
 								fill="none"
 								stroke="white"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="32"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="32"
 							/>
 						</svg>
 					</SheetTrigger>
@@ -258,8 +258,8 @@ function NavLogo({
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 1000 1000"
-				shape-rendering="geometricPrecision"
-				text-rendering="geometricPrecision"
+				shapeRendering="geometricPrecision"
+				textRendering="geometricPrecision"
 				width={24}
 				height={24}
 			>
