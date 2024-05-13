@@ -79,11 +79,9 @@ function Message({
 	message: Replay;
 	deleteReplay: MutableRefObject<String[]>;
 }) {
-	if (replayElementRef.current === null) return null;
 	const childElementref = useRef<HTMLDivElement>(null);
-	const parentHeight = replayElementRef.current.clientHeight;
-	const parentWidth = replayElementRef.current.clientWidth;
-	if (!parentHeight || !parentWidth) return null;
+	const parentWidth = replayElementRef.current?.clientWidth || 0;
+	const parentHeight = replayElementRef.current?.clientHeight || 0;
 	const [childPosition, setChildPosition] = useState({
 		top: Math.floor(Math.random() * parentHeight - 100) + 'px',
 		left: Math.floor(Math.random() * parentWidth - 100) + 'px'

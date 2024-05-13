@@ -13,8 +13,8 @@ type Message = {
 	color_name: string;
 };
 export async function GET(request: NextRequest) {
+	const time = request.nextUrl.searchParams.get('time');
 	try {
-		const time = request.nextUrl.searchParams.get('time');
 		if (!time) {
 			return new Response(null, { status: 400 });
 		}
