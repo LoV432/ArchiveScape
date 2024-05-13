@@ -20,7 +20,7 @@ export default function ReplayPage() {
 	const playIntervalRef = useRef<NodeJS.Timeout>();
 	useEffect(() => {
 		try {
-			getSetReplay(setReplay);
+			getSetReplay(setReplay, new Date('2024-05-10T05:10:25Z'));
 		} catch (e) {
 			console.log(e);
 		}
@@ -146,9 +146,12 @@ function Message({
 	);
 }
 
-async function getSetReplay(setReplay: Dispatch<SetStateAction<Replay[]>>) {
+async function getSetReplay(
+	setReplay: Dispatch<SetStateAction<Replay[]>>,
+	time: Date
+) {
 	try {
-		const res = await fetch('/api/replay');
+		const res = await fetch('/api/replay?time=' + time.toISOString());
 		if (!res.ok) {
 			throw new Error('Failed to fetch data');
 		}
@@ -166,7 +169,12 @@ function checkOverflowFromParent(
 ) {
 	const parentRect = parent.getBoundingClientRect();
 	const childRect = child.getBoundingClientRect();
-	return childRect.right > parentRect.right || childRect.left < parentRect.left;
+	return (
+		childRect.top < parentRect.top ||
+		childRect.left < parentRect.left ||
+		childRect.bottom > parentRect.bottom ||
+		childRect.right > parentRect.right
+	);
 }
 
 function checkOverlapBetweenMessages(
