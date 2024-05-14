@@ -34,12 +34,13 @@ export default function Header() {
 						currentPath={currentPath}
 						name="Random Message"
 					/>
-					<NavMenuItem
-						link="/words-cloud"
-						currentPath={currentPath}
-						name="Most Used Words"
-					/>
+					<NavMenuItem link="/replay" currentPath={currentPath} name="Replay" />
 					<NavDropDown name="Stats">
+						<NavDropDownItem
+							link="/words-cloud"
+							currentPath={currentPath}
+							name="Most Used Words"
+						/>
 						<NavDropDownItem
 							link="/stats/rickroll"
 							currentPath={currentPath}
@@ -135,13 +136,19 @@ export default function Header() {
 								onClick={() => setIsOpen(false)}
 							/>
 							<NavMenuItem
-								link="/words-cloud"
+								link="/replay"
 								currentPath={currentPath}
-								name="Most Used Words"
+								name="Replay"
 								isMobile
 								onClick={() => setIsOpen(false)}
 							/>
 							<NavDropDown isMobile name="Stats">
+								<NavDropDownItem
+									link="/words-cloud"
+									currentPath={currentPath}
+									name="Most Used Words"
+									onClick={() => setIsOpen(false)}
+								/>
 								<NavDropDownItem
 									link="/stats/rickroll"
 									currentPath={currentPath}
