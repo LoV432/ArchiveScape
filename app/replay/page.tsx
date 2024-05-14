@@ -26,12 +26,13 @@ export default function ReplayPage() {
 		Replay[]
 	>([]);
 	const [time, setTime] = useState(new Date('2024-05-10T05:10:25Z'));
+	const [fetchResult, setFetchResult] = useState(true);
 	const replayElementRef = useRef<HTMLDivElement>(null);
 	const playIntervalRef = useRef<NodeJS.Timeout>();
 
 	function fetchAndStartPlay() {
 		try {
-			fetchMasterRecord(setMasterRecord, time);
+			fetchMasterRecord(setMasterRecord, time, setFetchResult);
 		} catch (e) {
 			console.log(e);
 		}
@@ -102,6 +103,7 @@ export default function ReplayPage() {
 				))}
 			</div>
 			<Settings
+				fetchResult={fetchResult}
 				isPlaying={!!messagesBufferToPlayState.length}
 				setTime={setTime}
 				fetchAndStartPlay={fetchAndStartPlay}
@@ -191,15 +193,22 @@ function Message({
 
 async function fetchMasterRecord(
 	setReplay: Dispatch<SetStateAction<Replay[]>>,
-	time: Date
+	time: Date,
+	setFetchResult: Dispatch<SetStateAction<boolean>>
 ) {
 	try {
+		setFetchResult(true);
 		const res = await fetch('/api/replay?time=' + time.toISOString());
 		if (!res.ok) {
 			throw new Error('Failed to fetch data');
 		}
 		const data = (await res.json()) as Replay[];
 		setReplay(data);
+		if (data.length > 0) {
+			setFetchResult(true);
+		} else {
+			setFetchResult(false);
+		}
 	} catch (error) {
 		console.log(error);
 		throw new Error('Error');
@@ -237,45 +246,54 @@ function checkOverlapBetweenMessages(
 function Settings({
 	setTime,
 	fetchAndStartPlay,
-	isPlaying
+	isPlaying,
+	fetchResult
 }: {
 	setTime: Dispatch<SetStateAction<Date>>;
 	fetchAndStartPlay: () => void;
 	isPlaying: boolean;
+	fetchResult: boolean;
 }) {
 	const [showSettings, setShowSettings] = useState(false);
 	useEffect(() => {
 		setShowSettings(true);
 	}, []);
 	return (
-		<Popover
-			onOpenChange={() => setShowSettings(!showSettings)}
-			open={showSettings}
-		>
-			<PopoverTrigger asChild>
-				<Button
-					onClick={() => setShowSettings(!showSettings)}
-					className="absolute left-1/2 top-[92%] translate-x-[-50%] text-center"
-					variant={'outline'}
-				>
-					Settings
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent asChild>
-				<div className="grid w-full gap-5">
-					<DateTimePicker setTime={setTime} />
+		<>
+			{!fetchResult && (
+				<p className="absolute left-1/2 top-[85%] translate-x-[-50%] text-center text-rose-900">
+					No messages within the timeframe. Please select a different time.
+				</p>
+			)}
+			<Popover
+				onOpenChange={() => setShowSettings(!showSettings)}
+				open={showSettings}
+			>
+				<PopoverTrigger asChild>
 					<Button
+						onClick={() => setShowSettings(!showSettings)}
+						className="absolute left-1/2 top-[92%] translate-x-[-50%] text-center"
 						variant={'outline'}
-						className="mx-auto w-28"
-						onClick={() => {
-							setShowSettings(!showSettings);
-							fetchAndStartPlay();
-						}}
 					>
-						{isPlaying ? 'Restart' : 'Start'}
+						Settings
 					</Button>
-				</div>
-			</PopoverContent>
-		</Popover>
+				</PopoverTrigger>
+				<PopoverContent asChild>
+					<div className="grid w-full gap-5">
+						<DateTimePicker setTime={setTime} />
+						<Button
+							variant={'outline'}
+							className="mx-auto w-28"
+							onClick={() => {
+								setShowSettings(!showSettings);
+								fetchAndStartPlay();
+							}}
+						>
+							{isPlaying ? 'Restart' : 'Start'}
+						</Button>
+					</div>
+				</PopoverContent>
+			</Popover>
+		</>
 	);
 }
