@@ -277,7 +277,8 @@ function Settings({
 				<PopoverTrigger asChild>
 					<Button
 						onClick={() => setShowSettings(!showSettings)}
-						className="absolute left-1/2 top-[92%] translate-x-[-50%] text-center"
+						// venter class so the messages don't overlap with this button
+						className="venter absolute left-1/2 top-[92%] translate-x-[-50%] text-center"
 						variant={'outline'}
 					>
 						Settings
