@@ -19,61 +19,72 @@ import {
 } from '@/components/ui/popover';
 
 export default function ReplayPage() {
-	const [replay, setReplay] = useState<Replay[]>([]);
-	const playReplay = useRef<Replay[]>([]);
-	const deleteReplay = useRef<String[]>([]);
-	const [playReplayState, setPlayReplayState] = useState<Replay[]>([]);
+	const [masterRecord, setMasterRecord] = useState<Replay[]>([]);
+	const messagesBufferToPlay = useRef<Replay[]>([]);
+	const removeFromBuffer = useRef<String[]>([]);
+	const [messagesBufferToPlayState, setMessagesBufferToPlayState] = useState<
+		Replay[]
+	>([]);
+	const [time, setTime] = useState(new Date('2024-05-10T05:10:25Z'));
 	const replayElementRef = useRef<HTMLDivElement>(null);
 	const playIntervalRef = useRef<NodeJS.Timeout>();
-	const [time, setTime] = useState(new Date('2024-05-10T05:10:25Z'));
-	const [startFetch, setStartFetch] = useState(false);
-	const [firstTime, setFirstTime] = useState(true);
-	useEffect(() => {
-		if (firstTime) {
-			setFirstTime(false);
-			return;
-		}
+
+	function fetchAndStartPlay() {
 		try {
-			getSetReplay(setReplay, time);
+			fetchMasterRecord(setMasterRecord, time);
 		} catch (e) {
 			console.log(e);
 		}
-	}, [startFetch]);
+	}
+
+	function resetPlayer() {
+		messagesBufferToPlay.current = [];
+		removeFromBuffer.current = [];
+		setMessagesBufferToPlayState([...messagesBufferToPlay.current]);
+		clearInterval(playIntervalRef.current);
+	}
+
+	function deletePlayedMessages() {
+		messagesBufferToPlay.current = messagesBufferToPlay.current.filter(
+			(replay) => {
+				return !removeFromBuffer.current.includes(
+					replay.message_text + replay.time
+				);
+			}
+		);
+	}
+
+	function addMessagesToMainLoop(index: number) {
+		messagesBufferToPlay.current.push(masterRecord[index]);
+		setMessagesBufferToPlayState([...messagesBufferToPlay.current]);
+	}
+
 	useEffect(() => {
-		if (!replay.length) return;
+		if (!masterRecord.length) return;
 		if (playIntervalRef.current) clearInterval(playIntervalRef.current);
-		playReplay.current = [];
-		deleteReplay.current = [];
-		setPlayReplayState([...playReplay.current]);
+		resetPlayer();
 		let index = 0;
 		let startingTime = new Date().getTime();
 		playIntervalRef.current = setInterval(() => {
 			const now = new Date().getTime();
 			const timeDiff = now - startingTime;
-			playReplay.current = playReplay.current.filter((replay) => {
-				return !deleteReplay.current.includes(
-					replay.message_text + replay.time
-				);
-			});
-			if (index + 1 <= replay.length && timeDiff > replay[index].time) {
-				playReplay.current.push(replay[index]);
-				setPlayReplayState([...playReplay.current]);
+			deletePlayedMessages();
+			if (
+				index + 1 <= masterRecord.length &&
+				timeDiff > masterRecord[index].time
+			) {
+				addMessagesToMainLoop(index);
 				startingTime = now;
 				index++;
 			}
-			if (index >= replay.length) {
-				setTimeout(() => {
-					playReplay.current = [];
-					deleteReplay.current = [];
-					setPlayReplayState([...playReplay.current]);
-					clearInterval(playIntervalRef.current);
-				}, 15000);
+			if (index >= masterRecord.length) {
+				setTimeout(resetPlayer, 15000);
 			}
 		}, 200);
 		return () => {
-			clearInterval(playIntervalRef.current);
+			resetPlayer();
 		};
-	}, [replay]);
+	}, [masterRecord]);
 	return (
 		<div className="relative grid h-full w-full gap-4">
 			<div
@@ -81,23 +92,22 @@ export default function ReplayPage() {
 				id="replay"
 				className="relative grid h-full w-full overflow-hidden"
 			>
-				{playReplayState.map((replay) => (
+				{messagesBufferToPlayState.map((replay) => (
 					<Message
 						key={replay.message_text + replay.time}
 						replayElementRef={replayElementRef}
 						message={replay}
-						deleteReplay={deleteReplay}
+						deleteReplay={removeFromBuffer}
 					/>
 				))}
 			</div>
 			<Settings
-				isPlaying={!!playReplayState.length}
+				isPlaying={!!messagesBufferToPlayState.length}
 				setTime={setTime}
-				startFetch={startFetch}
-				setStartFetch={setStartFetch}
+				fetchAndStartPlay={fetchAndStartPlay}
 			/>
 			<div
-				className={`absolute right-0 top-0 mr-5 h-4 w-4 animate-pulse rounded-full bg-red-500 ${!playReplayState.length && 'hidden'}`}
+				className={`absolute right-0 top-0 mr-5 h-4 w-4 animate-pulse rounded-full bg-red-500 ${!messagesBufferToPlayState.length && 'hidden'}`}
 			></div>
 		</div>
 	);
@@ -179,7 +189,7 @@ function Message({
 	);
 }
 
-async function getSetReplay(
+async function fetchMasterRecord(
 	setReplay: Dispatch<SetStateAction<Replay[]>>,
 	time: Date
 ) {
@@ -226,13 +236,11 @@ function checkOverlapBetweenMessages(
 
 function Settings({
 	setTime,
-	startFetch,
-	setStartFetch,
+	fetchAndStartPlay,
 	isPlaying
 }: {
 	setTime: Dispatch<SetStateAction<Date>>;
-	startFetch: boolean;
-	setStartFetch: Dispatch<SetStateAction<boolean>>;
+	fetchAndStartPlay: () => void;
 	isPlaying: boolean;
 }) {
 	const [showSettings, setShowSettings] = useState(false);
@@ -259,7 +267,10 @@ function Settings({
 					<Button
 						variant={'outline'}
 						className="mx-auto w-28"
-						onClick={() => setStartFetch(!startFetch)}
+						onClick={() => {
+							setShowSettings(!showSettings);
+							fetchAndStartPlay();
+						}}
 					>
 						{isPlaying ? 'Restart' : 'Start'}
 					</Button>
