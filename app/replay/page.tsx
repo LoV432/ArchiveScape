@@ -10,6 +10,13 @@ import {
 	useState
 } from 'react';
 import { Replay } from '../api/replay/route';
+import DateTimePicker from '@/components/DateTimePicker';
+import { Button } from '@/components/ui/button';
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger
+} from '@/components/ui/popover';
 
 export default function ReplayPage() {
 	const [replay, setReplay] = useState<Replay[]>([]);
@@ -18,16 +25,26 @@ export default function ReplayPage() {
 	const [playReplayState, setPlayReplayState] = useState<Replay[]>([]);
 	const replayElementRef = useRef<HTMLDivElement>(null);
 	const playIntervalRef = useRef<NodeJS.Timeout>();
+	const [time, setTime] = useState(new Date('2024-05-10T05:10:25Z'));
+	const [startFetch, setStartFetch] = useState(false);
+	const [firstTime, setFirstTime] = useState(true);
 	useEffect(() => {
+		if (firstTime) {
+			setFirstTime(false);
+			return;
+		}
 		try {
-			getSetReplay(setReplay, new Date('2024-05-10T05:10:25Z'));
+			getSetReplay(setReplay, time);
 		} catch (e) {
 			console.log(e);
 		}
-	}, []);
+	}, [startFetch]);
 	useEffect(() => {
 		if (!replay.length) return;
 		if (playIntervalRef.current) clearInterval(playIntervalRef.current);
+		playReplay.current = [];
+		deleteReplay.current = [];
+		setPlayReplayState([...playReplay.current]);
 		let index = 0;
 		let startingTime = new Date().getTime();
 		playIntervalRef.current = setInterval(() => {
@@ -53,19 +70,26 @@ export default function ReplayPage() {
 		};
 	}, [replay]);
 	return (
-		<div
-			ref={replayElementRef}
-			id="replay"
-			className="relative grid h-full w-full overflow-hidden border"
-		>
-			{playReplayState.map((replay) => (
-				<Message
-					key={replay.message_text + replay.time}
-					replayElementRef={replayElementRef}
-					message={replay}
-					deleteReplay={deleteReplay}
-				/>
-			))}
+		<div className="grid h-full w-full gap-4">
+			<div
+				ref={replayElementRef}
+				id="replay"
+				className="relative grid h-full w-full overflow-hidden"
+			>
+				{playReplayState.map((replay) => (
+					<Message
+						key={replay.message_text + replay.time}
+						replayElementRef={replayElementRef}
+						message={replay}
+						deleteReplay={deleteReplay}
+					/>
+				))}
+			</div>
+			<Settings
+				setTime={setTime}
+				startFetch={startFetch}
+				setStartFetch={setStartFetch}
+			/>
 		</div>
 	);
 }
@@ -188,5 +212,48 @@ function checkOverlapBetweenMessages(
 		child2Rec.left > child1Rec.right ||
 		child2Rec.bottom < child1Rec.top ||
 		child2Rec.top > child1Rec.bottom
+	);
+}
+
+function Settings({
+	setTime,
+	startFetch,
+	setStartFetch
+}: {
+	setTime: Dispatch<SetStateAction<Date>>;
+	startFetch: boolean;
+	setStartFetch: Dispatch<SetStateAction<boolean>>;
+}) {
+	const [showSettings, setShowSettings] = useState(false);
+	useEffect(() => {
+		setShowSettings(true);
+	}, []);
+	return (
+		<Popover
+			onOpenChange={() => setShowSettings(!showSettings)}
+			open={showSettings}
+		>
+			<PopoverTrigger asChild>
+				<Button
+					onClick={() => setShowSettings(!showSettings)}
+					className="absolute left-1/2 top-[92%] translate-x-[-50%] text-center"
+					variant={'outline'}
+				>
+					Settings
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent asChild>
+				<div className="grid w-full gap-5">
+					<DateTimePicker setTime={setTime} />
+					<Button
+						variant={'outline'}
+						className="mx-auto w-28"
+						onClick={() => setStartFetch(!startFetch)}
+					>
+						Start
+					</Button>
+				</div>
+			</PopoverContent>
+		</Popover>
 	);
 }
