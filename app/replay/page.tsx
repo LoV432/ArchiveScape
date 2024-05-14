@@ -50,27 +50,32 @@ export default function ReplayPage() {
 		playIntervalRef.current = setInterval(() => {
 			const now = new Date().getTime();
 			const timeDiff = now - startingTime;
-			if (index < replay.length && timeDiff > replay[index].time) {
-				playReplay.current = playReplay.current.filter((replay) => {
-					return !deleteReplay.current.includes(
-						replay.message_text + replay.time
-					);
-				});
+			playReplay.current = playReplay.current.filter((replay) => {
+				return !deleteReplay.current.includes(
+					replay.message_text + replay.time
+				);
+			});
+			if (index + 1 <= replay.length && timeDiff > replay[index].time) {
 				playReplay.current.push(replay[index]);
 				setPlayReplayState([...playReplay.current]);
 				startingTime = now;
 				index++;
 			}
+			if (index >= replay.length) {
+				setTimeout(() => {
+					playReplay.current = [];
+					deleteReplay.current = [];
+					setPlayReplayState([...playReplay.current]);
+					clearInterval(playIntervalRef.current);
+				}, 15000);
+			}
 		}, 200);
-		if (index >= replay.length) {
-			clearInterval(playIntervalRef.current);
-		}
 		return () => {
 			clearInterval(playIntervalRef.current);
 		};
 	}, [replay]);
 	return (
-		<div className="grid h-full w-full gap-4">
+		<div className="relative grid h-full w-full gap-4">
 			<div
 				ref={replayElementRef}
 				id="replay"
@@ -86,10 +91,14 @@ export default function ReplayPage() {
 				))}
 			</div>
 			<Settings
+				isPlaying={!!playReplayState.length}
 				setTime={setTime}
 				startFetch={startFetch}
 				setStartFetch={setStartFetch}
 			/>
+			<div
+				className={`absolute right-0 top-0 mr-5 h-4 w-4 animate-pulse rounded-full bg-red-500 ${!playReplayState.length && 'hidden'}`}
+			></div>
 		</div>
 	);
 }
@@ -218,11 +227,13 @@ function checkOverlapBetweenMessages(
 function Settings({
 	setTime,
 	startFetch,
-	setStartFetch
+	setStartFetch,
+	isPlaying
 }: {
 	setTime: Dispatch<SetStateAction<Date>>;
 	startFetch: boolean;
 	setStartFetch: Dispatch<SetStateAction<boolean>>;
+	isPlaying: boolean;
 }) {
 	const [showSettings, setShowSettings] = useState(false);
 	useEffect(() => {
@@ -250,7 +261,7 @@ function Settings({
 						className="mx-auto w-28"
 						onClick={() => setStartFetch(!startFetch)}
 					>
-						Start
+						{isPlaying ? 'Restart' : 'Start'}
 					</Button>
 				</div>
 			</PopoverContent>
