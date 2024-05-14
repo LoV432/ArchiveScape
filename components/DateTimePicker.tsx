@@ -2,17 +2,20 @@ import { Dispatch, SetStateAction } from 'react';
 import { useTimescape } from 'timescape/react';
 
 export default function DateTimePicker({
-	setTime
+	setTime,
+	time
 }: {
 	setTime: Dispatch<SetStateAction<Date>>;
+	time: Date;
 }) {
 	const { getRootProps, getInputProps, options, update } = useTimescape({
-		date: new Date(),
+		date: time,
 		onChangeDate: (nextDate) => {
 			if (typeof nextDate !== 'undefined') {
 				setTime(nextDate);
 			}
-		}
+		},
+		maxDate: '$NOW'
 	});
 
 	return (

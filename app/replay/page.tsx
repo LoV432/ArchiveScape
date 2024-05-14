@@ -25,7 +25,7 @@ export default function ReplayPage() {
 	const [messagesBufferToPlayState, setMessagesBufferToPlayState] = useState<
 		Replay[]
 	>([]);
-	const [time, setTime] = useState(new Date('2024-05-10T05:10:25Z'));
+	const [time, setTime] = useState(new Date());
 	const [fetchResult, setFetchResult] = useState(true);
 	const replayElementRef = useRef<HTMLDivElement>(null);
 	const playIntervalRef = useRef<NodeJS.Timeout>();
@@ -103,6 +103,7 @@ export default function ReplayPage() {
 				))}
 			</div>
 			<Settings
+				time={time}
 				fetchResult={fetchResult}
 				isPlaying={!!messagesBufferToPlayState.length}
 				setTime={setTime}
@@ -247,12 +248,14 @@ function Settings({
 	setTime,
 	fetchAndStartPlay,
 	isPlaying,
-	fetchResult
+	fetchResult,
+	time
 }: {
 	setTime: Dispatch<SetStateAction<Date>>;
 	fetchAndStartPlay: () => void;
 	isPlaying: boolean;
 	fetchResult: boolean;
+	time: Date;
 }) {
 	const [showSettings, setShowSettings] = useState(false);
 	useEffect(() => {
@@ -280,7 +283,7 @@ function Settings({
 				</PopoverTrigger>
 				<PopoverContent asChild>
 					<div className="grid w-full gap-5">
-						<DateTimePicker setTime={setTime} />
+						<DateTimePicker setTime={setTime} time={time} />
 						<Button
 							variant={'outline'}
 							className="mx-auto w-28"
