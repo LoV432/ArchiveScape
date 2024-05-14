@@ -25,7 +25,9 @@ export default function ReplayPage() {
 	const [messagesBufferToPlayState, setMessagesBufferToPlayState] = useState<
 		Replay[]
 	>([]);
-	const [time, setTime] = useState(new Date());
+	const [time, setTime] = useState(
+		new Date(new Date().getTime() - 60 * 60 * 1000)
+	);
 	const [fetchResult, setFetchResult] = useState(true);
 	const replayElementRef = useRef<HTMLDivElement>(null);
 	const playIntervalRef = useRef<NodeJS.Timeout>();
