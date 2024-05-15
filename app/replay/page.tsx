@@ -156,10 +156,9 @@ function Message({
 				randomizePosition();
 				messageReady = false;
 			}
-			const allOtherMessages: HTMLDivElement[] =
-				replayElementRef.current.querySelectorAll(
-					'.venter'
-				) as unknown as HTMLDivElement[];
+			const allOtherMessages: HTMLDivElement[] = document.querySelectorAll(
+				'.venter'
+			) as unknown as HTMLDivElement[];
 			allOtherMessages.forEach((el) => {
 				if (!childElementref.current) return;
 				if (el.id === `id-${message.message_text + message.time}`) return;
