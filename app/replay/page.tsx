@@ -130,51 +130,56 @@ function Message({
 	const childElementref = useRef<HTMLDivElement>(null);
 	const parentWidth = replayElementRef.current?.clientWidth || 0;
 	const parentHeight = replayElementRef.current?.clientHeight || 0;
+	const messageReadyRef = useRef(false);
 	const [childPosition, setChildPosition] = useState({
-		top: Math.floor(Math.random() * parentHeight - 100) + 'px',
-		left: Math.floor(Math.random() * parentWidth - 100) + 'px'
+		top: Math.floor(Math.random() * parentHeight) + 'px',
+		left: Math.floor(Math.random() * parentWidth) + 'px'
 	});
 
 	function randomizePosition() {
 		setChildPosition({
-			top: Math.floor(Math.random() * parentHeight - 100) + 'px',
-			left: Math.floor(Math.random() * parentWidth - 100) + 'px'
+			top: Math.floor(Math.random() * parentHeight) + 'px',
+			left: Math.floor(Math.random() * parentWidth) + 'px'
 		});
 	}
 
 	useEffect(() => {
-		setTimeout(() => {
-			let messageReady = true;
-			if (!childElementref.current) return;
-			if (!replayElementRef.current) return;
-			if (
-				checkOverflowFromParent(
-					replayElementRef.current,
-					childElementref.current
-				)
-			) {
-				randomizePosition();
-				messageReady = false;
-			}
-			const allOtherMessages: HTMLDivElement[] = document.querySelectorAll(
-				'.venter'
-			) as unknown as HTMLDivElement[];
-			allOtherMessages.forEach((el) => {
+		(async () => {
+			while (messageReadyRef.current === false) {
+				let localMessageReady = true;
 				if (!childElementref.current) return;
-				if (el.id === `id-${message.message_text + message.time}`) return;
-				if (checkOverlapBetweenMessages(childElementref.current, el)) {
+				if (!replayElementRef.current) return;
+				if (
+					checkOverflowFromParent(
+						replayElementRef.current,
+						childElementref.current
+					)
+				) {
 					randomizePosition();
-					messageReady = false;
+					localMessageReady = false;
 				}
-			});
-			if (messageReady) {
-				childElementref.current.style.animation = 'venter 10s linear forwards';
-				setTimeout(() => {
-					deleteReplay.current.push(message.message_text + message.time);
-				}, 10000);
+				const allOtherMessages: HTMLDivElement[] = document.querySelectorAll(
+					'.venter'
+				) as unknown as HTMLDivElement[];
+				allOtherMessages.forEach((el) => {
+					if (!childElementref.current) return;
+					if (el.id === `id-${message.message_text + message.time}`) return;
+					if (checkOverlapBetweenMessages(childElementref.current, el)) {
+						randomizePosition();
+						localMessageReady = false;
+					}
+				});
+				messageReadyRef.current = localMessageReady;
+				await new Promise((resolve) => setTimeout(resolve, 500));
 			}
-		}, 100);
-	}, [childPosition.top, childPosition.left]);
+
+			if (!childElementref.current) return;
+			childElementref.current.style.animation = 'venter 10s linear forwards';
+			setTimeout(() => {
+				deleteReplay.current.push(message.message_text + message.time);
+			}, 10000);
+		})();
+	}, []);
 
 	return (
 		<div
