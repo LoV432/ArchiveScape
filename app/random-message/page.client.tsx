@@ -67,7 +67,7 @@ export default function RandomMessage({
 				</svg>
 			</div>
 			<p
-				style={{ color: messagesListRef.current[0].color_name }}
+				style={{ color: messagesListRef.current[0].color_name || 'white' }}
 				className="break-words text-4xl font-extrabold sm:text-7xl"
 			>
 				{messagesListRef.current[0].message_text}
