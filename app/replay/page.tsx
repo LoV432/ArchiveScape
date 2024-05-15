@@ -266,7 +266,7 @@ function Settings({
 	return (
 		<>
 			{!fetchResult && (
-				<p className="absolute left-1/2 top-[85%] translate-x-[-50%] text-center text-rose-900">
+				<p className="fixed left-1/2 top-[80%] w-full translate-x-[-50%] p-4 text-center text-rose-900">
 					No messages within the timeframe. Please select a different time.
 				</p>
 			)}
@@ -278,7 +278,7 @@ function Settings({
 					<Button
 						onClick={() => setShowSettings(!showSettings)}
 						// venter class so the messages don't overlap with this button
-						className="venter absolute left-1/2 top-[92%] translate-x-[-50%] text-center"
+						className="venter fixed left-1/2 top-[92%] translate-x-[-50%] text-center"
 						variant={'outline'}
 					>
 						Settings
