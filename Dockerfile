@@ -43,6 +43,7 @@ ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
 ARG HOST_NAME="archivescape.monib.xyz"
+ENV HOST_NAME $HOST_NAME
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
