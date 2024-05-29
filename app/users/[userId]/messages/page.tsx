@@ -10,7 +10,11 @@ import LoadingTable from '@/components/LoadingTable';
 
 export const metadata: Metadata = {
 	title: 'Messages By User | ArchiveScape',
-	description: 'An archive of all messages sent on https://www.ventscape.life/'
+	description: 'An archive of all messages sent on https://www.ventscape.life/',
+	robots: {
+		index: false,
+		follow: false
+	}
 };
 
 export default async function Main({

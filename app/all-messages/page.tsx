@@ -7,10 +7,24 @@ const AllMessagesPage = dynamic(() => import('./page.client'), {
 	loading: () => <LoadingTable />
 });
 
-export const metadata: Metadata = {
-	title: 'All Messages | ArchiveScape',
-	description: 'An archive of all messages sent on https://www.ventscape.life/'
-};
+export async function generateMetadata({
+	searchParams
+}: {
+	searchParams: { page: string; user_id: number };
+}) {
+	let metaObject: Metadata = {
+		title: 'All Messages | ArchiveScape',
+		description:
+			'An archive of all messages sent on https://www.ventscape.life/'
+	};
+	if (searchParams.page || searchParams.user_id) {
+		metaObject.robots = {
+			index: false,
+			follow: false
+		};
+	}
+	return metaObject;
+}
 
 export default async function Page({
 	searchParams

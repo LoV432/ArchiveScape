@@ -2,10 +2,24 @@ import { Metadata } from 'next/types';
 import UsersPage from './page.client';
 import { getAllUsers } from '@/lib/all-users';
 
-export const metadata: Metadata = {
-	title: 'All Users | ArchiveScape',
-	description: 'An archive of all messages sent on https://www.ventscape.life/'
-};
+export async function generateMetadata({
+	searchParams
+}: {
+	searchParams: { page: string };
+}) {
+	let metaObject: Metadata = {
+		title: 'Users | ArchiveScape',
+		description:
+			'An archive of all messages sent on https://www.ventscape.life/'
+	};
+	if (searchParams.page) {
+		metaObject.robots = {
+			index: false,
+			follow: false
+		};
+	}
+	return metaObject;
+}
 
 export default async function Page({
 	searchParams

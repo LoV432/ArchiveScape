@@ -8,10 +8,24 @@ import dynamic from 'next/dynamic';
 import { Metadata } from 'next/types';
 import LoadingTable from '@/components/LoadingTable';
 
-export const metadata: Metadata = {
-	title: 'Links Sent By Users | ArchiveScape',
-	description: 'An archive of all messages sent on https://www.ventscape.life/'
-};
+export async function generateMetadata({
+	searchParams
+}: {
+	searchParams: { page: string };
+}) {
+	let metaObject: Metadata = {
+		title: 'Links Sent By Users | ArchiveScape',
+		description:
+			'An archive of all messages sent on https://www.ventscape.life/'
+	};
+	if (searchParams.page) {
+		metaObject.robots = {
+			index: false,
+			follow: false
+		};
+	}
+	return metaObject;
+}
 
 export default async function Page({
 	searchParams
