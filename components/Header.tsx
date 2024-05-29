@@ -37,7 +37,7 @@ export default function Header() {
 					<NavMenuItem link="/replay" currentPath={currentPath} name="Replay" />
 					<NavDropDown name="Stats">
 						<NavDropDownItem
-							link="/words-cloud"
+							link="/stats/words-cloud"
 							currentPath={currentPath}
 							name="Most Used Words"
 						/>
@@ -144,7 +144,7 @@ export default function Header() {
 							/>
 							<NavDropDown isMobile name="Stats">
 								<NavDropDownItem
-									link="/words-cloud"
+									link="/stats/words-cloud"
 									currentPath={currentPath}
 									name="Most Used Words"
 									onClick={() => setIsOpen(false)}
