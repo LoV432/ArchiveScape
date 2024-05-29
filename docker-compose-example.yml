@@ -10,4 +10,3 @@ services:
       - 'PG_PASSWORD='
       - 'PG_PORT='
       - 'ITEMS_PER_PAGE='
-      - 'HOST_NAME='
