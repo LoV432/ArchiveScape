@@ -172,7 +172,10 @@ function Message({
 			) as unknown as HTMLDivElement[];
 			for (let i = 0; i < allOtherMessages.length; i++) {
 				const el = allOtherMessages[i];
-				if (el.id === childElementref.current.id) return;
+				// This line works in dev but not in prod. I don't know why
+				// TODO: figure out why
+				// if (el.id === childElementref.current.id) return;
+				if (el.id === childElementref.current.id) continue;
 				if (checkOverlapBetweenMessages(childElementref.current, el)) {
 					randomizePosition();
 					messageReadyRef.current = false;
