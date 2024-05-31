@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import { NextRequest } from 'next/server';
 
 export type Replay = {
+	index: number;
 	message_text: string;
 	color_name: string;
 	time: number;
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
 		messages.forEach((message, index) => {
 			if (index === 0) {
 				const tempMessage = {
+					index: index,
 					message_text: message.message_text,
 					color_name: message.color_name,
 					time: 0
@@ -41,6 +43,7 @@ export async function GET(request: NextRequest) {
 				new Date(message.created_at).getTime() -
 				new Date(messages[index - 1].created_at).getTime();
 			const tempMessage = {
+				index: index,
 				message_text: message.message_text,
 				color_name: message.color_name,
 				time: timeDiff

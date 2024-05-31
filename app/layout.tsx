@@ -26,7 +26,7 @@ export default function RootLayout({
 				data-domain="archivescape.monib.xyz"
 				defer
 			></Script>
-			<body className="relative grid min-h-screen grid-rows-[auto_auto_1fr] font-mono">
+			<body className="relative grid min-h-svh grid-rows-[auto_auto_1fr] font-mono sm:min-h-screen">
 				<QueryProvider>
 					<ThemeProvider
 						attribute="class"
