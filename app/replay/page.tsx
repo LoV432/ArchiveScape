@@ -206,7 +206,7 @@ function Message({
 			}}
 			// TODO: better way to handle font size. It should ideally be based on how big the text is and the size of the parent element
 			className="venter absolute max-w-96 p-5 text-xl font-bold opacity-0 lg:text-2xl xl:text-3xl"
-			id={`id-${message.message_text + message.time}`}
+			id={`message-${message.index}`}
 		>
 			{message.message_text}
 		</div>
