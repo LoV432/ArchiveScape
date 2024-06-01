@@ -10,14 +10,19 @@ import {
 } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Header() {
 	const currentPath = usePathname();
 	const [isOpen, setIsOpen] = useState(false);
+	const [autoFocus, setAutoFocus] = useState(true);
+	useEffect(() => {
+		if (window.matchMedia('(pointer: coarse)').matches) {
+			setAutoFocus(false);
+		}
+	}, []);
 	return (
 		<header className="sticky top-0 z-10 mb-2 w-full border-b border-muted bg-background px-2 py-2 sm:px-5">
 			<NavigationMenu className="hidden w-full max-w-[initial] gap-4 sm:flex">
@@ -111,7 +116,13 @@ export default function Header() {
 							/>
 						</svg>
 					</SheetTrigger>
-					<SheetContent className="w-fit min-w-[300px]" side="right">
+					<SheetContent
+						className="w-fit min-w-[300px]"
+						side="right"
+						onCloseAutoFocus={(e) => {
+							if (!autoFocus) e.preventDefault();
+						}}
+					>
 						<NavLogo className="pb-8 pt-2" onClick={() => setIsOpen(false)} />
 						<NavigationMenuList className="float-left flex-col gap-5 space-x-0">
 							<NavMenuItem

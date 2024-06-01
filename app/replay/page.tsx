@@ -263,7 +263,11 @@ function Settings({
 }) {
 	const [showSettings, setShowSettings] = useState(false);
 	const [fetchResult, setFetchResult] = useState(true);
+	const [autoFocus, setAutoFocus] = useState(true);
 	useEffect(() => {
+		if (window.matchMedia('(pointer: coarse)').matches) {
+			setAutoFocus(false);
+		}
 		setShowSettings(true);
 	}, []);
 	return (
@@ -287,7 +291,12 @@ function Settings({
 						Settings
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent asChild>
+				<PopoverContent
+					asChild
+					onOpenAutoFocus={(e) => {
+						if (!autoFocus) e.preventDefault();
+					}}
+				>
 					<div className="grid w-full gap-5">
 						<DateTimePicker setTime={setTime} time={time} />
 						<Button
