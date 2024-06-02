@@ -23,7 +23,7 @@ export async function emojiBarList() {
 
 	const allMessages = (
 		await db.query(
-			`SELECT message_text, created_at FROM messages WHERE created_at > $1 ORDER BY created_at DESC`,
+			`SELECT message_text, created_at FROM messages WHERE created_at > $1 AND message_text ~ '[\u{1F600}-\u{1F64F}]' ORDER BY created_at DESC`,
 			[twentyDaysAgo.toUTCString()]
 		)
 	).rows as { message_text: string; created_at: Date }[];
