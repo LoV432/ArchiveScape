@@ -9,12 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-	const emojis = await emojiBarList();
-	const labels = emojis.map((emoji) => emoji.emoji);
-	const dataset = {
-		label: 'Emoji Count',
-		data: emojis.map((emoji) => emoji.count),
-		backgroundColor: 'rgba(255, 99, 132, 0.5)'
-	};
+	const { labels, dataset } = await emojiBarList();
 	return <EmojiBar labels={labels} dataset={dataset} />;
 }

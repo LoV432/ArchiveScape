@@ -1,48 +1,103 @@
 import { db } from '@/lib/db';
 
-type Message = {
-	message_text: string;
-};
-
 // TODO: Check if we can use React/Next.js built-in caching stuff?
-let emojiBarListCache: {
-	emoji: string;
-	count: number;
-}[] = [];
+let datasetCache: {
+	labels: string[];
+	dataset: { label: string; data: number[]; backgroundColor: string }[];
+} = {
+	labels: [],
+	dataset: []
+};
 let lastUpdated = 0;
 
 export async function emojiBarList() {
 	const now = Date.now();
-	if (now - lastUpdated < 1000 * 60 * 5 && emojiBarListCache.length > 0) {
-		return emojiBarListCache;
+	if (now - lastUpdated < 1000 * 60 * 5 && datasetCache.labels.length > 0) {
+		return datasetCache;
 	}
 	lastUpdated = now;
 
-	let allEmojisList: string[] = [];
-	let allEmojisCount: Record<string, number> = {};
-	const twentyDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 20);
+	const twentyDaysAgo = new Date();
+	twentyDaysAgo.setUTCDate(twentyDaysAgo.getUTCDate() - 19);
+	twentyDaysAgo.setUTCHours(0, 0, 0, 0);
 
-	const allMessages = await db.query(
-		`SELECT message_text FROM messages WHERE created_at > $1 ORDER BY created_at DESC`,
-		[twentyDaysAgo.toUTCString()]
+	const allMessages = (
+		await db.query(
+			`SELECT message_text, created_at FROM messages WHERE created_at > $1 ORDER BY created_at DESC`,
+			[twentyDaysAgo.toUTCString()]
+		)
+	).rows as { message_text: string; created_at: Date }[];
+
+	let allEmojisCount: { [day: string]: { [emoji: string]: number } } = {};
+	allMessages.forEach((message) => {
+		const date = new Date(
+			message.created_at.setUTCHours(0, 0, 0, 0)
+		).toISOString();
+		if (!allEmojisCount[date]) {
+			allEmojisCount[date] = {};
+		}
+		const emojis = message.message_text.match(/[\u{1F600}-\u{1F64F}]/gu) || [];
+		emojis.forEach((emoji) => {
+			allEmojisCount[date][emoji] = (allEmojisCount[date][emoji] || 0) + 1;
+		});
+	});
+
+	const allEmojisCountArray = Object.entries(allEmojisCount).map(
+		([date, emojis]) => {
+			const topEmojis = Object.entries(emojis)
+				.sort((a, b) => b[1] - a[1])
+				.slice(0, 10)
+				.map(([emoji, count]) => ({ emoji, count }));
+			return { date: new Date(date).toISOString(), emojis: topEmojis };
+		}
 	);
-	allMessages.rows.forEach((message: Message) => {
-		allEmojisList.push(
-			...(message.message_text.match(/\p{Emoji_Presentation}/gu) || [])
-		);
+
+	const labels = allEmojisCountArray.map(({ date }) =>
+		new Date(date).toLocaleDateString('en-US', {
+			year: '2-digit',
+			month: 'short',
+			day: 'numeric'
+		})
+	);
+
+	let allEmojis: string[] = [];
+	allEmojisCountArray.forEach(({ emojis }) => {
+		emojis.forEach(({ emoji }) => {
+			if (!allEmojis.includes(emoji)) {
+				allEmojis.push(emoji);
+			}
+		});
 	});
-	allEmojisList.forEach((word: string) => {
-		// This basically checks for [word] in allEmojisCount Object and if it doesn't exist, it creates it with a value of 1
-		// If it does exist, it increments the value by 1
-		allEmojisCount[word] = (allEmojisCount[word] || 0) + 1;
+
+	let dataset = allEmojis.map((emoji) => ({
+		label: emoji,
+		data: allEmojisCountArray.map(({ date, emojis }) => {
+			const emojiData = emojis.find((e) => e.emoji === emoji);
+			return emojiData ? emojiData.count : 0;
+		}),
+		backgroundColor: ''
+	}));
+
+	dataset.sort(
+		(a, b) =>
+			b.data.reduce((acc, curr) => acc + curr, 0) -
+			a.data.reduce((acc, curr) => acc + curr, 0)
+	);
+	dataset = dataset.slice(0, 7);
+
+	dataset.forEach((_, index) => {
+		dataset[index].backgroundColor = rainbowColors[index];
 	});
-	const allEmojisCountArray = Object.entries(allEmojisCount)
-		.sort((a, b) => b[1] - a[1])
-		.slice(0, 10)
-		.map(([emoji, count]) => ({
-			emoji,
-			count
-		}));
-	emojiBarListCache = allEmojisCountArray;
-	return allEmojisCountArray;
+	datasetCache = { labels, dataset };
+	return { labels, dataset };
 }
+
+const rainbowColors = [
+	'#1a85a4',
+	'#f5c667',
+	'#6d4e7a',
+	'#a2d76f',
+	'#c74230',
+	'#fc9d5b',
+	'#92ded1'
+];

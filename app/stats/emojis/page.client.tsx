@@ -16,13 +16,17 @@ export default function EmojiBar({
 	dataset
 }: {
 	labels: string[];
-	dataset: { label: string; data: number[]; backgroundColor: string };
+	dataset: { label: string; data: number[]; backgroundColor: string }[];
 }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	useEffect(() => {
-		let xFrontSize = 30;
+		let xFrontSize = 15;
+		let aspectRatio = 2;
+		let yFrontSize = 15;
 		if (window.matchMedia('(max-width: 768px)').matches) {
-			xFrontSize = 15;
+			labels = labels.slice(0, 7);
+			dataset = dataset.slice(0, 7);
+			aspectRatio = 1;
 		}
 		Chart.register(
 			CategoryScale,
@@ -38,16 +42,11 @@ export default function EmojiBar({
 			{
 				type: 'bar',
 				data: {
-					labels: labels,
-					datasets: [
-						{
-							data: dataset.data,
-							backgroundColor: dataset.backgroundColor,
-							label: dataset.label
-						}
-					]
+					labels,
+					datasets: dataset
 				},
 				options: {
+					aspectRatio: aspectRatio,
 					responsive: true,
 					indexAxis: 'x' as const,
 					scales: {
@@ -59,18 +58,20 @@ export default function EmojiBar({
 							},
 							grid: {
 								color: 'RGBA(255,255,255,0.15)'
-							}
+							},
+							stacked: true
 						},
 						y: {
 							ticks: {
 								font: {
-									size: 15
+									size: yFrontSize
 								},
 								color: 'white'
 							},
 							grid: {
 								color: 'RGBA(255,255,255,0.15)'
-							}
+							},
+							stacked: true
 						}
 					},
 					plugins: {
