@@ -23,10 +23,12 @@ export default function EmojiBar({
 		let xFrontSize = 15;
 		let aspectRatio = 2;
 		let yFrontSize = 15;
+		let boxWidth = 40;
 		if (window.matchMedia('(max-width: 768px)').matches) {
 			labels = labels.slice(0, 7);
 			dataset = dataset.slice(0, 7);
 			aspectRatio = 1;
+			boxWidth = 20;
 		}
 		Chart.register(
 			CategoryScale,
@@ -78,7 +80,8 @@ export default function EmojiBar({
 						legend: {
 							position: 'top' as const,
 							labels: {
-								color: 'white'
+								color: 'white',
+								boxWidth: boxWidth
 							}
 						},
 						title: {
