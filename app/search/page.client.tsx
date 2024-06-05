@@ -8,7 +8,7 @@ import {
 	PaginationOlderMessages
 } from '@/components/ui/pagination';
 import { useRouter } from 'next13-progressbar';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import cat from '@/public/cat.gif';
 import scribble from '@/public/scribble.gif';
@@ -16,23 +16,41 @@ import Image from 'next/image';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import dynamic from 'next/dynamic';
 import LoadingTable from '@/components/LoadingTable';
+const MessageSection = dynamic(() => import('./messages.client'), {
+	ssr: false,
+	loading: () => <LoadingTable />
+});
 import { Message } from '@/lib/all-messages';
+import { DatePickerWithRange } from './datepicker.client';
+import { DateRange } from 'react-day-picker';
 
 export default function SearchPage({
 	data,
 	searchQuery,
-	page
+	page,
+	preSelectedDateStart,
+	preSelectedDateEnd
 }: {
 	data: { messages: Message[]; totalPages: number };
 	page: number;
 	searchQuery: string;
+	preSelectedDateStart: Date | undefined;
+	preSelectedDateEnd: Date | undefined;
 }) {
 	const searchElementRef = useRef<HTMLInputElement>(null);
 	const router = useRouter();
-	const MessageSection = dynamic(() => import('./messages.client'), {
-		ssr: false,
-		loading: () => <LoadingTable />
+	const [date, setDate] = useState<DateRange | undefined>({
+		from: preSelectedDateStart,
+		to: preSelectedDateEnd
 	});
+	const [dateStart, setDateStart] = useState<string>('');
+	const [dateEnd, setDateEnd] = useState<string>('');
+	useMemo(() => {
+		date?.from
+			? setDateStart(`&dateStart=${date.from.toISOString()}`)
+			: setDateStart('');
+		date?.to ? setDateEnd(`&dateEnd=${date.to.toISOString()}`) : setDateEnd('');
+	}, [date]);
 	useEffect(() => {
 		document.addEventListener('keydown', (e) => {
 			if (e.key === '`' || e.key === '/') {
@@ -50,6 +68,9 @@ export default function SearchPage({
 	return (
 		<>
 			<div className="relative mx-auto mt-10 block h-14 w-2/3 max-w-[800px]">
+				<div className="absolute -left-14 top-0 ml-2 block h-full w-10 p-2 sm:left-0">
+					<DatePickerWithRange date={date} setDate={setDate} />
+				</div>
 				<input
 					type="text"
 					placeholder="Search"
@@ -62,7 +83,9 @@ export default function SearchPage({
 					ref={searchElementRef}
 					onKeyUp={(e: any) => {
 						if (e.key === 'Enter') {
-							router.push(`/search?search=${e.target.value}`);
+							router.push(
+								`/search?search=${e.target.value}${dateStart}${dateEnd}`
+							);
 						}
 					}}
 				/>
@@ -110,6 +133,8 @@ export default function SearchPage({
 							searchQuery={searchQuery}
 							page={page}
 							totalPages={data.totalPages}
+							dateStart={dateStart}
+							dateEnd={dateEnd}
 						/>
 					)}
 				</>
@@ -121,11 +146,15 @@ export default function SearchPage({
 function PaginationSection({
 	searchQuery,
 	page,
-	totalPages
+	totalPages,
+	dateStart,
+	dateEnd
 }: {
 	searchQuery: string;
 	page: number;
 	totalPages: number;
+	dateStart: string;
+	dateEnd: string;
 }) {
 	return (
 		<Pagination className="place-self-end pb-7">
@@ -133,7 +162,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationNewerMessages
 						isActive={!(page === 1)}
-						href={`/search?search=${searchQuery}&page=${page - 1 >= 1 ? page - 1 : page}`}
+						href={`/search?search=${searchQuery}&page=${page - 1 >= 1 ? page - 1 : page}${dateStart}${dateEnd}`}
 						className={`${
 							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}
@@ -148,7 +177,7 @@ function PaginationSection({
 				<PaginationItem>
 					<PaginationOlderMessages
 						isActive={!(page === totalPages)}
-						href={`/search?search=${searchQuery}&page=${page + 1 > totalPages ? page : page + 1}`}
+						href={`/search?search=${searchQuery}&page=${page + 1 > totalPages ? page : page + 1}${dateStart}${dateEnd}`}
 						className={`${
 							page === totalPages ? 'cursor-not-allowed' : 'cursor-pointer'
 						} select-none`}

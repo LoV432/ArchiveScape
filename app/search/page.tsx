@@ -24,14 +24,40 @@ export async function generateMetadata({
 export default async function Page({
 	searchParams
 }: {
-	searchParams: { search: string; page: string };
+	searchParams: {
+		search: string;
+		page: string;
+		dateStart?: string;
+		dateEnd?: string;
+	};
 }) {
 	const searchQuery = searchParams.search || '';
 	const page = Number(searchParams.page) || 1;
-	const data = await getSearch(searchQuery, page);
+	let dateStart = searchParams.dateStart || '';
+	let dateEnd = searchParams.dateEnd || '';
+	let parsedDateStart: Date | undefined = new Date(dateStart);
+	let parsedDateEnd: Date | undefined = new Date(dateEnd);
+	if (Number.isNaN(Number(parsedDateStart))) {
+		parsedDateStart = undefined;
+	}
+	if (Number.isNaN(Number(parsedDateEnd))) {
+		parsedDateEnd = undefined;
+	}
+	const data = await getSearch(
+		searchQuery,
+		page,
+		parsedDateStart,
+		parsedDateEnd
+	);
 	return (
 		<div className="grid">
-			<SearchPage data={data} searchQuery={searchQuery} page={page} />
+			<SearchPage
+				data={data}
+				searchQuery={searchQuery}
+				page={page}
+				preSelectedDateStart={parsedDateStart}
+				preSelectedDateEnd={parsedDateEnd}
+			/>
 		</div>
 	);
 }
