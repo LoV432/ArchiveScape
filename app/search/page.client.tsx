@@ -68,7 +68,7 @@ export default function SearchPage({
 	return (
 		<>
 			<div className="relative mx-auto mt-10 block h-14 w-2/3 max-w-[800px]">
-				<div className="absolute -left-14 top-0 ml-2 block h-full w-10 p-2 sm:left-0">
+				<div className="absolute -left-16 top-0 ml-2 block h-full w-10 py-2 sm:left-0">
 					<DatePickerWithRange date={date} setDate={setDate} />
 				</div>
 				<input

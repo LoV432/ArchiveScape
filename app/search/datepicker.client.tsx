@@ -11,6 +11,7 @@ import {
 	PopoverContent,
 	PopoverTrigger
 } from '@/components/ui/popover';
+import { useState } from 'react';
 
 export function DatePickerWithRange({
 	date,
@@ -19,23 +20,28 @@ export function DatePickerWithRange({
 	date?: DateRange;
 	setDate: (date: DateRange | undefined) => void;
 }) {
+	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<Popover>
+		<Popover open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
 			<PopoverTrigger asChild>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					className="ionicon h-full w-full"
-					viewBox="0 0 512 512"
+				<div
+					className={`grid h-full w-[45px] place-items-center rounded hover:bg-accent active:bg-accent ${isOpen ? 'bg-accent' : ''} ${!date?.from ? 'text-muted-foreground' : ''} cursor-pointer`}
 				>
-					<path
-						fill="none"
-						stroke="currentColor"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth="32"
-						d="M32 144h448M112 256h288M208 368h96"
-					/>
-				</svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className="ionicon h-full w-6"
+						viewBox="0 0 512 512"
+					>
+						<path
+							fill="none"
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="32"
+							d="M32 144h448M112 256h288M208 368h96"
+						/>
+					</svg>
+				</div>
 			</PopoverTrigger>
 			<PopoverContent className="w-[330px] p-0" align="start">
 				<div
