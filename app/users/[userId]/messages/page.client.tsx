@@ -74,12 +74,12 @@ function MessageSection({
 								style={{ color: message.color_name }}
 							>
 								<div>
-									{new Date(message.created_at).toLocaleString('en-US', {
+									{new Date(message.created_at).toLocaleString('ur-PK', {
 										dateStyle: 'short'
 									})}
 								</div>
 								<div>
-									{new Date(message.created_at).toLocaleString('en-US', {
+									{new Date(message.created_at).toLocaleString('ur-PK', {
 										timeStyle: 'short'
 									})}
 								</div>

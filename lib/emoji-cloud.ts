@@ -53,7 +53,7 @@ export async function emojiBarList() {
 	);
 
 	const labels = allEmojisCountArray.map(({ date }) =>
-		new Date(date).toLocaleDateString('en-US', {
+		new Date(date).toLocaleDateString('ur-PK', {
 			year: '2-digit',
 			month: 'short',
 			day: 'numeric'
