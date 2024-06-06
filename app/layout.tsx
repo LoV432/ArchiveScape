@@ -21,6 +21,8 @@ export default function RootLayout({
 		// The theme provider recommends using suppressHydrationWarning
 		// https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
 		<html suppressHydrationWarning lang="en">
+			<link rel="preload" href="/scribble.gif" as="image" />
+			<link rel="preload" href="/cat.gif" as="image" />
 			<Script
 				src="https://analytics-public.monib.xyz/js/script.js"
 				data-domain="archivescape.monib.xyz"

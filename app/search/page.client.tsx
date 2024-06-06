@@ -112,9 +112,8 @@ export default function SearchPage({
 					{searchQuery !== '' && (
 						<>
 							<p className="text-xl font-semibold">No results :(</p>
-							<Image
-								unoptimized
-								src={scribble}
+							<img
+								src="/scribble.gif"
 								alt="no search results"
 								width={200}
 								height={200}
@@ -122,9 +121,8 @@ export default function SearchPage({
 						</>
 					)}
 					{searchQuery === '' && (
-						<Image
-							unoptimized
-							src={cat}
+						<img
+							src="/cat.gif"
 							alt="cat waiting patiently"
 							width={400}
 							height={400}
