@@ -20,7 +20,7 @@ export async function getSearch(
 			if (!dateEnd) {
 				// If this is true we assume that the user wants to see all messages for the dateStart day
 				dateEnd = new Date(dateStart);
-				dateEnd.setHours(23, 59, 59, 999);
+				dateEnd.setDate(dateEnd.getDate() + 1);
 			}
 		}
 		if (dateEnd) {
