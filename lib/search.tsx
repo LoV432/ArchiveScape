@@ -17,6 +17,11 @@ export async function getSearch(
 		if (dateStart) {
 			queryBuilder += ` AND created_at >= $${params.length + 1}`;
 			params.push(dateStart.toISOString());
+			if (!dateEnd) {
+				// If this is true we assume that the user wants to see all messages for the dateStart day
+				dateEnd = new Date(dateStart);
+				dateEnd.setHours(23, 59, 59, 999);
+			}
 		}
 		if (dateEnd) {
 			queryBuilder += ` AND created_at <= $${params.length + 1}`;

@@ -49,7 +49,13 @@ export default function SearchPage({
 		date?.from
 			? setDateStart(`&dateStart=${date.from.toISOString()}`)
 			: setDateStart('');
-		date?.to ? setDateEnd(`&dateEnd=${date.to.toISOString()}`) : setDateEnd('');
+		// All These new Date() are to prevent original date.to from being changed
+		// Bad things happen when you do that
+		date?.to
+			? setDateEnd(
+					`&dateEnd=${new Date(new Date(date.to).setHours(23, 59, 59, 999)).toISOString()}`
+				)
+			: setDateEnd('');
 	}, [date]);
 	useEffect(() => {
 		document.addEventListener('keydown', (e) => {
