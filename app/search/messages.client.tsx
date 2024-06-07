@@ -41,12 +41,14 @@ export default function MessageSection({ messages }: { messages: Message[] }) {
 								style={{ color: message.color_name }}
 							>
 								<div>
-									{new Date(message.created_at).toLocaleString('ur-PK', {
-										dateStyle: 'short'
+									{new Date(message.created_at).toLocaleString('en-PK', {
+										year: '2-digit',
+										month: 'short',
+										day: 'numeric'
 									})}
 								</div>
 								<div>
-									{new Date(message.created_at).toLocaleString('ur-PK', {
+									{new Date(message.created_at).toLocaleString('en-PK', {
 										timeStyle: 'short'
 									})}
 								</div>

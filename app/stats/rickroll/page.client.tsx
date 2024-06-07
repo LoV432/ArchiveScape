@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ClientPage({ time }: { time: Date }) {
 	const [dateTime, setDateTime] = useState(
-		time.toLocaleString('ur-PK', {
+		time.toLocaleString('en-PK', {
 			dateStyle: 'full',
 			timeStyle: 'short',
 			timeZone: 'UTC'
@@ -13,7 +13,7 @@ export default function ClientPage({ time }: { time: Date }) {
 	const [isCorrectTime, setIsCorrectTime] = useState(false);
 	useEffect(() => {
 		setDateTime(
-			time.toLocaleString('ur-PK', { dateStyle: 'full', timeStyle: 'short' })
+			time.toLocaleString('en-PK', { dateStyle: 'full', timeStyle: 'short' })
 		);
 		setIsCorrectTime(true);
 	}, [time]);
