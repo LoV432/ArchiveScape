@@ -61,7 +61,6 @@ function MessageSection({
 			<TableCaption hidden>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>
-					<TableHead>Time</TableHead>
 					<TableHead>Message</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -85,27 +84,22 @@ function MessageSection({
 							key={message.id}
 						>
 							<TableCell
-								className="w-[130px]"
 								style={{ color: message.color_name }}
+								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								<div>
+								<p>{message.message_text}</p>
+								<p className="float-right text-sm text-gray-500">
 									{new Date(message.created_at).toLocaleString('en-PK', {
 										year: '2-digit',
 										month: 'short',
-										day: 'numeric'
+										day: 'numeric',
+										hour: 'numeric',
+										minute: 'numeric'
 									})}
-								</div>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										timeStyle: 'short'
-									})}
-								</div>
-							</TableCell>
-							<TableCell
-								style={{ color: message.color_name }}
-								className="max-w-[150px] break-words sm:max-w-[500px]"
-							>
-								{message.message_text}
+								</p>
+								<p className="float-right text-sm text-gray-500">
+									{message.user_id} -&nbsp;
+								</p>
 							</TableCell>
 						</TableRow>
 					</TableRowContextMenu>
