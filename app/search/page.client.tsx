@@ -10,9 +10,6 @@ import {
 import { useRouter } from 'next13-progressbar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import cat from '@/public/cat.gif';
-import scribble from '@/public/scribble.gif';
-import Image from 'next/image';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import dynamic from 'next/dynamic';
 import LoadingTable from '@/components/LoadingTable';
@@ -74,28 +71,30 @@ export default function SearchPage({
 	}, []);
 	return (
 		<>
-			<div className="relative mx-auto mt-10 block h-14 w-2/3 max-w-[800px]">
-				<div className="absolute -left-16 top-0 ml-2 block h-full w-10 py-2 sm:left-0">
-					<DatePickerWithRange date={date} setDate={setDate} />
-				</div>
-				<input
-					type="text"
-					placeholder="Search"
-					className="h-full w-full rounded border border-gray-300 border-opacity-35 text-center text-2xl font-bold focus-visible:border-opacity-70 focus-visible:outline-none"
-					defaultValue={searchQuery}
-					onFocus={(e) =>
-						e.target.setAttribute('placeholder', 'Start typing...')
-					}
-					onBlur={(e) => e.target.setAttribute('placeholder', 'Search')}
-					ref={searchElementRef}
-					onKeyUp={(e: any) => {
-						if (e.key === 'Enter') {
-							router.push(
-								`/search?search=${e.target.value}${dateStart}${dateEnd}`
-							);
+			<div className="relative mx-auto mt-10 flex h-14 w-full max-w-[800px] px-4 sm:w-2/3 sm:px-0">
+				<div className="flex w-full gap-5">
+					<div className="ml-2 block h-full w-10 py-2 sm:absolute sm:left-0">
+						<DatePickerWithRange date={date} setDate={setDate} />
+					</div>
+					<input
+						type="text"
+						placeholder="Search"
+						className="h-full w-full rounded border border-gray-300 border-opacity-35 text-center text-2xl font-bold focus-visible:border-opacity-70 focus-visible:outline-none"
+						defaultValue={searchQuery}
+						onFocus={(e) =>
+							e.target.setAttribute('placeholder', 'Start typing...')
 						}
-					}}
-				/>
+						onBlur={(e) => e.target.setAttribute('placeholder', 'Search')}
+						ref={searchElementRef}
+						onKeyUp={(e: any) => {
+							if (e.key === 'Enter') {
+								router.push(
+									`/search?search=${e.target.value}${dateStart}${dateEnd}`
+								);
+							}
+						}}
+					/>
+				</div>
 				<div className="absolute right-0 top-0 hidden h-full w-16 p-2 sm:block">
 					<Button
 						onClick={() =>
