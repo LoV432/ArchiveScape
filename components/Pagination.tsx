@@ -49,7 +49,7 @@ export function MessagesPagination({
 					<PaginationButton
 						isActive={!isFirstPage}
 						href={`${pathname}?page=${previousPage}${params}`}
-						className={`${isFirstPage ? 'hidden' : ''} select-none`}
+						className={`${isFirstPage ? 'opacity-0' : ''} select-none`}
 						direction={order === 'asc' ? 'older' : 'newer'}
 					/>
 				</PaginationItem>
@@ -63,7 +63,7 @@ export function MessagesPagination({
 					<PaginationButton
 						isActive={!isLastPage}
 						href={`${pathname}?page=${nextPage}${params}`}
-						className={`${isLastPage ? 'hidden' : ''} select-none`}
+						className={`${isLastPage ? 'opacity-0' : ''} select-none`}
 						direction={order === 'asc' ? 'newer' : 'older'}
 					/>
 				</PaginationItem>
