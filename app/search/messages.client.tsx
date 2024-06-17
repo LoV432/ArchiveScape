@@ -13,7 +13,7 @@ import { Message } from '@/lib/all-messages';
 
 export default function MessageSection({ messages }: { messages: Message[] }) {
 	return (
-		<Table className="mx-auto mt-10 max-w-3xl text-base">
+		<Table className="mx-auto max-w-3xl text-base">
 			<TableCaption hidden>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>

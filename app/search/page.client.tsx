@@ -1,16 +1,8 @@
 'use client';
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNewerMessages,
-	PaginationOlderMessages
-} from '@/components/ui/pagination';
+import { MessagesPagination } from '@/components/Pagination';
 import { useRouter } from 'next13-progressbar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import dynamic from 'next/dynamic';
 import LoadingTable from '@/components/LoadingTable';
 const MessageSection = dynamic(() => import('./messages.client'), {
@@ -71,7 +63,7 @@ export default function SearchPage({
 	}, []);
 	return (
 		<>
-			<div className="relative mx-auto mt-10 flex h-14 w-full max-w-[800px] px-4 sm:w-2/3 sm:px-0">
+			<div className="relative mx-auto my-10 flex h-14 w-full max-w-[800px] px-4 sm:w-2/3 sm:px-0">
 				<div className="flex w-full gap-5">
 					<div className="ml-2 block h-full w-10 py-2 sm:absolute sm:left-0">
 						<DatePickerWithRange date={date} setDate={setDate} />
@@ -131,63 +123,23 @@ export default function SearchPage({
 			)}
 			{data.messages.length > 0 && (
 				<>
-					<MessageSection messages={data.messages} />
 					{data.totalPages > 1 && (
-						<PaginationSection
-							searchQuery={searchQuery}
+						<MessagesPagination
+							order="desc"
 							page={page}
 							totalPages={data.totalPages}
-							dateStart={dateStart}
-							dateEnd={dateEnd}
+						/>
+					)}
+					<MessageSection messages={data.messages} />
+					{data.totalPages > 1 && (
+						<MessagesPagination
+							order="desc"
+							page={page}
+							totalPages={data.totalPages}
 						/>
 					)}
 				</>
 			)}
 		</>
-	);
-}
-
-function PaginationSection({
-	searchQuery,
-	page,
-	totalPages,
-	dateStart,
-	dateEnd
-}: {
-	searchQuery: string;
-	page: number;
-	totalPages: number;
-	dateStart: string;
-	dateEnd: string;
-}) {
-	return (
-		<Pagination className="place-self-end pb-7">
-			<PaginationContent>
-				<PaginationItem>
-					<PaginationNewerMessages
-						isActive={!(page === 1)}
-						href={`/search?search=${searchQuery}&page=${page - 1 >= 1 ? page - 1 : page}${dateStart}${dateEnd}`}
-						className={`${
-							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
-					/>
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
-				</PaginationItem>
-				<PaginationItem>
-					<GoToPageEllipsis link={`/search?search=${searchQuery}`} />
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationOlderMessages
-						isActive={!(page === totalPages)}
-						href={`/search?search=${searchQuery}&page=${page + 1 > totalPages ? page : page + 1}${dateStart}${dateEnd}`}
-						className={`${
-							page === totalPages ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
-					/>
-				</PaginationItem>
-			</PaginationContent>
-		</Pagination>
 	);
 }
