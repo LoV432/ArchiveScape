@@ -7,8 +7,17 @@ import {
 import { PaginationEllipsis } from '@/components/ui/pagination';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function GoToPageEllipsis({ link }: { link: string }) {
+export default function GoToPageEllipsis() {
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+	let params: string = '';
+	searchParams.forEach((value, key) => {
+		if (key !== 'page') {
+			params += `&${key}=${value}`;
+		}
+	});
 	const router = useRouter();
 	const [isOpen, setIsOpen] = useState(false);
 	return (
@@ -20,7 +29,9 @@ export default function GoToPageEllipsis({ link }: { link: string }) {
 				<input
 					onKeyDown={(e) => {
 						if (e.key === 'Enter') {
-							router.push(`${link}&page=${Number(e.currentTarget.value) || 1}`);
+							router.push(
+								`${pathname}?page=${Number(e.currentTarget.value) || 1}${params}`
+							);
 							setIsOpen(false);
 						}
 					}}

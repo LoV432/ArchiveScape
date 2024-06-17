@@ -8,19 +8,10 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
-
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNewerMessages,
-	PaginationOlderMessages
-} from '@/components/ui/pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
-import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { Message } from '@/lib/all-messages';
+import { MessagesPagination } from '@/components/Pagination';
 
 export default function AllMessagesPage({
 	data,
@@ -29,19 +20,24 @@ export default function AllMessagesPage({
 }: {
 	data: { messages: Message[]; totalPages: number };
 	page: number;
-	highlightedUser: number | null;
+	highlightedUser?: number;
 }) {
 	return (
 		<>
+			<MessagesPagination
+				totalPages={data.totalPages}
+				page={page}
+				order="desc"
+			/>
 			<MessageSection
 				messages={data.messages}
 				page={page}
 				highlightedUser={highlightedUser}
 			/>
-			<PaginationSection
+			<MessagesPagination
 				totalPages={data.totalPages}
-				highlightedUser={highlightedUser}
 				page={page}
+				order="desc"
 			/>
 		</>
 	);
@@ -54,7 +50,7 @@ function MessageSection({
 }: {
 	messages: Message[];
 	page: number;
-	highlightedUser: number | null;
+	highlightedUser?: number;
 }) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
@@ -106,44 +102,5 @@ function MessageSection({
 				))}
 			</TableBody>
 		</Table>
-	);
-}
-
-function PaginationSection({
-	totalPages,
-	page,
-	highlightedUser
-}: {
-	totalPages: number;
-	page: number;
-	highlightedUser: number | null;
-}) {
-	return (
-		<Pagination className="place-self-end pb-7">
-			<PaginationContent>
-				<PaginationItem>
-					<PaginationNewerMessages
-						isActive={!(page === 1)}
-						href={`/all-messages?user_id=${highlightedUser}&page=${page - 1 >= 1 ? page - 1 : page}`}
-						className={`${
-							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
-					/>
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
-				</PaginationItem>
-				<PaginationItem>
-					<GoToPageEllipsis link={`/all-messages?user_id=${highlightedUser}`} />
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationOlderMessages
-						isActive={!(page === totalPages)}
-						href={`/all-messages?user_id=${highlightedUser}&page=${page + 1 > totalPages ? page : page + 1}`}
-						className={`select-none ${page === totalPages ? 'cursor-not-allowed' : ''}`}
-					/>
-				</PaginationItem>
-			</PaginationContent>
-		</Pagination>
 	);
 }

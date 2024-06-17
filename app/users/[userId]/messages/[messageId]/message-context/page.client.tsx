@@ -9,17 +9,9 @@ import {
 	TableRow
 } from '@/components/ui/table';
 
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNewerMessages,
-	PaginationOlderMessages
-} from '@/components/ui/pagination';
+import { MessagesPagination } from '@/components/Pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
-import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { Message } from '@/lib/all-messages';
 import { useEffect } from 'react';
 
@@ -39,12 +31,13 @@ export default function Main({
 }) {
 	return (
 		<>
+			<MessagesPagination totalPages={'infinite'} page={page} order="asc" />
 			<MessageSection
 				messages={data.messages}
 				userId={userId}
 				messageId={messageId}
 			/>
-			<PaginationSection userId={userId} messageId={messageId} page={page} />
+			<MessagesPagination totalPages={'infinite'} page={page} order="asc" />
 		</>
 	);
 }
@@ -120,44 +113,5 @@ function MessageSection({
 				))}
 			</TableBody>
 		</Table>
-	);
-}
-
-function PaginationSection({
-	userId,
-	messageId,
-	page
-}: {
-	userId: number;
-	messageId: number;
-	page: number;
-}) {
-	return (
-		<Pagination className="place-self-end pb-7">
-			<PaginationContent>
-				<PaginationItem>
-					<PaginationOlderMessages
-						isActive
-						href={`/users/${userId}/messages/${messageId}/message-context?page=${page - 1}`}
-						className={`select-none`}
-					/>
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
-				</PaginationItem>
-				<PaginationItem>
-					<GoToPageEllipsis
-						link={`/users/${userId}/messages/${messageId}/message-context?`}
-					/>
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationNewerMessages
-						isActive
-						href={`/users/${userId}/messages/${messageId}/message-context?page=${page + 1}`}
-						className={`select-none`}
-					/>
-				</PaginationItem>
-			</PaginationContent>
-		</Pagination>
 	);
 }

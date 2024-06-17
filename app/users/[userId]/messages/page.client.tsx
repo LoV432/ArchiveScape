@@ -9,17 +9,9 @@ import {
 	TableRow
 } from '@/components/ui/table';
 
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNewerMessages,
-	PaginationOlderMessages
-} from '@/components/ui/pagination';
+import { MessagesPagination } from '@/components/Pagination';
 
 import Link from 'next/link';
-import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { Message } from '@/lib/all-messages';
 import ScrollToTop from '@/components/ScrollToTop';
 
@@ -39,11 +31,16 @@ export default function MessagesPage({
 	return (
 		<>
 			<ScrollToTop />
-			<MessageSection messages={data.messages} userId={userId} />
-			<PaginationSection
-				totalPages={data.totalPages}
+			<MessagesPagination
 				page={page}
-				userId={userId}
+				totalPages={data.totalPages}
+				order="desc"
+			/>
+			<MessageSection messages={data.messages} userId={userId} />
+			<MessagesPagination
+				page={page}
+				totalPages={data.totalPages}
+				order="desc"
 			/>
 		</>
 	);
@@ -102,46 +99,5 @@ function MessageSection({
 				</TableBody>
 			</Table>
 		</>
-	);
-}
-
-function PaginationSection({
-	userId,
-	page,
-	totalPages
-}: {
-	userId: number;
-	page: number;
-	totalPages: number;
-}) {
-	return (
-		<Pagination className="place-self-end pb-7">
-			<PaginationContent>
-				<PaginationItem>
-					<PaginationNewerMessages
-						isActive={!(page === 1)}
-						href={`/users/${userId}/messages?page=${page - 1 >= 1 ? page - 1 : page}`}
-						className={`${
-							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
-					/>
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
-				</PaginationItem>
-				<PaginationItem>
-					<GoToPageEllipsis link={`/users/${userId}/messages?`} />
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationOlderMessages
-						isActive={!(page === totalPages)}
-						href={`/users/${userId}/messages?page=${page + 1 > totalPages ? page : page + 1}`}
-						className={`${
-							page === totalPages ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
-					/>
-				</PaginationItem>
-			</PaginationContent>
-		</Pagination>
 	);
 }

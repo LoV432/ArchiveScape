@@ -32,7 +32,7 @@ export default async function Page({
 	searchParams: { page: string; user_id: number };
 }) {
 	const page = Number(searchParams.page) || 1;
-	const highlightedUser = Number(searchParams.user_id) || null;
+	const highlightedUser = Number(searchParams.user_id) || undefined;
 	const data = await getAllMessages(page);
 	return (
 		<div className="grid">
