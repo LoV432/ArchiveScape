@@ -8,17 +8,8 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
-
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious
-} from '@/components/ui/pagination';
+import { MessagesPagination } from '@/components/Pagination';
 import Link from 'next/link';
-import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { User } from '@/lib/all-users';
 
 export default function UsersPage({
@@ -30,8 +21,19 @@ export default function UsersPage({
 }) {
 	return (
 		<>
+			<MessagesPagination
+				totalPages={data.totalPages}
+				page={page}
+				order="desc"
+				type="default"
+			/>
 			<UsersTable users={data.users} />
-			<PaginationSection page={page} totalPages={data.totalPages} />
+			<MessagesPagination
+				totalPages={data.totalPages}
+				page={page}
+				order="desc"
+				type="default"
+			/>
 		</>
 	);
 }
@@ -66,42 +68,5 @@ function UsersTable({ users }: { users: User[] }) {
 				))}
 			</TableBody>
 		</Table>
-	);
-}
-
-function PaginationSection({
-	page,
-	totalPages
-}: {
-	page: number;
-	totalPages: number;
-}) {
-	return (
-		<Pagination className="place-self-end pb-7">
-			<PaginationContent>
-				<PaginationItem>
-					<PaginationPrevious
-						isActive={!(page === 1)}
-						href={`/users?page=${page - 1 >= 1 ? page - 1 : page}`}
-						className={`${
-							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
-					/>
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
-				</PaginationItem>
-				<PaginationItem>
-					<GoToPageEllipsis />
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationNext
-						isActive={!(page === totalPages)}
-						href={`/users?page=${page + 1 > totalPages ? page : page + 1}`}
-						className={`select-none ${page === totalPages ? 'cursor-not-allowed' : ''}`}
-					/>
-				</PaginationItem>
-			</PaginationContent>
-		</Pagination>
 	);
 }

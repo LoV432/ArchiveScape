@@ -12,11 +12,13 @@ import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 export function MessagesPagination({
 	totalPages,
 	page,
-	order
+	order,
+	type = 'messages'
 }: {
 	totalPages: number | 'infinite';
 	page: number;
 	order: 'asc' | 'desc';
+	type?: 'messages' | 'default';
 }) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -30,6 +32,15 @@ export function MessagesPagination({
 	const isInfinite = totalPages === 'infinite';
 	const isLastPage = isInfinite ? false : page === totalPages;
 	const isFirstPage = isInfinite ? false : page === 1;
+
+	let buttonTextFirst, buttonTextLast;
+	if (type === 'messages') {
+		buttonTextFirst = order === 'asc' ? 'Older Messages' : 'Newer Messages';
+		buttonTextLast = order === 'asc' ? 'Newer Messages' : 'Older Messages';
+	} else {
+		buttonTextFirst = '< Previous';
+		buttonTextLast = 'Next >';
+	}
 
 	let previousPage, nextPage;
 	if (isInfinite) {
@@ -50,7 +61,7 @@ export function MessagesPagination({
 						isActive={!isFirstPage}
 						href={`${pathname}?page=${previousPage}${params}`}
 						className={`${isFirstPage ? 'opacity-0' : ''} select-none`}
-						direction={order === 'asc' ? 'older' : 'newer'}
+						buttonText={buttonTextFirst}
 					/>
 				</PaginationItem>
 				<PaginationItem>
@@ -64,7 +75,7 @@ export function MessagesPagination({
 						isActive={!isLastPage}
 						href={`${pathname}?page=${nextPage}${params}`}
 						className={`${isLastPage ? 'opacity-0' : ''} select-none`}
-						direction={order === 'asc' ? 'newer' : 'older'}
+						buttonText={buttonTextLast}
 					/>
 				</PaginationItem>
 			</PaginationContent>
