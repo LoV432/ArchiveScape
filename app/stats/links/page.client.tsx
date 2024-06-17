@@ -8,17 +8,8 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
-
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNewerMessages,
-	PaginationOlderMessages
-} from '@/components/ui/pagination';
+import { MessagesPagination } from '@/components/Pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
-import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { Message } from '@/lib/all-messages';
 
 export default function AllMessagesWithLinks({
@@ -30,8 +21,17 @@ export default function AllMessagesWithLinks({
 }) {
 	return (
 		<>
+			<MessagesPagination
+				page={page}
+				totalPages={data.totalPages}
+				order="desc"
+			/>
 			<MessageSection messages={data.links} page={page} />
-			<PaginationSection totalPages={data.totalPages} page={page} />
+			<MessagesPagination
+				page={page}
+				totalPages={data.totalPages}
+				order="desc"
+			/>
 		</>
 	);
 }
@@ -89,42 +89,5 @@ function MessageSection({
 				))}
 			</TableBody>
 		</Table>
-	);
-}
-
-function PaginationSection({
-	totalPages,
-	page
-}: {
-	totalPages: number;
-	page: number;
-}) {
-	return (
-		<Pagination className="place-self-end pb-7">
-			<PaginationContent>
-				<PaginationItem>
-					<PaginationNewerMessages
-						isActive={!(page === 1)}
-						href={`/stats/links?page=${page - 1 >= 1 ? page - 1 : page}`}
-						className={`${
-							page === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
-						} select-none`}
-					/>
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
-				</PaginationItem>
-				<PaginationItem>
-					<GoToPageEllipsis link={`/stats/links?`} />
-				</PaginationItem>
-				<PaginationItem>
-					<PaginationOlderMessages
-						isActive={!(page === totalPages)}
-						href={`/stats/links?page=${page + 1 > totalPages ? page : page + 1}`}
-						className={`select-none ${page === totalPages ? 'cursor-not-allowed' : ''}`}
-					/>
-				</PaginationItem>
-			</PaginationContent>
-		</Pagination>
 	);
 }

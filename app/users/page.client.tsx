@@ -26,7 +26,7 @@ export default function UsersPage({
 	page
 }: {
 	data: { users: User[]; totalPages: number };
-	page: number
+	page: number;
 }) {
 	return (
 		<>
@@ -92,7 +92,7 @@ function PaginationSection({
 					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
 				</PaginationItem>
 				<PaginationItem>
-					<GoToPageEllipsis link={`/users?`} />
+					<GoToPageEllipsis />
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationNext
