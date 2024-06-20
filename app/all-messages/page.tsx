@@ -1,11 +1,8 @@
 import { Metadata } from 'next/types';
 import { getAllMessages } from '@/lib/all-messages';
-import dynamic from 'next/dynamic';
 import LoadingTable from '@/components/LoadingTable';
-const AllMessagesPage = dynamic(() => import('./page.client'), {
-	ssr: false,
-	loading: () => <LoadingTable />
-});
+import { Suspense, use } from 'react';
+import AllMessages from './AllMessages';
 
 export async function generateMetadata({
 	searchParams
@@ -31,19 +28,30 @@ export default async function Page({
 }: {
 	searchParams: { page: string; user_id: number };
 }) {
-	const page = Number(searchParams.page) || 1;
-	const highlightedUser = Number(searchParams.user_id) || undefined;
-	const data = await getAllMessages(page);
 	return (
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-1">All Messages</p>
 			</h1>
-			<AllMessagesPage
-				data={data}
-				page={page}
-				highlightedUser={highlightedUser}
-			/>
+			<Suspense fallback={<LoadingTable />}>
+				<AllMessagesForSuspense
+					key={`${searchParams.page}${searchParams.user_id}`}
+					searchParams={searchParams}
+				/>
+			</Suspense>
 		</div>
+	);
+}
+
+function AllMessagesForSuspense({
+	searchParams
+}: {
+	searchParams: { page: string; user_id: number };
+}) {
+	const page = Number(searchParams.page) || 1;
+	const highlightedUser = Number(searchParams.user_id) || undefined;
+	const data = use(getAllMessages(page));
+	return (
+		<AllMessages data={data} page={page} highlightedUser={highlightedUser} />
 	);
 }

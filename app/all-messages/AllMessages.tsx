@@ -1,4 +1,3 @@
-'use client';
 import {
 	Table,
 	TableBody,
@@ -12,6 +11,7 @@ import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import { Message } from '@/lib/all-messages';
 import { MessagesPagination } from '@/components/Pagination';
+import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 
 export default function AllMessagesPage({
 	data,
@@ -84,15 +84,7 @@ function MessageSection({
 								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
 								<p>{message.message_text}</p>
-								<p className="float-right text-sm text-gray-500">
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										year: '2-digit',
-										month: 'short',
-										day: 'numeric',
-										hour: 'numeric',
-										minute: 'numeric'
-									})}
-								</p>
+								<MessageCreatedAt time={message.created_at} />
 								<p className="float-right text-sm text-gray-500">
 									{message.user_id} -&nbsp;
 								</p>
