@@ -22,7 +22,10 @@ export default function GoToPageEllipsis() {
 	const [isOpen, setIsOpen] = useState(false);
 	return (
 		<Popover onOpenChange={() => setIsOpen(!isOpen)} open={isOpen}>
-			<PopoverTrigger onClick={() => setIsOpen(!isOpen)}>
+			<PopoverTrigger
+				aria-label="Go To Page"
+				onClick={() => setIsOpen(!isOpen)}
+			>
 				<PaginationEllipsis />
 			</PopoverTrigger>
 			<PopoverContent className="w-44">

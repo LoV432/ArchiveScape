@@ -69,7 +69,7 @@ export default function Header() {
 				<NavLogo className="mr-auto" />
 				<SearchButton isMobile />
 				<Sheet open={isOpen} onOpenChange={setIsOpen}>
-					<SheetTrigger>
+					<SheetTrigger aria-label="Open menu">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 512 512"
@@ -328,6 +328,7 @@ function SearchButton({ isMobile = false }: { isMobile?: boolean }) {
 	return (
 		<Link href="/search" legacyBehavior passHref>
 			<NavigationMenuLink
+				aria-label="Search"
 				className={`${isMobile ? 'mr-2.5' : `${navigationMenuTriggerStyle()} ml-auto`} text-center text-xl font-bold`}
 			>
 				<svg
