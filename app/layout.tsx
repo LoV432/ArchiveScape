@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import QueryProvider from '@/components/query-provider';
-import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/Header';
 import BreadcrumbComponent from '@/components/BreadCrumb';
 import Script from 'next/script';
@@ -18,9 +16,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		// The theme provider recommends using suppressHydrationWarning
-		// https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
-		<html suppressHydrationWarning lang="en">
+		<html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
 			<link rel="preload" href="/scribble.gif" as="image" />
 			<link rel="preload" href="/cat.gif" as="image" />
 			<Script
@@ -29,19 +25,11 @@ export default function RootLayout({
 				defer
 			></Script>
 			<body className="relative grid min-h-svh grid-rows-[auto_auto_1fr] font-mono sm:min-h-screen">
-				<QueryProvider>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="dark"
-						disableTransitionOnChange
-					>
-						<SpinnerProvider>
-							<Header />
-							<BreadcrumbComponent />
-							{children}
-						</SpinnerProvider>
-					</ThemeProvider>
-				</QueryProvider>
+				<SpinnerProvider>
+					<Header />
+					<BreadcrumbComponent />
+					{children}
+				</SpinnerProvider>
 			</body>
 		</html>
 	);

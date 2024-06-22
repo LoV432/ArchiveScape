@@ -36,6 +36,9 @@ export async function emojiBarList() {
 		if (!allEmojisCount[date]) {
 			allEmojisCount[date] = {};
 		}
+		// @ts-ignore
+		// Type error: This regular expression flag is only available when targeting 'es6' or later.
+		// Setting target to es6 doesn't work
 		const emojis = message.message_text.match(/[\u{1F600}-\u{1F64F}]/gu) || [];
 		emojis.forEach((emoji) => {
 			allEmojisCount[date][emoji] = (allEmojisCount[date][emoji] || 0) + 1;
