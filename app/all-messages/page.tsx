@@ -1,7 +1,6 @@
 import { Metadata } from 'next/types';
 import { getAllMessages } from '@/lib/all-messages';
-import LoadingTable from '@/components/LoadingTable';
-import { Suspense, use } from 'react';
+import { use } from 'react';
 import AllMessages from './AllMessages';
 
 export async function generateMetadata({
@@ -23,27 +22,7 @@ export async function generateMetadata({
 	return metaObject;
 }
 
-export default async function Page({
-	searchParams
-}: {
-	searchParams: { page: string; user_id: number };
-}) {
-	return (
-		<div className="grid">
-			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-				<p className="pb-1">All Messages</p>
-			</h1>
-			<Suspense fallback={<LoadingTable />}>
-				<AllMessagesForSuspense
-					key={`${searchParams.page}${searchParams.user_id}`}
-					searchParams={searchParams}
-				/>
-			</Suspense>
-		</div>
-	);
-}
-
-function AllMessagesForSuspense({
+export default function Page({
 	searchParams
 }: {
 	searchParams: { page: string; user_id: number };
@@ -52,6 +31,11 @@ function AllMessagesForSuspense({
 	const highlightedUser = Number(searchParams.user_id) || undefined;
 	const data = use(getAllMessages(page));
 	return (
-		<AllMessages data={data} page={page} highlightedUser={highlightedUser} />
+		<div className="grid">
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-1">All Messages</p>
+			</h1>
+			<AllMessages data={data} page={page} highlightedUser={highlightedUser} />
+		</div>
 	);
 }
