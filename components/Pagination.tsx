@@ -58,6 +58,7 @@ export function MessagesPagination({
 			<PaginationContent>
 				<PaginationItem>
 					<PaginationButton
+						rel="nofollow"
 						isActive={!isFirstPage}
 						href={`${pathname}?page=${previousPage}${params}`}
 						className={`${isFirstPage ? 'opacity-0' : ''} select-none`}
@@ -65,13 +66,16 @@ export function MessagesPagination({
 					/>
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationLink className="cursor-pointer">{page}</PaginationLink>
+					<PaginationLink rel="nofollow" className="cursor-pointer">
+						{page}
+					</PaginationLink>
 				</PaginationItem>
 				<PaginationItem>
 					<GoToPageEllipsis />
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationButton
+						rel="nofollow"
 						isActive={!isLastPage}
 						href={`${pathname}?page=${nextPage}${params}`}
 						className={`${isLastPage ? 'opacity-0' : ''} select-none`}
