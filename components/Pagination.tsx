@@ -61,12 +61,12 @@ export function MessagesPagination({
 						rel="nofollow"
 						isActive={!isFirstPage}
 						href={`${pathname}?page=${previousPage}${params}`}
-						className={`${isFirstPage ? 'opacity-0' : ''} select-none`}
+						className={`${isFirstPage ? 'pointer-events-none opacity-0' : ''} select-none`}
 						buttonText={buttonTextFirst}
 					/>
 				</PaginationItem>
 				<PaginationItem>
-					<PaginationLink rel="nofollow" className="cursor-pointer">
+					<PaginationLink rel="nofollow" className="pointer-events-none">
 						{page}
 					</PaginationLink>
 				</PaginationItem>
@@ -78,7 +78,7 @@ export function MessagesPagination({
 						rel="nofollow"
 						isActive={!isLastPage}
 						href={`${pathname}?page=${nextPage}${params}`}
-						className={`${isLastPage ? 'opacity-0' : ''} select-none`}
+						className={`${isLastPage ? 'pointer-events-none opacity-0' : ''} select-none`}
 						buttonText={buttonTextLast}
 					/>
 				</PaginationItem>
