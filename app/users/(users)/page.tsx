@@ -1,6 +1,7 @@
 import { Metadata } from 'next/types';
-import UsersPage from './page.client';
+import UsersPage from './AllUsers';
 import { getAllUsers } from '@/lib/all-users';
+import { use } from 'react';
 
 export async function generateMetadata({
 	searchParams
@@ -21,13 +22,13 @@ export async function generateMetadata({
 	return metaObject;
 }
 
-export default async function Page({
+export default function Page({
 	searchParams
 }: {
 	searchParams: { page: string };
 }) {
 	const page = Number(searchParams.page) || 1;
-	const data = await getAllUsers(page);
+	const data = use(getAllUsers(page));
 	return (
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
