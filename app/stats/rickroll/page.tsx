@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
 	const lastDate = await db.query(
-		`SELECT *, users.user_name, colors.color_name, messages.id FROM messages LEFT JOIN colors ON messages.color_id = colors.id JOIN users ON messages.user_id = users.id  WHERE message_text LIKE '%https://www.youtube.com/watch?v=dQw4w9WgXcQ%' ORDER BY created_at DESC LIMIT 1`
+		`SELECT *, users.user_name, colors.color_name, messages.id FROM messages LEFT JOIN colors ON messages.color_id = colors.id JOIN users ON messages.user_id = users.id  WHERE message_text LIKE '%dQw4w9WgXcQ%' ORDER BY created_at DESC LIMIT 1`
 	);
 	return (
 		<div className="mx-5 flex h-full max-w-[100vw] flex-col place-items-center justify-center gap-7 text-center sm:gap-10">
