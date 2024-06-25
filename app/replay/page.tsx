@@ -31,13 +31,33 @@ export default function ReplayPage() {
 	const playInterval = useRef<NodeJS.Timeout>();
 
 	async function fetchMessages() {
-		const res = await fetch(`/api/replay?time=${time.toISOString()}`);
-		const data = await res.json();
-		if (data.length === 0) {
-			return false;
+		try {
+			const res = await fetch(`/api/replay?time=${time.toISOString()}`);
+			if (!res.ok) {
+				return {
+					success: false as const,
+					error: 'Something went wrong'
+				};
+			}
+			const data = await res.json();
+			if (data.length === 0) {
+				return {
+					success: false as const,
+					error: 'No messages found'
+				};
+			}
+			masterRecord.current = data;
+			return {
+				success: true as const,
+				error: null
+			};
+		} catch (e) {
+			console.error(e);
+			return {
+				success: false as const,
+				error: 'Something went wrong'
+			};
 		}
-		masterRecord.current = data;
-		return true;
 	}
 	function removeMessagesFromBuffer() {
 		let didRemove = false;
@@ -255,14 +275,17 @@ function Settings({
 	isPlaying
 }: {
 	setTime: Dispatch<SetStateAction<Date>>;
-	fetchMessage: () => Promise<boolean>;
+	fetchMessage: () => Promise<{ success: boolean; error: string | null }>;
 	startPlaying: () => void;
 	cleanUp: () => void;
 	time: Date;
 	isPlaying: boolean;
 }) {
 	const [showSettings, setShowSettings] = useState(false);
-	const [fetchResult, setFetchResult] = useState(true);
+	const [fetchResult, setFetchResult] = useState<{
+		success: Boolean;
+		error: String | null;
+	}>({ success: true, error: null });
 	const [autoFocus, setAutoFocus] = useState(true);
 	useEffect(() => {
 		if (window.matchMedia('(pointer: coarse)').matches) {
@@ -272,9 +295,14 @@ function Settings({
 	}, []);
 	return (
 		<>
-			{!fetchResult && (
+			{!fetchResult.success && fetchResult.error === 'No messages found' && (
 				<p className="fixed bottom-20 left-1/2 w-full translate-x-[-50%] p-4 text-center text-rose-900">
 					No messages within the timeframe. Please select a different time.
+				</p>
+			)}
+			{!fetchResult.success && fetchResult.error !== 'No messages found' && (
+				<p className="fixed bottom-20 left-1/2 w-full translate-x-[-50%] p-4 text-center text-rose-900">
+					Something went wrong. Please try again.
 				</p>
 			)}
 			<Popover
