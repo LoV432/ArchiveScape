@@ -1,6 +1,7 @@
 import { Metadata } from 'next/types';
 import SearchPage from './page.client';
 import { getSearch } from '@/lib/search';
+import Error from '@/components/Error';
 
 export async function generateMetadata({
 	searchParams
@@ -49,6 +50,9 @@ export default async function Page({
 		parsedDateStart,
 		parsedDateEnd
 	);
+	if (!data.success) {
+		return <Error error={data.error} />;
+	}
 	return (
 		<div className="grid">
 			<SearchPage

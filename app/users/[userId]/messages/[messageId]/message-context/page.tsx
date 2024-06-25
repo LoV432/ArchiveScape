@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
+import Error from '@/components/Error';
 const Main = dynamic(() => import('./page.client'), {
 	ssr: false,
 	loading: () => <LoadingTable />
@@ -36,6 +37,9 @@ export default async function Page({
 		page = 1;
 	}
 	const data = await getMessageContext(Number(userId), Number(messageId), page);
+	if (!data.success) {
+		return <Error error={data.error} />;
+	}
 	return (
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">

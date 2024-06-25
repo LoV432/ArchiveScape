@@ -7,7 +7,7 @@ export async function getSearch(
 	dateEnd?: Date
 ) {
 	if (!searchQuery || searchQuery === '') {
-		return { messages: [], totalPages: 0 };
+		return { success: true as const, messages: [], totalPages: 0 };
 	}
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	try {
@@ -46,11 +46,15 @@ export async function getSearch(
 			(await db.query(totalPagesQuery, params)).rows[0]['count'] / itemsPerPage
 		);
 		return {
+			success: true as const,
 			messages: messages.rows,
 			totalPages
 		};
 	} catch (error) {
 		console.log(error);
-		throw new Error('Error');
+		return {
+			success: false as const,
+			error: 'Something went wrong. Please try again later.'
+		};
 	}
 }

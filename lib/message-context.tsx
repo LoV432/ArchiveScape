@@ -8,6 +8,8 @@ export async function getMessageContext(
 ) {
 	try {
 		const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
+		// TODO: This should not return a generic error if the user or message doesn't exist
+
 		// Get the row number of the message. This is used to determine what page the message is on
 		// We are using row instead of id because id can have gaps in it
 		const messageIndex = await db.query(
@@ -30,11 +32,15 @@ export async function getMessageContext(
 			userId
 		]);
 		return {
+			success: true as const,
 			messages: messages.rows as Message[],
 			user_name: user.rows[0].user_name
 		};
 	} catch (error) {
 		console.log(error);
-		throw new Error('Error');
+		return {
+			success: false as const,
+			error: 'Something went wrong. Please try again later.'
+		};
 	}
 }
