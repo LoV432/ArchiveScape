@@ -77,16 +77,26 @@ export default function RandomMessage({
 	}
 
 	async function addNewMessage() {
-		const res = await fetch('/api/random-message');
-		if (!res.ok) {
-			throw new Error('Error');
-		}
-		const response = (await res.json()) as RandomMessageType;
-		const newItem = {
-			message_text: response.message_text,
-			color_name: response.color_name,
-			messageTime: response.message_text.length * 30 + 5000
+		const errorMessage = {
+			message_text: 'Error: Failed to fetch random message.',
+			color_name: 'red',
+			messageTime: 5000
 		};
-		messagesListRef.current = [...messagesListRef.current, newItem];
+		try {
+			const res = await fetch('/api/random-message');
+			if (!res.ok) {
+				messagesListRef.current = [...messagesListRef.current, errorMessage];
+				return;
+			}
+			const response = (await res.json()) as RandomMessageType;
+			const newItem = {
+				message_text: response.message_text,
+				color_name: response.color_name,
+				messageTime: response.message_text.length * 30 + 5000
+			};
+			messagesListRef.current = [...messagesListRef.current, newItem];
+		} catch (error) {
+			messagesListRef.current = [...messagesListRef.current, errorMessage];
+		}
 	}
 }
