@@ -15,11 +15,12 @@ export default function NotFound() {
 		}
 	}, []);
 	return (
-		<div className="flex h-full flex-col items-center justify-start px-5 pt-28">
+		<div className="flex h-full flex-col items-center justify-start px-5 pt-[8vh]">
 			<div>
 				<svg
+					aria-label="404 Error"
 					xmlns="http://www.w3.org/2000/svg"
-					viewBox="50 50 200 200"
+					viewBox="45 45 200 200"
 					shapeRendering="geometricPrecision"
 					textRendering="geometricPrecision"
 					className="h-32 w-32 sm:h-64 sm:w-64"
@@ -64,9 +65,12 @@ export default function NotFound() {
 				404
 			</h1>
 			<div className="text-center text-2xl sm:text-4xl">
-				{errorText}
+				<span aria-hidden="true">{errorText}</span>
+				<span className="sr-only">{errorTextRef.current}</span>
 				<noscript>{errorTextRef.current}</noscript>
-				<span className="caret-box">&nbsp;</span>
+				<span aria-hidden="true" className="caret-box">
+					&nbsp;
+				</span>
 			</div>
 		</div>
 	);
