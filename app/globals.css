@@ -111,3 +111,19 @@
 		display: none;
 	}
 }
+
+.caret-box {
+	animation: blink 1s step-end infinite;
+	background-color: white;
+	margin-left: 2px;
+}
+
+@keyframes blink {
+	from,
+	to {
+		background-color: transparent;
+	}
+	50% {
+		background-color: #fff;
+	}
+}
