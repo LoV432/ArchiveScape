@@ -8,14 +8,36 @@ export async function getMessageContext(
 ) {
 	try {
 		const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
-		// TODO: This should not return a generic error if the user or message doesn't exist
 
 		// Get the row number of the message. This is used to determine what page the message is on
 		// We are using row instead of id because id can have gaps in it
 		const messageIndex = await db.query(
-			`SELECT message_index FROM (SELECT messages.id, ROW_NUMBER() OVER (ORDER BY created_at ASC) AS message_index FROM messages) AS messages WHERE messages.id = $1`,
+			`SELECT message_index, messages.user_id FROM (SELECT messages.id, messages.user_id, ROW_NUMBER() OVER (ORDER BY created_at ASC) AS message_index FROM messages) AS messages WHERE messages.id = $1`,
 			[Number(messageId)]
 		);
+		if (messageIndex.rows.length === 0) {
+			return {
+				success: false as const,
+				error: 'Message not found'
+			};
+		}
+		if (messageIndex.rows[0]['user_id'] !== userId) {
+			return {
+				success: false as const,
+				error: 'This message does not belong to specified user'
+			};
+		}
+		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
+			userId
+		]);
+		if (user.rows.length === 0) {
+			// This should never trigger because of the "messageIndex.rows[0]['user_id'] !== userId" check above
+			// But just in case
+			return {
+				success: false as const,
+				error: 'User not found'
+			};
+		}
 		// Once we have the row number we can determine what page it is on
 		const messagePage = Math.ceil(
 			messageIndex.rows[0]['message_index'] / itemsPerPage - 1
@@ -28,9 +50,6 @@ export async function getMessageContext(
 			`SELECT messages.id, message_text, created_at, colors.color_name, user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id ORDER BY created_at ASC LIMIT $2 OFFSET $1`,
 			[offset, itemsPerPage]
 		);
-		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
-			userId
-		]);
 		return {
 			success: true as const,
 			messages: messages.rows as Message[],

@@ -3,7 +3,15 @@ import { db } from '@/lib/db';
 export async function getUserMessages(userId: number, page: number) {
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	try {
-		// TODO: This should not return a generic error if the user doesn't exist
+		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
+			userId
+		]);
+		if (user.rows.length === 0) {
+			return {
+				success: false as const,
+				error: 'User not found'
+			};
+		}
 		const messages = await db.query(
 			`SELECT messages.id, message_text, created_at, colors.color_name FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = $1 ORDER BY created_at DESC LIMIT $3 OFFSET $2`,
 			[userId, (Number(page) - 1) * itemsPerPage, itemsPerPage]
@@ -15,9 +23,6 @@ export async function getUserMessages(userId: number, page: number) {
 				])
 			).rows[0]['count'] / itemsPerPage
 		);
-		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
-			userId
-		]);
 		return {
 			success: true as const,
 			messages: messages.rows,
