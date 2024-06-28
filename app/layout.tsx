@@ -17,8 +17,6 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
-			<link rel="preload" href="/scribble.gif" as="image" />
-			<link rel="preload" href="/cat.gif" as="image" />
 			<Script
 				src="https://analytics-public.monib.xyz/js/script.js"
 				data-domain="archivescape.monib.xyz"
