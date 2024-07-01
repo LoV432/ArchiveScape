@@ -1,5 +1,5 @@
 import { Metadata } from 'next/types';
-import SearchPage from './page.client';
+import Main from './Main';
 import { getSearch } from '@/lib/search';
 import Error from '@/components/Error';
 
@@ -55,7 +55,7 @@ export default async function Page({
 	}
 	return (
 		<div className="grid">
-			<SearchPage
+			<Main
 				data={data}
 				searchQuery={searchQuery}
 				page={page}

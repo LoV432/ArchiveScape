@@ -1,27 +1,15 @@
 'use client';
-import { MessagesPagination } from '@/components/Pagination';
 import { useRouter } from 'next13-progressbar';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import dynamic from 'next/dynamic';
-import LoadingTable from '@/components/LoadingTable';
-const MessageSection = dynamic(() => import('./messages.client'), {
-	ssr: false,
-	loading: () => <LoadingTable />
-});
-import { Message } from '@/lib/all-messages';
-import { DatePickerWithRange } from './datepicker.client';
+import { DatePickerWithRange } from './DatePicker.client';
 import { DateRange } from 'react-day-picker';
 
-export default function SearchPage({
-	data,
+export default function SearchBar({
 	searchQuery,
-	page,
 	preSelectedDateStart,
 	preSelectedDateEnd
 }: {
-	data: { messages: Message[]; totalPages: number };
-	page: number;
 	searchQuery: string;
 	preSelectedDateStart: Date | undefined;
 	preSelectedDateEnd: Date | undefined;
@@ -98,48 +86,6 @@ export default function SearchPage({
 					</Button>
 				</div>
 			</div>
-			{data.messages.length === 0 && (
-				<div className="flex flex-col place-items-center gap-4">
-					{searchQuery !== '' && (
-						<>
-							<p className="text-xl font-semibold">No results :(</p>
-							<img
-								src="/scribble.gif"
-								alt="no search results"
-								width={200}
-								height={200}
-							/>
-						</>
-					)}
-					{searchQuery === '' && (
-						<img
-							src="/cat.gif"
-							alt="cat waiting patiently"
-							width={400}
-							height={400}
-						/>
-					)}
-				</div>
-			)}
-			{data.messages.length > 0 && (
-				<>
-					{data.totalPages > 1 && (
-						<MessagesPagination
-							order="desc"
-							page={page}
-							totalPages={data.totalPages}
-						/>
-					)}
-					<MessageSection messages={data.messages} />
-					{data.totalPages > 1 && (
-						<MessagesPagination
-							order="desc"
-							page={page}
-							totalPages={data.totalPages}
-						/>
-					)}
-				</>
-			)}
 		</>
 	);
 }

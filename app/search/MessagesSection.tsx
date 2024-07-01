@@ -1,4 +1,4 @@
-'use client';
+import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import {
 	Table,
@@ -13,12 +13,10 @@ import { Message } from '@/lib/all-messages';
 
 export default function MessageSection({ messages }: { messages: Message[] }) {
 	return (
-		<Table className="mx-auto max-w-3xl text-base">
+		<Table className="mx-auto mb-3 max-w-3xl text-base">
 			<TableCaption hidden>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>
-					<TableHead>ID</TableHead>
-					<TableHead>Time</TableHead>
 					<TableHead>Message</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -31,33 +29,14 @@ export default function MessageSection({ messages }: { messages: Message[] }) {
 					>
 						<TableRow tabIndex={0} key={message.id} className="relative">
 							<TableCell
-								className="mr-0 w-fit pr-0"
 								style={{ color: message.color_name }}
+								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								{message.user_id}
-							</TableCell>
-							<TableCell
-								className="w-[130px]"
-								style={{ color: message.color_name }}
-							>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										year: '2-digit',
-										month: 'short',
-										day: 'numeric'
-									})}
-								</div>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										timeStyle: 'short'
-									})}
-								</div>
-							</TableCell>
-							<TableCell
-								style={{ color: message.color_name }}
-								className="max-w-[150px] break-words sm:max-w-[500px]"
-							>
-								{message.message_text}
+								<p>{message.message_text}</p>
+								<MessageCreatedAt time={message.created_at} />
+								<p className="float-right text-sm text-gray-500">
+									{message.user_id} -&nbsp;
+								</p>
 							</TableCell>
 						</TableRow>
 					</TableRowContextMenu>
