@@ -1,13 +1,8 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
 import Error from '@/components/Error';
-import dynamic from 'next/dynamic';
-const MessagesPage = dynamic(() => import('./page.client'), {
-	ssr: false,
-	loading: () => <LoadingTable />
-});
+import MessagesPage from './MessagesPage';
 import { getUserMessages } from '@/lib/user-messages';
-import LoadingTable from '@/components/LoadingTable';
 
 export const metadata: Metadata = {
 	title: 'Messages By User | ArchiveScape',

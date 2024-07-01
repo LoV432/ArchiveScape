@@ -1,4 +1,3 @@
-'use client';
 import {
 	Table,
 	TableBody,
@@ -11,13 +10,11 @@ import {
 
 import { MessagesPagination } from '@/components/Pagination';
 
-import Link from 'next/link';
 import { Message } from '@/lib/all-messages';
-import ScrollToTop from '@/components/ScrollToTop';
+import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 
 export default function MessagesPage({
 	data,
-	userId,
 	page
 }: {
 	data: {
@@ -30,13 +27,12 @@ export default function MessagesPage({
 }) {
 	return (
 		<>
-			<ScrollToTop />
 			<MessagesPagination
 				page={page}
 				totalPages={data.totalPages}
 				order="desc"
 			/>
-			<MessageSection messages={data.messages} userId={userId} />
+			<MessageSection messages={data.messages} />
 			<MessagesPagination
 				page={page}
 				totalPages={data.totalPages}
@@ -46,20 +42,13 @@ export default function MessagesPage({
 	);
 }
 
-function MessageSection({
-	messages,
-	userId
-}: {
-	messages: Message[];
-	userId: number;
-}) {
+function MessageSection({ messages }: { messages: Message[] }) {
 	return (
 		<>
 			<Table className="mx-auto max-w-3xl text-base">
 				<TableCaption hidden>Messages</TableCaption>
 				<TableHeader>
 					<TableRow>
-						<TableHead>Time</TableHead>
 						<TableHead>Message</TableHead>
 					</TableRow>
 				</TableHeader>
@@ -67,32 +56,11 @@ function MessageSection({
 					{messages.map((message) => (
 						<TableRow key={message.id} className="relative">
 							<TableCell
-								className="w-[130px]"
 								style={{ color: message.color_name }}
+								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										year: '2-digit',
-										month: 'short',
-										day: 'numeric'
-									})}
-								</div>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										timeStyle: 'short'
-									})}
-								</div>
-							</TableCell>
-							<TableCell
-								style={{ color: message.color_name }}
-								className="max-w-[150px] break-words sm:max-w-[500px]"
-							>
-								<Link
-									href={`/users/${userId}/messages/${message.id}/message-context`}
-									className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
-								>
-									{message.message_text}
-								</Link>
+								<p>{message.message_text}</p>
+								<MessageCreatedAt time={message.created_at} />
 							</TableCell>
 						</TableRow>
 					))}
