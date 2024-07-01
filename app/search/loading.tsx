@@ -26,6 +26,7 @@ export default function Loading() {
 						</div>
 					</div>
 					<input
+						disabled
 						type="text"
 						placeholder="Loading..."
 						className="h-full w-full rounded border border-gray-300 border-opacity-35 text-center text-2xl font-bold focus-visible:border-opacity-70 focus-visible:outline-none"
