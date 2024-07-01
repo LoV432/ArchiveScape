@@ -1,6 +1,7 @@
 import { getTopDomain } from '@/lib/top-domain';
+import { use } from 'react';
 
-export default async function TopDomain() {
-	const topDomain = await getTopDomain();
+export default function TopDomain() {
+	const topDomain = use(getTopDomain());
 	return topDomain.domain;
 }

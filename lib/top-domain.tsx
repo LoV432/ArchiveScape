@@ -12,7 +12,7 @@ export async function getTopDomain() {
 	}
 	lastUpdated = now;
 	const messagesWithLinks = (
-		await db.query(`SELECT message_text FROM messages WHERE message_text ~ 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+';
+		await db.query(`SELECT message_text FROM messages WHERE message_text ~ 'http';
     `)
 	).rows as {
 		message_text: string;
@@ -38,6 +38,6 @@ export async function getTopDomain() {
 	topDomainCache = {
 		domain: rankedLinks[0][0],
 		count: rankedLinks[0][1]
-	}
+	};
 	return { domain: rankedLinks[0][0], count: rankedLinks[0][1] };
 }

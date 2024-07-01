@@ -1,4 +1,3 @@
-'use client';
 import {
 	Table,
 	TableBody,
@@ -11,14 +10,12 @@ import {
 import { MessagesPagination } from '@/components/Pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { Message } from '@/lib/all-messages';
+import { MessageCreatedAt } from '@/components/MessageCreatedAt';
+import { getAllLinks } from '@/lib/all-links';
+import { use } from 'react';
 
-export default function AllMessagesWithLinks({
-	data,
-	page
-}: {
-	data: { links: Message[]; totalPages: number };
-	page: number;
-}) {
+export default function AllMessagesWithLinks({ page }: { page: number }) {
+	const data = use(getAllLinks(page));
 	return (
 		<>
 			<MessagesPagination
@@ -48,7 +45,6 @@ function MessageSection({
 			<TableCaption hidden>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>
-					<TableHead>Time</TableHead>
 					<TableHead>Message</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -62,27 +58,14 @@ function MessageSection({
 					>
 						<TableRow tabIndex={0} key={message.id}>
 							<TableCell
-								className="w-[130px]"
 								style={{ color: message.color_name }}
+								className="max-w-[150px] break-words pb-2 sm:max-w-[600px]"
 							>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										year: '2-digit',
-										month: 'short',
-										day: 'numeric'
-									})}
-								</div>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										timeStyle: 'short'
-									})}
-								</div>
-							</TableCell>
-							<TableCell
-								style={{ color: message.color_name }}
-								className="max-w-[150px] break-words sm:max-w-[500px]"
-							>
-								{message.message_text}
+								<p>{message.message_text}</p>
+								<MessageCreatedAt time={message.created_at} />
+								<p className="float-right text-sm text-gray-500">
+									{message.user_id} -&nbsp;
+								</p>
 							</TableCell>
 						</TableRow>
 					</TableRowContextMenu>
