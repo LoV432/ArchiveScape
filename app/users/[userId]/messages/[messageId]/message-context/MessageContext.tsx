@@ -1,4 +1,3 @@
-'use client';
 import {
 	Table,
 	TableBody,
@@ -13,9 +12,10 @@ import { MessagesPagination } from '@/components/Pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import { Message } from '@/lib/all-messages';
-import { useEffect } from 'react';
+import ScrollIntoView from './ScrollIntoView.client';
+import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 
-export default function Main({
+export default function MessageContext({
 	data,
 	userId,
 	messageId,
@@ -32,38 +32,25 @@ export default function Main({
 	return (
 		<>
 			<MessagesPagination totalPages={'infinite'} page={page} order="asc" />
-			<MessageSection
-				messages={data.messages}
-				userId={userId}
-				messageId={messageId}
-			/>
+			<MessageSection messages={data.messages} userId={userId} />
 			<MessagesPagination totalPages={'infinite'} page={page} order="asc" />
+			<ScrollIntoView messageId={messageId} />
 		</>
 	);
 }
 
 function MessageSection({
 	messages,
-	userId,
-	messageId
+	userId
 }: {
 	messages: Message[];
 	userId: number;
-	messageId: number;
 }) {
-	useEffect(() => {
-		const selectedMessage = document.querySelector(`#id-${messageId}`);
-		console.log(selectedMessage);
-		if (selectedMessage) {
-			selectedMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-		}
-	}, []);
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
 			<TableCaption hidden>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>
-					<TableHead>Time</TableHead>
 					<TableHead>Message</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -86,27 +73,14 @@ function MessageSection({
 							className={`${message.user_id === userId ? `bg-[--highlight] ` : ''}`}
 						>
 							<TableCell
-								className="w-[130px]"
 								style={{ color: message.color_name }}
+								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										year: '2-digit',
-										month: 'short',
-										day: 'numeric'
-									})}
-								</div>
-								<div>
-									{new Date(message.created_at).toLocaleString('en-PK', {
-										timeStyle: 'short'
-									})}
-								</div>
-							</TableCell>
-							<TableCell
-								style={{ color: message.color_name }}
-								className="max-w-[150px] break-words sm:max-w-[500px]"
-							>
-								{message.message_text}
+								<p>{message.message_text}</p>
+								<MessageCreatedAt time={message.created_at} />
+								<p className="float-right text-sm text-gray-500">
+									{message.user_id} -&nbsp;
+								</p>
 							</TableCell>
 						</TableRow>
 					</TableRowContextMenu>

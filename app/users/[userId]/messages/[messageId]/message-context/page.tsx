@@ -1,13 +1,8 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
 import Error from '@/components/Error';
-const Main = dynamic(() => import('./page.client'), {
-	ssr: false,
-	loading: () => <LoadingTable />
-});
+import MessageContext from './MessageContext';
 import { getMessageContext } from '@/lib/message-context';
-import dynamic from 'next/dynamic';
-import LoadingTable from '@/components/LoadingTable';
 
 export const metadata: Metadata = {
 	title: 'Message Context | ArchiveScape',
@@ -46,7 +41,7 @@ export default async function Page({
 				<p className="pb-2">Highlighted User</p>
 				<p>{data.user_name}</p>
 			</h1>
-			<Main
+			<MessageContext
 				data={data}
 				userId={Number(userId)}
 				messageId={Number(messageId)}
