@@ -12,10 +12,12 @@ import { MessagesPagination } from '@/components/Pagination';
 
 import { Message } from '@/lib/all-messages';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
+import Link from 'next/link';
 
 export default function MessagesPage({
 	data,
-	page
+	page,
+	userId
 }: {
 	data: {
 		messages: Message[];
@@ -32,7 +34,7 @@ export default function MessagesPage({
 				totalPages={data.totalPages}
 				order="desc"
 			/>
-			<MessageSection messages={data.messages} />
+			<MessageSection messages={data.messages} userId={userId} />
 			<MessagesPagination
 				page={page}
 				totalPages={data.totalPages}
@@ -42,7 +44,13 @@ export default function MessagesPage({
 	);
 }
 
-function MessageSection({ messages }: { messages: Message[] }) {
+function MessageSection({
+	messages,
+	userId
+}: {
+	messages: Message[];
+	userId: number;
+}) {
 	return (
 		<>
 			<Table className="mx-auto max-w-3xl text-base">
@@ -59,7 +67,12 @@ function MessageSection({ messages }: { messages: Message[] }) {
 								style={{ color: message.color_name }}
 								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								<p>{message.message_text}</p>
+								<Link
+									href={`/users/${userId}/messages/${message.id}/message-context`}
+									className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+								>
+									<p>{message.message_text}</p>
+								</Link>
 								<MessageCreatedAt time={message.created_at} />
 							</TableCell>
 						</TableRow>
