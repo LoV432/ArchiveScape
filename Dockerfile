@@ -30,12 +30,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ARG HOST_NAME="archivescape.monib.xyz"
 ENV HOST_NAME $HOST_NAME
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN npx next build --experimental-build-mode compile 
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -67,4 +62,4 @@ ENV PORT 3000
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node server.js
+CMD HOSTNAME="0.0.0.0" npx node_modules/.bin/next --experimental-build-mode generate && node server.js
