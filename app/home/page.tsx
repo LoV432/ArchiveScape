@@ -28,7 +28,7 @@ export default async function Home() {
 					. So far, I have archived{' '}
 					<Link
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
-						href="/messages"
+						href="/all-messages"
 					>
 						{messagesCount}
 					</Link>{' '}

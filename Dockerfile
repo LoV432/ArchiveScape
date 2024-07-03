@@ -30,7 +30,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ARG HOST_NAME="archivescape.monib.xyz"
 ENV HOST_NAME $HOST_NAME
 
-COPY ./.env /app/.env
+COPY .build.env .env
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
