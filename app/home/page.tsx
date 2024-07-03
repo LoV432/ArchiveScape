@@ -103,13 +103,12 @@ export default async function Home() {
 async function getUsersCount() {
 	const count = (await db.query('SELECT COUNT(*) as count FROM users')).rows[0]
 		.count;
-	console.log(count);
+	console.log(`Cache Miss ${new Date().toISOString()}`);
 	return count as number;
 }
 
 async function getMessagesCount() {
 	const count = (await db.query('SELECT COUNT(*) as count FROM messages'))
 		.rows[0].count;
-	console.log(count);
 	return count as number;
 }
