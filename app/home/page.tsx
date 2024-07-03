@@ -68,7 +68,7 @@ export default async function Home() {
 				<p className="text-base sm:text-xl">
 					The code of this project is split into two parts: the frontend (this
 					website) and the collection script. The frontend is a Next.js app that
-					you can find on{' '}
+					you can find{' '}
 					<a
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="https://github.com/LoV432/archivescape"
@@ -77,15 +77,15 @@ export default async function Home() {
 						here
 					</a>
 					. The collection script is a JS/TS script that runs a Puppeteer
-					instance to record messages from the{' '}
+					instance to record messages from{' '}
 					<a
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="https://ventscape.life"
 						target="_blank"
 					>
 						VentScape
-					</a>{' '}
-					website. You can find the code on{' '}
+					</a>
+					. You can find the code{' '}
 					<a
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="https://github.com/LoV432/ventscape-archive"
