@@ -1,11 +1,9 @@
-import { db } from '@/lib/db';
 import Link from 'next/link';
 export const dynamic = 'force-dynamic';
-import { unstable_cache } from 'next/cache';
+import { getCount } from '@/lib/get-count';
 
 export default async function Home() {
-	const usersCount = await getUsersCount();
-	const messagesCount = await getMessagesCount();
+	const { usersCount, messagesCount } = await getCount();
 
 	return (
 		<div className="prose lg:prose-xl mx-4 flex w-fit max-w-[800px] flex-col gap-5 pb-8 pt-10 text-slate-200 sm:mx-auto sm:w-1/2">
@@ -32,14 +30,14 @@ export default async function Home() {
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="/all-messages"
 					>
-						{messagesCount()}
+						{messagesCount}
 					</Link>{' '}
 					messages from{' '}
 					<Link
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="/users"
 					>
-						{usersCount()}
+						{usersCount}
 					</Link>{' '}
 					unique &quot;users&quot;. The archive was started on April 12, 2024 at
 					17:00 UTC. The archive is currently being updated every 5 minutes.
@@ -99,34 +97,5 @@ export default async function Home() {
 				</p>
 			</section>
 		</div>
-	);
-}
-
-async function getUsersCount() {
-	return unstable_cache(
-		async () => {
-			const count = (await db.query('SELECT COUNT(*) as count FROM users'))
-				.rows[0].count;
-			console.log(`Cache Miss ${new Date().toISOString()}`);
-			return count as number;
-		},
-		['usersCount'],
-		{
-			revalidate: 60 * 5
-		}
-	);
-}
-
-async function getMessagesCount() {
-	return unstable_cache(
-		async () => {
-			const count = (await db.query('SELECT COUNT(*) as count FROM messages'))
-				.rows[0].count;
-			return count as number;
-		},
-		['messagesCount'],
-		{
-			revalidate: 60 * 5
-		}
 	);
 }
