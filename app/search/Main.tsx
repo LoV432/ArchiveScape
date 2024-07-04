@@ -2,6 +2,7 @@ import { MessagesPagination } from '@/components/Pagination';
 import MessagesSection from './MessagesSection';
 import { Message } from '@/lib/all-messages';
 import SearchBar from './SearchBar.client';
+import Image from 'next/image';
 
 export default function SearchPage({
 	data,
@@ -28,7 +29,8 @@ export default function SearchPage({
 					{searchQuery !== '' && (
 						<>
 							<p className="text-xl font-semibold">No results :(</p>
-							<img
+							<Image
+								loading="eager"
 								src="/scribble.gif"
 								alt="no search results"
 								width={200}
@@ -37,7 +39,8 @@ export default function SearchPage({
 						</>
 					)}
 					{searchQuery === '' && (
-						<img
+						<Image
+							loading="eager"
 							src="/cat.gif"
 							alt="cat waiting patiently"
 							width={400}

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 export default function Loading() {
 	return (
@@ -39,7 +40,8 @@ export default function Loading() {
 				</div>
 			</div>
 			<div className="flex flex-col place-items-center gap-4">
-				<img
+				<Image
+					loading="eager"
 					src="/cat.gif"
 					alt="cat waiting patiently"
 					width={400}
