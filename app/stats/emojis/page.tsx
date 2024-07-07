@@ -9,6 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-	const { labels, dataset } = await emojiBarList();
-	return <EmojiBar labels={labels} dataset={dataset} />;
+	const { chartData, chartConfig } = await emojiBarList();
+	return <EmojiBar chartData={chartData} chartConfig={chartConfig} />;
 }

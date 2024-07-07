@@ -1,18 +1,19 @@
+import { ChartConfig } from '@/components/ui/chart';
 import { db } from '@/lib/db';
 
 // TODO: Check if we can use React/Next.js built-in caching stuff?
 let datasetCache: {
-	labels: string[];
-	dataset: { label: string; data: number[]; backgroundColor: string }[];
+	chartConfig: ChartConfig;
+	chartData: { [key: string]: any }[];
 } = {
-	labels: [],
-	dataset: []
+	chartConfig: {},
+	chartData: []
 };
 let lastUpdated = 0;
 
 export async function emojiBarList() {
 	const now = Date.now();
-	if (now - lastUpdated < 1000 * 60 * 5 && datasetCache.labels.length > 0) {
+	if (now - lastUpdated < 1000 * 60 * 5 && datasetCache.chartData.length > 0) {
 		return datasetCache;
 	}
 	lastUpdated = now;
@@ -29,78 +30,54 @@ export async function emojiBarList() {
 	).rows as { message_text: string; created_at: Date }[];
 
 	let allEmojisCount: { [day: string]: { [emoji: string]: number } } = {};
+	let mostUsedEmojis: { [emoji: string]: number } = {};
 	allMessages.forEach((message) => {
-		const date = new Date(
-			message.created_at.setUTCHours(0, 0, 0, 0)
-		).toISOString();
+		const date = message.created_at.toISOString().split('T')[0];
 		if (!allEmojisCount[date]) {
 			allEmojisCount[date] = {};
 		}
 		// @ts-ignore
 		// Type error: This regular expression flag is only available when targeting 'es6' or later.
-		// Setting target to es6 doesn't work
+		// Setting target to es6 doesn't work, so we ignore the error.
 		const emojis = message.message_text.match(/[\u{1F600}-\u{1F64F}]/gu) || [];
 		emojis.forEach((emoji) => {
+			// This counts each emoji used per day
+			// { '2023-01-01': { '😀': 50, '😎': 20 } }
+			// We use this to make the chart
 			allEmojisCount[date][emoji] = (allEmojisCount[date][emoji] || 0) + 1;
+			// This totals all emojis used
+			// { '😀': 100, '😎': 20 }
+			// We use this to figure out which emoji to show on the chart
+			mostUsedEmojis[emoji] = (mostUsedEmojis[emoji] || 0) + 1;
 		});
 	});
-
-	const allEmojisCountArray = Object.entries(allEmojisCount).map(
-		([date, emojis]) => {
-			const topEmojis = Object.entries(emojis)
-				.sort((a, b) => b[1] - a[1])
-				.slice(0, 10)
-				.map(([emoji, count]) => ({ emoji, count }));
-			return { date: new Date(date).toISOString(), emojis: topEmojis };
-		}
-	);
-
-	const labels = allEmojisCountArray.map(({ date }) =>
-		new Date(date).toLocaleDateString('en-PK', {
-			year: '2-digit',
+	const mostUsedEmojisArray = Object.entries(mostUsedEmojis)
+		.sort((a, b) => b[1] - a[1])
+		.slice(0, 5)
+		.map(([emoji]) => emoji);
+	const chartData = Object.entries(allEmojisCount).map(([date, emojis]) => {
+		const topEmojis = Object.entries(emojis);
+		let perDayData = {} as { [key: string]: number | string };
+		// perDayData looks like this:
+		// { 'date': '2023-01-01', '😀': 50, '😎': 20 }
+		// TODO: Figure out how to make type safety work here
+		perDayData['date'] = new Date(date).toLocaleDateString('en-US', {
 			month: 'short',
 			day: 'numeric'
-		})
-	);
-
-	let allEmojis: string[] = [];
-	allEmojisCountArray.forEach(({ emojis }) => {
-		emojis.forEach(({ emoji }) => {
-			if (!allEmojis.includes(emoji)) {
-				allEmojis.push(emoji);
-			}
 		});
+		topEmojis.forEach(({ [0]: emoji, [1]: count }) => {
+			if (!mostUsedEmojisArray.includes(emoji)) return;
+			perDayData[emoji] = count;
+		});
+		return { ...perDayData };
 	});
-
-	let dataset = allEmojis.map((emoji) => ({
-		label: emoji,
-		data: allEmojisCountArray.map(({ date, emojis }) => {
-			const emojiData = emojis.find((e) => e.emoji === emoji);
-			return emojiData ? emojiData.count : 0;
-		}),
-		backgroundColor: ''
-	}));
-
-	dataset.sort(
-		(a, b) =>
-			b.data.reduce((acc, curr) => acc + curr, 0) -
-			a.data.reduce((acc, curr) => acc + curr, 0)
-	);
-	dataset = dataset.slice(0, 7);
-
-	dataset.forEach((_, index) => {
-		dataset[index].backgroundColor = rainbowColors[index];
+	let chartConfig: ChartConfig = {};
+	mostUsedEmojisArray.forEach((emoji, index) => {
+		chartConfig[emoji] = {
+			label: emoji,
+			color: `hsl(var(--chart-${index + 1}))`
+		};
 	});
-	datasetCache = { labels, dataset };
-	return { labels, dataset };
+	datasetCache = { chartConfig, chartData };
+	return { chartConfig, chartData };
 }
-
-const rainbowColors = [
-	'#1a85a4',
-	'#f5c667',
-	'#6d4e7a',
-	'#a2d76f',
-	'#c74230',
-	'#fc9d5b',
-	'#92ded1'
-];

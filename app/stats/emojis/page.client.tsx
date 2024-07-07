@@ -1,113 +1,95 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
-	CategoryScale,
-	LinearScale,
-	BarElement,
-	Title,
-	Tooltip,
-	Legend,
-	Chart,
-	BarController
-} from 'chart.js';
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle
+} from '@/components/ui/card';
+import {
+	ChartConfig,
+	ChartContainer,
+	ChartLegend,
+	ChartLegendContent,
+	ChartTooltip,
+	ChartTooltipContent
+} from '@/components/ui/chart';
+import { useEffect, useState } from 'react';
 
-export default function EmojiBar({
-	labels,
-	dataset
+export default function Component({
+	chartConfig,
+	chartData
 }: {
-	labels: string[];
-	dataset: { label: string; data: number[]; backgroundColor: string }[];
+	chartConfig: ChartConfig;
+	chartData: { [key: string]: any }[];
 }) {
-	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const [isReady, setIsReady] = useState(false);
+	const [chartDataState, setChartDataState] = useState(chartData);
+	const [chartConfigState, setChartConfigState] = useState(chartConfig);
+	const allRadius = [
+		[0, 0, 4, 4],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[4, 4, 0, 0]
+	] as [number, number, number, number][];
 	useEffect(() => {
-		let xFrontSize = 15;
-		let aspectRatio = 2;
-		let yFrontSize = 15;
-		let boxWidth = 40;
 		if (window.matchMedia('(max-width: 768px)').matches) {
-			labels = labels.slice(0, 7);
-			dataset = dataset.slice(0, 7);
-			aspectRatio = 1;
-			boxWidth = 20;
+			setChartDataState(chartData.slice(0, 7));
+			Object.keys(chartConfig)
+				.slice(0, 7)
+				.forEach((emoji) => {
+					chartConfig[emoji].label = emoji;
+				});
+			setChartConfigState(chartConfig);
 		}
-		Chart.register(
-			CategoryScale,
-			LinearScale,
-			BarElement,
-			Title,
-			Tooltip,
-			Legend,
-			BarController
-		);
-		const chart = new Chart(
-			canvasRef.current?.getContext('2d') as CanvasRenderingContext2D,
-			{
-				type: 'bar',
-				data: {
-					labels,
-					datasets: dataset
-				},
-				options: {
-					aspectRatio: aspectRatio,
-					responsive: true,
-					indexAxis: 'x' as const,
-					scales: {
-						x: {
-							ticks: {
-								font: {
-									size: xFrontSize
-								}
-							},
-							grid: {
-								color: 'RGBA(255,255,255,0.15)'
-							},
-							stacked: true
-						},
-						y: {
-							ticks: {
-								font: {
-									size: yFrontSize
-								},
-								color: 'white'
-							},
-							grid: {
-								color: 'RGBA(255,255,255,0.15)'
-							},
-							stacked: true
-						}
-					},
-					plugins: {
-						legend: {
-							position: 'top' as const,
-							labels: {
-								color: 'white',
-								boxWidth: boxWidth
-							}
-						},
-						title: {
-							display: false
-						}
-					}
-				}
-			}
-		);
-		return () => {
-			Chart.unregister(
-				CategoryScale,
-				LinearScale,
-				BarElement,
-				Title,
-				Tooltip,
-				Legend,
-				BarController
-			);
-			chart.destroy();
-		};
-	});
-
+		setIsReady(true);
+	}, []);
+	if (!isReady) return;
 	return (
-		<main className="mx-auto flex h-full w-[90vw] max-w-[1000px] flex-col justify-center">
-			<canvas ref={canvasRef} id="emoji"></canvas>
-		</main>
+		<Card className="flex h-[70%] flex-col items-center justify-center border-0 sm:h-full">
+			<CardHeader>
+				<CardTitle>Bar Chart - Top Emojis</CardTitle>
+				<CardDescription>Last {chartDataState.length} days</CardDescription>
+			</CardHeader>
+			<CardContent className="w-full p-0">
+				<ChartContainer
+					className="h-full w-[90%] max-w-[1200px] sm:mx-auto sm:w-[80%] md:w-[70%] lg:w-[60%]"
+					config={chartConfigState}
+				>
+					<BarChart accessibilityLayer data={chartDataState}>
+						<CartesianGrid vertical={false} />
+						<XAxis
+							dataKey="date"
+							angle={-25}
+							tickLine={true}
+							tickMargin={10}
+							axisLine={false}
+							className="text-xs sm:text-sm"
+							interval={0}
+						/>
+						<YAxis />
+						<ChartTooltip content={<ChartTooltipContent hideLabel />} />
+						<ChartLegend
+							className="text-base sm:text-xl"
+							content={<ChartLegendContent />}
+							verticalAlign="top"
+						/>
+						{Object.entries(chartConfigState).map(
+							([emoji, { label, color }], index) => (
+								<Bar
+									dataKey={emoji}
+									stackId="a"
+									fill={color}
+									radius={allRadius[index]}
+									key={emoji}
+								/>
+							)
+						)}
+					</BarChart>
+				</ChartContainer>
+			</CardContent>
+		</Card>
 	);
 }
