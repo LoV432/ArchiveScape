@@ -27,6 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.5
 		},
 		{
+			url: `https://${process.env.HOST_NAME}/stats/top-10-users`,
+			lastModified: new Date(),
+			changeFrequency: 'daily',
+			priority: 0.5
+		},
+		{
 			url: `https://${process.env.HOST_NAME}/stats/words-cloud`,
 			lastModified: new Date(),
 			changeFrequency: 'daily',

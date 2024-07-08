@@ -42,6 +42,11 @@ export default function Header() {
 					<NavMenuItem link="/replay" currentPath={currentPath} name="Replay" />
 					<NavDropDown name="Stats">
 						<NavDropDownItem
+							link="/stats/top-10-users"
+							currentPath={currentPath}
+							name="Top 10 Users"
+						/>
+						<NavDropDownItem
 							link="/stats/words-cloud"
 							currentPath={currentPath}
 							name="Most Used Words"
@@ -154,6 +159,12 @@ export default function Header() {
 								onClick={() => setIsOpen(false)}
 							/>
 							<NavDropDown isMobile name="Stats">
+								<NavDropDownItem
+									link="/stats/top-10-users"
+									currentPath={currentPath}
+									name="Top 10 Users"
+									onClick={() => setIsOpen(false)}
+								/>
 								<NavDropDownItem
 									link="/stats/words-cloud"
 									currentPath={currentPath}

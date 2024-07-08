@@ -1,81 +1,101 @@
-import {
-	Table,
-	TableBody,
-	TableCaption,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow
-} from '@/components/ui/table';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { db } from '@/lib/db';
 export const dynamic = 'force-dynamic';
+import { getCount } from '@/lib/get-count';
 
 export default async function Home() {
-	const data = (
-		await db.query(`SELECT u.user_name, m.user_id, COUNT(*) AS message_count
-	FROM messages m
-	JOIN users u ON m.user_id = u.id
-	GROUP BY u.user_name, m.user_id
-	ORDER BY message_count DESC
-	LIMIT 10`)
-	).rows as { user_name: string; user_id: number; message_count: number }[];
+	const { usersCount, messagesCount } = await getCount();
 
 	return (
-		<main className="grid">
-			<h1 className="place-self-center py-5 text-4xl font-bold tracking-widest sm:text-6xl">
-				TOP 10 USERS
+		<div className="prose lg:prose-xl mx-4 flex w-fit max-w-[800px] flex-col gap-5 pb-8 text-slate-200 sm:mx-auto sm:w-1/2 sm:pt-5">
+			<h1 className="mb-5 w-full text-4xl font-bold sm:text-6xl">
+				Welcome to ArchiveScape
 			</h1>
-			<Table className="mx-auto max-w-3xl">
-				<TableCaption hidden>Top Users</TableCaption>
-				<TableHeader>
-					<TableRow>
-						<TableHead>User</TableHead>
-						<TableHead className="text-right">Message Count</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{data.map((user, index) => (
-						<TableRow className="relative" key={user.user_id}>
-							<TableCell
-								className={`block max-w-[calc(100vw/1.5)] overflow-hidden text-ellipsis font-medium ${colorGradientByIndex(index)}`}
-							>
-								<Link
-									href={`/users/${user.user_id}/messages`}
-									className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
-								>
-									{user.user_name}
-								</Link>
-							</TableCell>
-							<TableCell className="text-right text-base font-medium sm:text-lg">
-								{user.message_count}
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-			<Link className="my-3 justify-self-center" href="/users">
-				<Button tabIndex={-1} variant="outline">
-					Show All
-				</Button>
-			</Link>
-		</main>
-	);
-}
+			<section>
+				<h2 className="mb-5 w-fit text-xl font-bold sm:text-3xl">
+					<span className="relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-full after:border-b after:border-b-white after:border-opacity-30">
+						What is ArchiveScape?
+					</span>
+				</h2>
+				<p className="text-base sm:text-xl">
+					ArchiveScape is an open source archive of{' '}
+					<a
+						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
+						href="https://ventscape.life"
+						target="_blank"
+					>
+						VentScape
+					</a>
+					. So far, I have archived{' '}
+					<Link
+						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
+						href="/all-messages"
+					>
+						{messagesCount}
+					</Link>{' '}
+					messages from{' '}
+					<Link
+						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
+						href="/users"
+					>
+						{usersCount}
+					</Link>{' '}
+					unique &quot;users&quot;. This archive was started on April 12, 2024
+					at 17:00 UTC and it is currently being updated every 5 minutes.
+				</p>
+			</section>
 
-function colorGradientByIndex(index: number) {
-	const colors = [
-		'text-red-500',
-		'text-orange-500',
-		'text-amber-500',
-		'text-lime-500',
-		'text-green-500',
-		'text-emerald-500',
-		'text-teal-500',
-		'text-cyan-500',
-		'text-sky-500',
-		'text-blue-500'
-	];
-	return colors[index];
+			<section>
+				<h2 className="mb-5 w-fit text-xl font-bold sm:text-3xl">
+					<span className="relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-full after:border-b after:border-b-white after:border-opacity-30">
+						Why Create ArchiveScape?
+					</span>
+				</h2>
+				<p className="text-base sm:text-xl">
+					You might be wondering, &quot;Doesn&apos;t this website defeat the
+					whole purpose of VentScape?&quot; The answer is yes (╥﹏╥), but
+					it&apos;s very unlikely that I am the only person recording messages
+					from VentScape. Does that justify me also doing it? The answer is no
+					(ง ͠ಥ_ಥ)ง, but at least I am making a semi-useful website out of it.
+				</p>
+			</section>
+
+			<section>
+				<h2 className="mb-5 w-fit text-xl font-bold sm:text-3xl">
+					<span className="relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-full after:border-b after:border-b-white after:border-opacity-30">
+						Project Structure
+					</span>
+				</h2>
+				<p className="text-base sm:text-xl">
+					The code of this project is split into two parts: the frontend (this
+					website) and the collection script. The frontend is a Next.js app that
+					you can find{' '}
+					<a
+						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
+						href="https://github.com/LoV432/archivescape"
+						target="_blank"
+					>
+						here
+					</a>
+					. The collection script is a JS/TS script that runs a Puppeteer
+					instance to record messages from{' '}
+					<a
+						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
+						href="https://ventscape.life"
+						target="_blank"
+					>
+						VentScape
+					</a>
+					. You can find the code{' '}
+					<a
+						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
+						href="https://github.com/LoV432/ventscape-archive"
+						target="_blank"
+					>
+						here
+					</a>
+					.
+				</p>
+			</section>
+		</div>
+	);
 }

@@ -43,7 +43,7 @@ export default function BreadcrumbComponent() {
 								<BreadcrumbLink
 									href={`/${pathList.slice(0, index + 1).join('/')}`}
 								>
-									{path.replace('-', ' ')}
+									{path.replaceAll('-', ' ')}
 								</BreadcrumbLink>
 							) : (
 								<>{path}</>
@@ -54,7 +54,7 @@ export default function BreadcrumbComponent() {
 				))}
 				<BreadcrumbItem>
 					<BreadcrumbPage>
-						{pathList[pathList.length - 1].replace('-', ' ')}
+						{pathList[pathList.length - 1].replaceAll('-', ' ')}
 					</BreadcrumbPage>
 				</BreadcrumbItem>
 			</BreadcrumbList>
@@ -71,7 +71,7 @@ export default function BreadcrumbComponent() {
 					<>
 						<BreadcrumbItem>
 							<BreadcrumbLink href={`/${pathList.slice(0, 1).join('/')}`}>
-								{pathList[0].replace('-', ' ')}
+								{pathList[0].replaceAll('-', ' ')}
 							</BreadcrumbLink>
 						</BreadcrumbItem>
 						<BreadcrumbSeparator />
@@ -89,7 +89,7 @@ export default function BreadcrumbComponent() {
 												<BreadcrumbLink
 													href={`/${pathList.slice(0, index + 2).join('/')}`}
 												>
-													{path.replace('-', ' ')}
+													{path.replaceAll('-', ' ')}
 												</BreadcrumbLink>
 											) : (
 												<>{path}</>
@@ -103,7 +103,7 @@ export default function BreadcrumbComponent() {
 				)}
 				<BreadcrumbItem>
 					<BreadcrumbPage>
-						{pathList[pathList.length - 1].replace('-', ' ')}
+						{pathList[pathList.length - 1].replaceAll('-', ' ')}
 					</BreadcrumbPage>
 				</BreadcrumbItem>
 			</BreadcrumbList>

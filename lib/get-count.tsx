@@ -9,7 +9,6 @@ export async function getCount() {
 		return countCache;
 	}
 	lastUpdated = now;
-	console.log(`Cache Miss ${new Date().toISOString()}`);
 	try {
 		const usersCount = (await db.query('SELECT COUNT(*) as count FROM users'))
 			.rows[0].count;
