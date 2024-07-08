@@ -38,7 +38,7 @@ export default function Component({
 			</CardHeader>
 			<CardContent className="w-full p-0">
 				<ChartContainer
-					className="h-full w-[90%] max-w-[1200px] sm:mx-auto sm:w-[80%] md:w-[70%] lg:w-[60%]"
+					className="w-[90%] max-w-[1200px] sm:mx-auto sm:h-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%]"
 					config={chartConfig}
 				>
 					<BarChart accessibilityLayer data={chartData}>
