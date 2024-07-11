@@ -62,6 +62,14 @@ export default function RandomMessage({
 	);
 
 	async function nextMessage() {
+		if (messagesListRef.current.length === 1) {
+			// If there is only one message, it means the new message is still being fetched.
+			// So we wait for the new message to be fetched before calling nextMessage again.
+			setTimeout(() => {
+				nextMessage();
+			}, 200);
+			return;
+		}
 		await new Promise((r) => setTimeout(r, 200));
 		messagesListRef.current.shift();
 		setActiveMessage(messagesListRef.current[0]);
