@@ -25,7 +25,7 @@ export default function Header() {
 	}, []);
 	return (
 		<header className="sticky top-0 z-10 mb-2 w-full border-b border-muted bg-background px-2 py-2 sm:px-5">
-			<NavigationMenu className="hidden w-full max-w-[initial] gap-4 sm:flex">
+			<NavigationMenu className="flex w-full max-w-[initial] gap-4 max-[920px]:hidden">
 				<NavLogo />
 				<NavigationMenuList>
 					<NavMenuItem link="/users" currentPath={currentPath} name="Users" />
@@ -70,7 +70,7 @@ export default function Header() {
 				</NavigationMenuList>
 				<SearchButton />
 			</NavigationMenu>
-			<NavigationMenu className="w-full max-w-full justify-start gap-3 py-1 text-left sm:hidden">
+			<NavigationMenu className="w-full max-w-full justify-start gap-3 py-1 text-left min-[920px]:hidden">
 				<NavLogo className="mr-auto" />
 				<SearchButton isMobile />
 				<Sheet open={isOpen} onOpenChange={setIsOpen}>
