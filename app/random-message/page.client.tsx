@@ -36,7 +36,7 @@ export default function RandomMessage({
 		restartAnimation();
 	}, []);
 	return (
-		<div className="mx-auto px-10 pt-24 text-center sm:pt-44">
+		<div className="mx-auto w-screen px-10 pt-24 text-center sm:pt-44">
 			<div
 				onAnimationEnd={nextMessage}
 				id="countdown"
@@ -54,7 +54,7 @@ export default function RandomMessage({
 			</div>
 			<p
 				style={{ color: activeMessage.color_name || 'white' }}
-				className="break-words text-4xl font-extrabold sm:text-7xl"
+				className="break-words text-3xl font-extrabold sm:text-7xl"
 			>
 				{activeMessage.message_text}
 			</p>
