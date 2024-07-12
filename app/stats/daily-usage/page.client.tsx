@@ -23,7 +23,7 @@ const chartConfig = {
 	}
 } satisfies ChartConfig;
 
-export default function MessagesCountChart({
+export default function DailyUsageChart({
 	chartData
 }: {
 	chartData: { date: string; messages: number }[];
@@ -31,9 +31,9 @@ export default function MessagesCountChart({
 	return (
 		<Card className="flex h-full flex-col items-center justify-center border-0 text-center">
 			<CardHeader>
-				<CardTitle>Area Chart - Messages</CardTitle>
+				<CardTitle>Area Chart - Daily Usage</CardTitle>
 				<CardDescription>
-					Showing total messages for the last 20 days
+					Showing total messages sent in the last 20 days
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="p-0">

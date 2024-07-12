@@ -1,6 +1,6 @@
 import { db } from './db';
 
-export async function getMessagesCount() {
+export async function getDailyUsage() {
 	let messagesCount: {
 		date: string;
 		messages: number;
