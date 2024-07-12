@@ -36,7 +36,7 @@ export default function RandomMessage({
 		restartAnimation();
 	}, []);
 	return (
-		<div className="mx-auto w-screen px-10 pt-24 text-center sm:pt-44">
+		<div className="mx-auto max-w-[99vw] px-10 pt-24 text-center sm:pt-44">
 			<div
 				onAnimationEnd={nextMessage}
 				id="countdown"
