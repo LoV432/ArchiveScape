@@ -55,22 +55,24 @@ export async function emojiBarList() {
 		.sort((a, b) => b[1] - a[1])
 		.slice(0, 5)
 		.map(([emoji]) => emoji);
-	const chartData = Object.entries(allEmojisCount).map(([date, emojis]) => {
-		const topEmojis = Object.entries(emojis);
-		let perDayData = {} as { [key: string]: number | string };
-		// perDayData looks like this:
-		// { 'date': '2023-01-01', '😀': 50, '😎': 20 }
-		// TODO: Figure out how to make type safety work here
-		perDayData['date'] = new Date(date).toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric'
-		});
-		topEmojis.forEach(({ [0]: emoji, [1]: count }) => {
-			if (!mostUsedEmojisArray.includes(emoji)) return;
-			perDayData[emoji] = count;
-		});
-		return { ...perDayData };
-	});
+	const chartData = Object.entries(allEmojisCount)
+		.map(([date, emojis]) => {
+			const topEmojis = Object.entries(emojis);
+			let perDayData = {} as { [key: string]: number | string };
+			// perDayData looks like this:
+			// { 'date': '2023-01-01', '😀': 50, '😎': 20 }
+			// TODO: Figure out how to make type safety work here
+			perDayData['date'] = new Date(date).toLocaleDateString('en-US', {
+				month: 'short',
+				day: 'numeric'
+			});
+			topEmojis.forEach(({ [0]: emoji, [1]: count }) => {
+				if (!mostUsedEmojisArray.includes(emoji)) return;
+				perDayData[emoji] = count;
+			});
+			return { ...perDayData };
+		})
+		.reverse();
 	let chartConfig: ChartConfig = {};
 	mostUsedEmojisArray.forEach((emoji, index) => {
 		chartConfig[emoji] = {

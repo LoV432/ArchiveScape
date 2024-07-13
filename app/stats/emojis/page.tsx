@@ -18,10 +18,10 @@ export default async function Page() {
 	const deviceType = device.type === 'mobile' ? 'mobile' : 'desktop';
 	const { chartData, chartConfig } = await emojiBarList();
 	if (deviceType === 'mobile') {
-		const chartDataMobile = chartData.slice(0, 7);
+		const chartDataMobile = chartData.slice(13);
 		let chartConfigMobile = chartConfig;
 		Object.keys(chartConfig)
-			.slice(0, 7)
+			.slice(13)
 			.forEach((emoji) => {
 				chartConfigMobile[emoji].label = emoji;
 			});
