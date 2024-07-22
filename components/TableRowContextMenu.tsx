@@ -46,6 +46,7 @@ export default function TableRowContextMenu({
 			</ContextMenuTrigger>
 			<ContextMenuContent className="max-w-[50vw]">
 				<Link
+					rel="nofollow"
 					className="h-full w-full"
 					href={contextLink}
 					{...(isContextPage ? { scroll: false } : {})}

@@ -16,6 +16,7 @@ export default function LinkWithHoverPrefetch({
 	const router = useRouter();
 	return (
 		<Link
+			rel="nofollow"
 			prefetch={false}
 			className={className}
 			href={href}
