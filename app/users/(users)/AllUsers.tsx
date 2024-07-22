@@ -8,8 +8,8 @@ import {
 	TableRow
 } from '@/components/ui/table';
 import { MessagesPagination } from '@/components/Pagination';
-import Link from 'next/link';
 import { User } from '@/lib/all-users';
+import LinkWithHoverPrefetch from '@/components/LinkWithHoverPrefetch';
 
 export default function UsersPage({
 	data,
@@ -53,12 +53,12 @@ function UsersTable({ users }: { users: User[] }) {
 						<TableCell
 							className={`block max-w-[calc(100vw/1.5)] overflow-hidden text-ellipsis font-medium`}
 						>
-							<Link
+							<LinkWithHoverPrefetch
 								className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
 								href={`/users/${user.id}/messages`}
 							>
 								{user.user_name}
-							</Link>
+							</LinkWithHoverPrefetch>
 						</TableCell>
 						<TableCell className="text-right text-base font-medium sm:text-lg">
 							{user.message_count}
