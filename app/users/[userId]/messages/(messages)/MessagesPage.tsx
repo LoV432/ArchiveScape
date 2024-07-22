@@ -12,7 +12,7 @@ import { MessagesPagination } from '@/components/Pagination';
 
 import { Message } from '@/lib/all-messages';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
-import Link from 'next/link';
+import LinkWithHoverPrefetch from '@/components/LinkWithHoverPrefetch';
 
 export default function MessagesPage({
 	data,
@@ -67,12 +67,12 @@ function MessageSection({
 								style={{ color: message.color_name }}
 								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								<Link
+								<LinkWithHoverPrefetch
 									href={`/users/${userId}/messages/${message.id}/message-context`}
 									className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
 								>
 									<p>{message.message_text}</p>
-								</Link>
+								</LinkWithHoverPrefetch>
 								<MessageCreatedAt time={message.created_at} />
 							</TableCell>
 						</TableRow>

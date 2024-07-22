@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 export const dynamic = 'force-dynamic';
+import LinkWithHoverPrefetch from '../../../components/LinkWithHoverPrefetch';
 
 export default async function Home() {
 	const data = (
@@ -41,12 +42,12 @@ export default async function Home() {
 							<TableCell
 								className={`block max-w-[calc(100vw/1.5)] overflow-hidden text-ellipsis font-medium ${colorGradientByIndex(index)}`}
 							>
-								<Link
+								<LinkWithHoverPrefetch
 									href={`/users/${user.user_id}/messages`}
 									className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
 								>
 									{user.user_name}
-								</Link>
+								</LinkWithHoverPrefetch>
 							</TableCell>
 							<TableCell className="text-right text-base font-medium sm:text-lg">
 								{user.message_count}
