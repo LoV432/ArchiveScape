@@ -56,7 +56,11 @@ export default function TableRowContextMenu({
 					</ContextMenuItem>
 				</Link>
 				<ContextMenuSeparator />
-				<Link className="h-full w-full" href={`/users/${user_id}/messages`}>
+				<Link
+					rel="nofollow"
+					className="h-full w-full"
+					href={`/users/${user_id}/messages`}
+				>
 					<ContextMenuItem>Show All Messages From User</ContextMenuItem>
 				</Link>
 			</ContextMenuContent>
