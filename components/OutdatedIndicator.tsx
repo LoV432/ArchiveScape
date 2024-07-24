@@ -32,7 +32,7 @@ function OutdatedIndicatorWithQuery() {
 			const data = await res.json();
 			return data.id;
 		},
-		refetchInterval: 1000 * 60 * 4
+		refetchInterval: 1000 * 60
 	});
 	function createUpdateToast() {
 		toast('New messages found, Do you want to update?', {
@@ -48,7 +48,7 @@ function OutdatedIndicatorWithQuery() {
 			position: 'bottom-right',
 			action: {
 				onClick: () => {
-					document.cookie = `localLastId=${data};path=/;samesite=lax;max-age=720`;
+					setCookie(data);
 					location.reload();
 				},
 				label: 'Update'
@@ -90,8 +90,8 @@ function OutdatedIndicatorWithQuery() {
 
 function setCookie(id: number) {
 	if (process.env.NODE_ENV === 'development') {
-		document.cookie = `localLastId=${id};path=/;samesite=lax;max-age=720`;
+		document.cookie = `localLastId=${id};path=/;samesite=lax;max-age=360`;
 	} else {
-		document.cookie = `localLastId=${id};path=/;samesite=lax;secure;max-age=720`;
+		document.cookie = `localLastId=${id};path=/;samesite=lax;secure;max-age=360`;
 	}
 }
