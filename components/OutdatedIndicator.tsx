@@ -6,6 +6,7 @@ import {
 	QueryClientProvider
 } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,28 @@ function OutdatedIndicatorWithQuery() {
 		},
 		refetchInterval: 1000 * 60 * 4
 	});
+	function createUpdateToast() {
+		toast('New messages found, Do you want to update?', {
+			actionButtonStyle: {
+				fontSize: '1.1rem',
+				fontWeight: 500,
+				padding: '15px'
+			},
+			style: {
+				color: 'white',
+				fontSize: '1rem'
+			},
+			position: 'bottom-right',
+			action: {
+				onClick: () => {
+					document.cookie = `localLastId=${data};path=/;samesite=lax;max-age=720`;
+					location.reload();
+				},
+				label: 'Update'
+			}
+		});
+	}
+
 	useEffect(() => {
 		const cookies = document.cookie.split(';');
 		for (const cookie of cookies) {
@@ -50,7 +73,10 @@ function OutdatedIndicatorWithQuery() {
 	if (isError) return;
 	if (isOutdated) {
 		return (
-			<div className="fixed bottom-10 right-10 h-fit w-fit cursor-pointer">
+			<div
+				onClick={createUpdateToast}
+				className="fixed bottom-10 right-10 z-50 h-fit w-fit cursor-pointer"
+			>
 				<div className="pulsating-circle"></div>
 			</div>
 		);

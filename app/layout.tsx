@@ -5,6 +5,7 @@ import BreadcrumbComponent from '@/components/BreadCrumb';
 import Script from 'next/script';
 import SpinnerProvider from '@/components/spinner-provider';
 import OutdatedIndicator from '@/components/OutdatedIndicator';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
 	title: 'Home | ArchiveScape',
@@ -29,6 +30,7 @@ export default function RootLayout({
 					<BreadcrumbComponent />
 					<OutdatedIndicator />
 					{children}
+					<Toaster closeButton={true} />
 				</SpinnerProvider>
 			</body>
 		</html>
