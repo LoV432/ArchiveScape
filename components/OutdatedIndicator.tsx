@@ -7,8 +7,11 @@ import {
 } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { usePathname } from 'next/navigation';
 
 const queryClient = new QueryClient();
+const allowedPaths =
+	/^\/(all-messages|search|stats\/links|users\/\d+\/messages)$/;
 
 export default function OutdatedIndicator() {
 	return (
@@ -19,6 +22,7 @@ export default function OutdatedIndicator() {
 }
 
 function OutdatedIndicatorWithQuery() {
+	const pathname = usePathname();
 	const localLastId = useRef<number | null>(null);
 	const [isOutdated, setIsOutdated] = useState(false);
 	const { data, isError } = useQuery({
@@ -70,7 +74,8 @@ function OutdatedIndicatorWithQuery() {
 			setIsOutdated(true);
 		}
 	}, [data]);
-	if (isError) return;
+
+	if (isError || !pathname.match(allowedPaths)) return;
 	if (isOutdated) {
 		return (
 			<div
