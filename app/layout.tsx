@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import BreadcrumbComponent from '@/components/BreadCrumb';
 import Script from 'next/script';
 import SpinnerProvider from '@/components/spinner-provider';
+import OutdatedIndicator from '@/components/OutdatedIndicator';
 
 export const metadata: Metadata = {
 	title: 'Home | ArchiveScape',
@@ -26,6 +27,7 @@ export default function RootLayout({
 				<SpinnerProvider>
 					<Header />
 					<BreadcrumbComponent />
+					<OutdatedIndicator />
 					{children}
 				</SpinnerProvider>
 			</body>
