@@ -26,7 +26,7 @@ function OutdatedIndicatorWithQuery() {
 	if (!pathname.match(allowedPaths)) return;
 	const localLastId = useRef<number | null>(null);
 	const [isOutdated, setIsOutdated] = useState(false);
-	const { data, isError } = useQuery({
+	const { data, isError, dataUpdatedAt } = useQuery({
 		queryKey: ['latestMessage'],
 		queryFn: async () => {
 			const res = await fetch('/api/last-message-id');
@@ -74,7 +74,7 @@ function OutdatedIndicatorWithQuery() {
 			setCookie(localLastId.current);
 			setIsOutdated(true);
 		}
-	}, [data]);
+	}, [dataUpdatedAt]);
 
 	if (isError) return;
 	if (isOutdated) {
