@@ -26,11 +26,11 @@ export function addLocalLastId({
 	paramsList: any[];
 	localLastId: number;
 }) {
-	paramsList.push(localLastId + 1);
+	paramsList.push(localLastId);
 	if (query.includes('WHERE')) {
-		query += ` AND messages.id < $${paramsList.length}`;
+		query += ` AND messages.id <= $${paramsList.length}`;
 	} else {
-		query += ` WHERE messages.id < $${paramsList.length}`;
+		query += ` WHERE messages.id <= $${paramsList.length}`;
 	}
 	return query;
 }
