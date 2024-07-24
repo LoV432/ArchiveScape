@@ -14,6 +14,8 @@ const allowedPaths =
 	/^\/(all-messages|search|stats\/links|users\/\d+\/messages)$/;
 
 export default function OutdatedIndicator() {
+	const pathname = usePathname();
+	if (!pathname.match(allowedPaths)) return;
 	return (
 		<QueryClientProvider client={queryClient}>
 			<OutdatedIndicatorWithQuery />
@@ -22,8 +24,6 @@ export default function OutdatedIndicator() {
 }
 
 function OutdatedIndicatorWithQuery() {
-	const pathname = usePathname();
-	if (!pathname.match(allowedPaths)) return;
 	const localLastId = useRef<number | null>(null);
 	const [isOutdated, setIsOutdated] = useState(false);
 	const { data, isError, dataUpdatedAt } = useQuery({
