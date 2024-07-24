@@ -23,6 +23,7 @@ export default function OutdatedIndicator() {
 
 function OutdatedIndicatorWithQuery() {
 	const pathname = usePathname();
+	if (!pathname.match(allowedPaths)) return;
 	const localLastId = useRef<number | null>(null);
 	const [isOutdated, setIsOutdated] = useState(false);
 	const { data, isError } = useQuery({
@@ -75,7 +76,7 @@ function OutdatedIndicatorWithQuery() {
 		}
 	}, [data]);
 
-	if (isError || !pathname.match(allowedPaths)) return;
+	if (isError) return;
 	if (isOutdated) {
 		return (
 			<div
