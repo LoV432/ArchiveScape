@@ -91,8 +91,8 @@ function OutdatedIndicatorWithQuery() {
 
 function setCookie(id: number) {
 	if (process.env.NODE_ENV === 'development') {
-		document.cookie = `localLastId=${id};path=/;samesite=lax;max-age=360`;
+		document.cookie = `localLastId=${id};path=/;samesite=lax;max-age=120`;
 	} else {
-		document.cookie = `localLastId=${id};path=/;samesite=lax;secure;max-age=360`;
+		document.cookie = `localLastId=${id};path=/;samesite=lax;secure;max-age=120`;
 	}
 }
