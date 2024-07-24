@@ -1,4 +1,6 @@
 import { db } from '@/lib/db';
+import { cookies } from 'next/headers';
+import { addLocalLastId, addOffsetLimit, addOrderBy } from './db-helpers';
 
 export async function getSearch(
 	searchQuery: string,
@@ -10,6 +12,8 @@ export async function getSearch(
 		return { success: true as const, messages: [], totalPages: 0 };
 	}
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
+	const offset = Number(page) * itemsPerPage - itemsPerPage;
+	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
 	try {
 		// Build get messages query
 		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE lower(message_text) LIKE lower($1)`;
@@ -27,8 +31,23 @@ export async function getSearch(
 			queryBuilder += ` AND created_at <= $${params.length + 1}`;
 			params.push(dateEnd.toISOString());
 		}
-		queryBuilder += ` ORDER BY created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
-		params.push(itemsPerPage, (Number(page) - 1) * itemsPerPage);
+		if (localLastId) {
+			queryBuilder = addLocalLastId({
+				query: queryBuilder,
+				paramsList: params,
+				localLastId: localLastId
+			});
+		}
+		queryBuilder = addOrderBy({
+			query: queryBuilder,
+			orderBy: 'created_at DESC'
+		});
+		queryBuilder = addOffsetLimit({
+			query: queryBuilder,
+			paramsList: params,
+			offset,
+			limit: itemsPerPage
+		});
 		const messages = await db.query(queryBuilder, params);
 
 		// Build total pages query
@@ -41,6 +60,13 @@ export async function getSearch(
 		if (dateEnd) {
 			totalPagesQuery += ` AND created_at <= $${params.length + 1}`;
 			params.push(dateEnd.toISOString());
+		}
+		if (localLastId) {
+			totalPagesQuery = addLocalLastId({
+				query: totalPagesQuery,
+				paramsList: params,
+				localLastId: localLastId
+			});
 		}
 		const totalPages = Math.ceil(
 			(await db.query(totalPagesQuery, params)).rows[0]['count'] / itemsPerPage
