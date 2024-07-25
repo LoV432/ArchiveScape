@@ -24,6 +24,7 @@ export default function OutdatedIndicator() {
 }
 
 function OutdatedIndicatorWithQuery() {
+	const firstCookieInterval = useRef<NodeJS.Timeout | null>(null);
 	const localLastId = useRef<number | null>(null);
 	const [isOutdated, setIsOutdated] = useState(false);
 	const { data, isError, dataUpdatedAt } = useQuery({
@@ -67,13 +68,20 @@ function OutdatedIndicatorWithQuery() {
 		}
 		if (!data) return;
 		if (localLastId.current === null) {
-			localLastId.current = data;
-			setCookie(data);
+			firstCookieInterval.current = setInterval(() => {
+				localLastId.current = data;
+				setCookie(data);
+			}, 1000 * 10);
 		} else if (localLastId.current !== data) {
 			// This keeps the max-age cookie from expiring
 			setCookie(localLastId.current);
 			setIsOutdated(true);
 		}
+		return () => {
+			if (firstCookieInterval.current) {
+				clearInterval(firstCookieInterval.current);
+			}
+		};
 	}, [dataUpdatedAt]);
 
 	if (isError) return;
