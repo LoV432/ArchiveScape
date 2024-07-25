@@ -25,17 +25,16 @@ export async function generateMetadata({
 export default function Page({
 	searchParams
 }: {
-	searchParams: { page: string; user_id: number };
+	searchParams: { page: string };
 }) {
 	const page = Number(searchParams.page) || 1;
-	const highlightedUser = Number(searchParams.user_id) || undefined;
 	const data = use(getAllMessages(page));
 	return (
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-1">All Messages</p>
 			</h1>
-			<AllMessages data={data} page={page} highlightedUser={highlightedUser} />
+			<AllMessages data={data} page={page} />
 		</div>
 	);
 }
