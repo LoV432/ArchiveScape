@@ -9,6 +9,7 @@ import {
 	navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -133,6 +134,9 @@ export default function Header() {
 							if (!autoFocus) e.preventDefault();
 						}}
 					>
+						<DialogTitle hidden>
+							<DialogDescription>Mobile Navbar</DialogDescription>
+						</DialogTitle>
 						<NavLogo className="pb-8 pt-2" onClick={() => setIsOpen(false)} />
 						<NavigationMenuList className="float-left flex-col gap-5 space-x-0">
 							<NavMenuItem
