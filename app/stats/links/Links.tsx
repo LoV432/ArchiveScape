@@ -55,6 +55,7 @@ function MessageSection({
 						user_id={message.user_id}
 						message_id={message.id}
 						page={Number(page)}
+						copyToClipboard={message.message_text}
 					>
 						<TableRow tabIndex={0} key={message.id}>
 							<TableCell
