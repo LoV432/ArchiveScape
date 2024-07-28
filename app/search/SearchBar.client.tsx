@@ -52,35 +52,33 @@ export default function SearchBar({
 	return (
 		<>
 			<div className="relative mx-auto my-10 flex h-14 w-full max-w-[800px] px-4 sm:w-2/3 sm:px-0">
-				<div className="flex w-full gap-5">
-					<div className="ml-2 block h-full w-10 py-2 sm:absolute sm:left-0">
-						<DatePickerWithRange date={date} setDate={setDate} />
-					</div>
-					<input
-						type="text"
-						placeholder="Search"
-						className="h-full w-full rounded border border-gray-300 border-opacity-35 text-center text-2xl font-bold focus-visible:border-opacity-70 focus-visible:outline-none"
-						defaultValue={searchQuery}
-						onFocus={(e) =>
-							e.target.setAttribute('placeholder', 'Start typing...')
+				<input
+					type="text"
+					placeholder="Search"
+					className="peer order-2 h-full w-full border border-x-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] text-center text-2xl font-bold focus-visible:border-opacity-70 focus-visible:outline-none"
+					defaultValue={searchQuery}
+					onFocus={(e) =>
+						e.target.setAttribute('placeholder', 'Start typing...')
+					}
+					onBlur={(e) => e.target.setAttribute('placeholder', 'Search')}
+					ref={searchElementRef}
+					onKeyUp={(e: any) => {
+						if (e.key === 'Enter') {
+							router.push(
+								`/search?search=${e.target.value}${dateStart}${dateEnd}`
+							);
 						}
-						onBlur={(e) => e.target.setAttribute('placeholder', 'Search')}
-						ref={searchElementRef}
-						onKeyUp={(e: any) => {
-							if (e.key === 'Enter') {
-								router.push(
-									`/search?search=${e.target.value}${dateStart}${dateEnd}`
-								);
-							}
-						}}
-					/>
+					}}
+				/>
+				<div className="order-1 h-full border border-r-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
+					<DatePickerWithRange date={date} setDate={setDate} />
 				</div>
-				<div className="absolute right-0 top-0 hidden h-full w-16 p-2 sm:block">
+				<div className="order-3 h-full border border-l-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
 					<Button
 						onClick={() =>
 							router.push(`/search?search=${searchElementRef.current?.value}`)
 						}
-						className="h-full w-full rounded bg-transparent text-3xl text-white hover:bg-zinc-800"
+						className="h-full w-full rounded bg-transparent px-3 text-3xl text-white hover:bg-zinc-800"
 					>
 						⏎
 					</Button>
