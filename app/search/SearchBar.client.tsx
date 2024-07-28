@@ -70,10 +70,10 @@ export default function SearchBar({
 						}
 					}}
 				/>
-				<div className="order-1 h-full border border-r-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
+				<div className="order-l h-full rounded-l border border-r-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
 					<DatePickerWithRange date={date} setDate={setDate} />
 				</div>
-				<div className="order-3 h-full border border-l-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
+				<div className="order-3 h-full rounded-r border border-l-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
 					<Button
 						onClick={() =>
 							router.push(`/search?search=${searchElementRef.current?.value}`)
