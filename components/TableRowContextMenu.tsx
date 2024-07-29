@@ -71,30 +71,32 @@ export default function TableRowContextMenu({
 									toast.error(
 										'Clipboard API not supported, please copy manually',
 										{
-											position: 'bottom-right',
+											position: 'top-right',
 											important: true,
 											style: {
 												color: 'black',
 												backgroundColor: '#9f1239',
 												fontSize: '1rem'
 											},
-											closeButton: false
+											closeButton: false,
+											duration: 15000
 										}
 									);
 									return;
 								}
 								navigator.clipboard.writeText(copyToClipboard);
 								toast.error(
-									'Copied to clipboard, this is an untrusted link. Open it at your own risk',
+									'Copied to clipboard, this is an untrusted link. Open it at your own risk.',
 									{
-										position: 'bottom-right',
+										position: 'top-right',
 										important: true,
 										style: {
 											color: 'black',
 											backgroundColor: '#9f1239',
 											fontSize: '1rem'
 										},
-										closeButton: false
+										closeButton: false,
+										duration: 15000
 									}
 								);
 							}}
