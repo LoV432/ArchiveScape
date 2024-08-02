@@ -7,6 +7,7 @@ import {
 	ContextMenuSeparator
 } from '@/components/ui/context-menu';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 export default function TableRowContextMenu({
@@ -14,6 +15,7 @@ export default function TableRowContextMenu({
 	message_id,
 	children,
 	isContextPage = false,
+	isAllMessagesPage = false,
 	copyToClipboard,
 	page
 }: {
@@ -21,10 +23,14 @@ export default function TableRowContextMenu({
 	message_id: number;
 	children: React.ReactNode;
 	isContextPage?: boolean;
+	isAllMessagesPage?: boolean;
 	copyToClipboard?: string;
 	page?: number;
 }) {
-	const contextLink = `/users/${user_id}/messages/${message_id}/message-context`;
+	const router = useRouter();
+	const contextLink = isAllMessagesPage
+		? `/all-messages?page=${page || 1}&user_id=${user_id}`
+		: `/users/${user_id}/messages/${message_id}/message-context`;
 	return (
 		<ContextMenu>
 			<ContextMenuTrigger

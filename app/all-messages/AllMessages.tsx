@@ -15,10 +15,12 @@ import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 
 export default function AllMessagesPage({
 	data,
-	page
+	page,
+	highlightedUser
 }: {
 	data: { messages: Message[]; totalPages: number };
 	page: number;
+	highlightedUser?: number;
 }) {
 	return (
 		<>
@@ -27,7 +29,11 @@ export default function AllMessagesPage({
 				page={page}
 				order="desc"
 			/>
-			<MessageSection messages={data.messages} page={page} />
+			<MessageSection
+				messages={data.messages}
+				page={page}
+				highlightedUser={highlightedUser}
+			/>
 			<MessagesPagination
 				totalPages={data.totalPages}
 				page={page}
@@ -39,10 +45,12 @@ export default function AllMessagesPage({
 
 function MessageSection({
 	messages,
-	page
+	page,
+	highlightedUser
 }: {
 	messages: Message[];
 	page: number;
+	highlightedUser?: number;
 }) {
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
@@ -58,9 +66,19 @@ function MessageSection({
 						key={message.id}
 						user_id={message.user_id}
 						message_id={message.id}
+						isAllMessagesPage
+						isContextPage
 						page={page}
 					>
-						<TableRow tabIndex={0} key={message.id}>
+						<TableRow
+							tabIndex={0}
+							style={{
+								// @ts-ignore
+								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
+							}}
+							className={`${message.user_id === highlightedUser ? `bg-[--highlight] ` : ''}`}
+							key={message.id}
+						>
 							<TableCell
 								style={{ color: message.color_name }}
 								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
