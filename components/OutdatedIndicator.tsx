@@ -14,19 +14,28 @@ const allowedPaths =
 	/^\/(all-messages|search|stats\/links|users\/\d+\/messages)$/;
 
 export default function OutdatedIndicator() {
+	const [isOutdated, setIsOutdated] = useState(false);
 	const pathname = usePathname();
 	if (!pathname.match(allowedPaths)) return;
 	return (
 		<QueryClientProvider client={queryClient}>
-			<OutdatedIndicatorWithQuery />
+			<OutdatedIndicatorWithQuery
+				isOutdated={isOutdated}
+				setIsOutdated={setIsOutdated}
+			/>
 		</QueryClientProvider>
 	);
 }
 
-function OutdatedIndicatorWithQuery() {
+function OutdatedIndicatorWithQuery({
+	isOutdated,
+	setIsOutdated
+}: {
+	isOutdated: boolean;
+	setIsOutdated: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
 	const firstCookieInterval = useRef<NodeJS.Timeout | null>(null);
 	const localLastId = useRef<number | null>(null);
-	const [isOutdated, setIsOutdated] = useState(false);
 	const { data, isError, dataUpdatedAt } = useQuery({
 		queryKey: ['latestMessage'],
 		queryFn: async () => {
@@ -34,7 +43,8 @@ function OutdatedIndicatorWithQuery() {
 			const data = await res.json();
 			return data.id;
 		},
-		refetchInterval: 1000 * 60
+		refetchInterval: 1000 * 60,
+		enabled: !isOutdated
 	});
 	function createUpdateToast() {
 		toast('New messages found, Do you want to update?', {
@@ -73,8 +83,6 @@ function OutdatedIndicatorWithQuery() {
 				setCookie(data);
 			}, 1000 * 10);
 		} else if (localLastId.current !== data) {
-			// This keeps the max-age cookie from expiring
-			setCookie(localLastId.current);
 			setIsOutdated(true);
 		}
 		return () => {
@@ -83,6 +91,23 @@ function OutdatedIndicatorWithQuery() {
 			}
 		};
 	}, [dataUpdatedAt]);
+
+	useEffect(() => {
+		let coookieUpdateInterval: NodeJS.Timeout | null = null;
+		if (isOutdated) {
+			if (localLastId.current === null) return;
+			setCookie(localLastId.current);
+			coookieUpdateInterval = setInterval(() => {
+				if (localLastId.current === null) return;
+				setCookie(localLastId.current);
+			}, 1000 * 60);
+		}
+		return () => {
+			if (coookieUpdateInterval) {
+				clearInterval(coookieUpdateInterval);
+			}
+		};
+	}, [isOutdated]);
 
 	if (isError) return;
 	if (isOutdated) {
