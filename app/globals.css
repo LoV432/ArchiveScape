@@ -72,6 +72,15 @@
 	}
 }
 
+html[data-cursor='true'] {
+	cursor: url('/cursor.cur'), auto;
+}
+
+html[data-cursor='true'] a,
+html[data-cursor='true'] button {
+	cursor: url('/cursor-pointer.cur'), pointer;
+}
+
 @layer base {
 	* {
 		@apply border-border;
