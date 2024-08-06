@@ -113,6 +113,7 @@ function OutdatedIndicatorWithQuery({
 	if (isOutdated) {
 		return (
 			<div
+				role="button"
 				onClick={createUpdateToast}
 				className="fixed bottom-10 right-10 z-50 h-fit w-fit cursor-pointer"
 			>

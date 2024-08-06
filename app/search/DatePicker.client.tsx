@@ -25,6 +25,7 @@ export function DatePickerWithRange({
 		<Popover open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
 			<PopoverTrigger asChild>
 				<div
+					role="button"
 					className={`grid h-full w-[45px] place-items-center rounded hover:bg-accent active:bg-accent ${isOpen ? 'bg-accent' : ''} ${!date?.from ? 'text-muted-foreground' : ''} cursor-pointer`}
 				>
 					<svg
