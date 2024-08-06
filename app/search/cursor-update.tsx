@@ -1,6 +1,6 @@
 export default function cursorUpdate(searchQuery: string) {
 	if (searchQuery.length < 1) return null;
-	const searchQueryBase64 = btoa(searchQuery);
+	const searchQueryBase64 = btoa(searchQuery.toLowerCase());
 	if (cursors.includes(searchQueryBase64)) {
 		document
 			.querySelector<HTMLElement>(':root')
