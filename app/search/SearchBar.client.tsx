@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DatePickerWithRange } from './DatePicker.client';
 import { DateRange } from 'react-day-picker';
+import cursorUpdate from './cursor-update';
 
 export default function SearchBar({
 	searchQuery,
@@ -64,6 +65,7 @@ export default function SearchBar({
 					ref={searchElementRef}
 					onKeyUp={(e: any) => {
 						if (e.key === 'Enter') {
+							cursorUpdate(e.target.value);
 							router.push(
 								`/search?search=${e.target.value}${dateStart}${dateEnd}`
 							);
