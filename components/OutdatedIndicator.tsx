@@ -11,7 +11,7 @@ import { usePathname } from 'next/navigation';
 
 const queryClient = new QueryClient();
 const allowedPaths =
-	/^\/(all-messages|search|stats\/links|users\/\d+\/messages)$/;
+	/^\/(all-messages|search|stats\/links|users\/\d+\/messages|conversation-tracker)$/;
 
 export default function OutdatedIndicator() {
 	const [isOutdated, setIsOutdated] = useState(false);

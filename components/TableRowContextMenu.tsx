@@ -6,6 +6,7 @@ import {
 	ContextMenuTrigger,
 	ContextMenuSeparator
 } from '@/components/ui/context-menu';
+import { adduserToConversationTrackerCookie } from '@/lib/conversation-tracker-cookie';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -66,6 +67,21 @@ export default function TableRowContextMenu({
 				>
 					<ContextMenuItem>Show All Messages From User</ContextMenuItem>
 				</Link>
+				<ContextMenuSeparator />
+				<div
+					className="h-full w-full"
+					onClick={async () => {
+						await adduserToConversationTrackerCookie(user_id);
+						toast.success(`${user_id} added to Conversation Tracker`, {
+							style: {
+								fontSize: '1rem'
+							},
+							richColors: true
+						});
+					}}
+				>
+					<ContextMenuItem>Add to Conversation Tracker</ContextMenuItem>
+				</div>
 				{copyToClipboard && (
 					<>
 						<ContextMenuSeparator />
