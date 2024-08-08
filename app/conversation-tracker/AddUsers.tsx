@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { addMutlipleUsersToConversationTrackerCookie } from '@/lib/conversation-tracker-cookie';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next13-progressbar';
 
 export default function AddUsers() {
 	const [input, setInput] = useState('');
@@ -28,7 +28,7 @@ export default function AddUsers() {
 				return parseInt(id);
 			})
 			.filter((id) => id !== undefined);
-		await addMutlipleUsersToConversationTrackerCookie(userIds as number[]);
+		addMutlipleUsersToConversationTrackerCookie(userIds as number[]);
 		router.refresh();
 		setIsLoading(false);
 	}

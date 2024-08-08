@@ -71,7 +71,8 @@ export default function TableRowContextMenu({
 				<div
 					className="h-full w-full"
 					onClick={async () => {
-						await adduserToConversationTrackerCookie(user_id);
+						adduserToConversationTrackerCookie(user_id);
+						router.refresh();
 						toast.success(`${user_id} added to Conversation Tracker`, {
 							style: {
 								fontSize: '1rem'

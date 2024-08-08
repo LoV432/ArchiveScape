@@ -1,66 +1,61 @@
-//TODO: This does work but i really shouldn't be making API calls for this. This should be done on the client side.
-'use server';
-import { cookies } from 'next/headers';
-
-export async function adduserToConversationTrackerCookie(userId: number) {
+export function adduserToConversationTrackerCookie(userId: number) {
+	if (!document) return;
 	if (isNaN(userId) || userId < 1) return;
 	const userIdString = userId.toString();
-	const cookie = cookies().get('conversationTracker')?.value;
+	const cookie = getCookie();
 	if (!cookie) {
-		cookies().set('conversationTracker', userIdString, {
-			path: '/',
-			maxAge: 60 * 60 * 24 * 30
-		});
+		setCookie(userIdString);
 		return;
 	}
 	const cookieArray = cookie.split(',');
 	if (!cookieArray.includes(userIdString)) {
-		cookies().set('conversationTracker', cookie + ',' + userIdString, {
-			path: '/',
-			maxAge: 60 * 60 * 24 * 30
-		});
+		setCookie(cookie + ',' + userIdString);
 	}
 }
 
-export async function addMutlipleUsersToConversationTrackerCookie(
-	userIds: number[]
-) {
+export function addMutlipleUsersToConversationTrackerCookie(userIds: number[]) {
+	if (!document) return;
 	const sanitizedUserIds = userIds.filter((id) => !isNaN(id) && id > 0);
-	const cookie = cookies().get('conversationTracker')?.value;
+	const cookie = getCookie();
 	if (!cookie) {
-		cookies().set('conversationTracker', sanitizedUserIds.join(','), {
-			path: '/',
-			maxAge: 60 * 60 * 24 * 30
-		});
+		setCookie(sanitizedUserIds.join(','));
 		return;
 	}
 	const cookieArray = cookie.split(',');
 	for (const userId of sanitizedUserIds) {
 		if (!cookieArray.includes(userId.toString())) {
-			cookies().set('conversationTracker', cookie + ',' + userId.toString(), {
-				path: '/',
-				maxAge: 60 * 60 * 24 * 30
-			});
+			setCookie(cookie + ',' + userId.toString());
 		}
 	}
 }
 
-export async function removeuserFromConversationTrackerCookie(userId: number) {
+export function removeuserFromConversationTrackerCookie(userId: number) {
+	if (!document) return;
 	if (isNaN(userId) || userId < 1) return;
 	const userIdString = userId.toString();
-	const cookie = cookies().get('conversationTracker')?.value;
+	const cookie = getCookie();
 	if (!cookie) {
 		return;
 	}
 	const cookieArray = cookie.split(',');
 	if (cookieArray.includes(userIdString)) {
-		cookies().set(
-			'conversationTracker',
-			cookieArray.filter((id) => id !== userIdString).join(','),
-			{
-				path: '/',
-				maxAge: 60 * 60 * 24 * 30
-			}
-		);
+		setCookie(cookieArray.filter((id) => id !== userIdString).join(','));
 	}
+}
+
+function getCookie() {
+	if (!document) return;
+	const allCookies = document.cookie.split(';');
+	for (const cookie of allCookies) {
+		const [key, value] = cookie.split('=');
+		if (key.includes('conversationTracker')) {
+			return value;
+		}
+	}
+	return undefined;
+}
+
+function setCookie(value: string) {
+	if (!document) return;
+	document.cookie = `conversationTracker=${value};path=/;max-age=2592000`;
 }

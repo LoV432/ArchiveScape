@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next13-progressbar';
 import { removeuserFromConversationTrackerCookie } from '@/lib/conversation-tracker-cookie';
 
 export default function UserBadge({ userId }: { userId: number }) {
@@ -16,7 +16,7 @@ export default function UserBadge({ userId }: { userId: number }) {
 				<button
 					className={`absolute -right-2 -top-2 hidden rounded-full border border-white p-0.5 text-white group-hover:block`}
 					onClick={async () => {
-						await removeuserFromConversationTrackerCookie(userId);
+						removeuserFromConversationTrackerCookie(userId);
 						router.refresh();
 					}}
 				>
