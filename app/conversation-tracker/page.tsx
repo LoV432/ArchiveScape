@@ -3,6 +3,27 @@ import AllConversationMessagesPage from './AllConversationMessages';
 import UserBadge from './UserBadge';
 import { cookies } from 'next/headers';
 import AddUsers from './AddUsers';
+import { Metadata } from 'next';
+
+export async function generateMetadata({
+	searchParams
+}: {
+	searchParams: { page: string; user_id: number };
+}) {
+	let metaObject: Metadata = {
+		title: 'Conversation Tracker | ArchiveScape',
+		description:
+			'An archive of all messages sent on https://www.ventscape.life/'
+	};
+	if (searchParams.page || searchParams.user_id) {
+		metaObject.robots = {
+			index: false,
+			follow: false
+		};
+	}
+	return metaObject;
+}
+
 export default async function Page({
 	searchParams
 }: {
