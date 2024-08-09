@@ -38,7 +38,7 @@ export default async function Page({
 					<p className="pb-1">Conversation Tracker</p>
 				</h1>
 				<p className="text-center">You have no users selected to track.</p>
-				<AddUsers />
+				<AddUsers type="button" />
 			</div>
 		);
 	}
@@ -59,6 +59,7 @@ export default async function Page({
 				{coversationTrackerUsers.map((userId) => (
 					<UserBadge key={userId} userId={userId} />
 				))}
+				<AddUsers type="icon" />
 			</div>
 			<AllConversationMessagesPage
 				data={{ messages, totalPages }}

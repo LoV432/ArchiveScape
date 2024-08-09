@@ -13,10 +13,12 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { addMutlipleUsersToConversationTrackerCookie } from '@/lib/conversation-tracker-cookie';
 import { useRouter } from 'next13-progressbar';
+import { CirclePlus } from 'lucide-react';
 
-export default function AddUsers() {
+export default function AddUsers({ type }: { type: 'button' | 'icon' }) {
 	const [input, setInput] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 	const router = useRouter();
 	async function addUsers() {
 		setIsLoading(true);
@@ -31,13 +33,26 @@ export default function AddUsers() {
 		addMutlipleUsersToConversationTrackerCookie(userIds as number[]);
 		router.refresh();
 		setIsLoading(false);
+		setIsOpen(false);
 	}
 	return (
-		<Dialog onOpenChange={(open) => open && setInput('')}>
+		<Dialog
+			onOpenChange={(status) => {
+				status === true && setInput('');
+				setIsOpen(!isOpen);
+			}}
+			open={isOpen}
+		>
 			<DialogTrigger asChild>
-				<Button className="mx-auto w-fit" variant="default">
-					Add Users
-				</Button>
+				{type === 'button' ? (
+					<Button className="mx-auto w-fit" variant="default">
+						Add Users
+					</Button>
+				) : (
+					<div className="my-auto w-fit cursor-pointer">
+						<CirclePlus className="h-5 w-5" aria-hidden="true" />
+					</div>
+				)}
 			</DialogTrigger>
 			<DialogContent className="w-max max-w-[90vw] translate-y-[-90%]">
 				<DialogHeader>
@@ -49,6 +64,11 @@ export default function AddUsers() {
 				<Input
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter') {
+							addUsers();
+						}
+					}}
 					placeholder="User IDs e.g. 27530,27540,27521"
 				/>
 				<div className="flex justify-center">
