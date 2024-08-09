@@ -55,7 +55,7 @@ export default async function Page({
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-1">Conversation Tracker</p>
 			</h1>
-			<div className="flex justify-center">
+			<div className="flex max-w-[90%] flex-wrap justify-center self-center sm:max-w-[50%]">
 				{coversationTrackerUsers.map((userId) => (
 					<UserBadge key={userId} userId={userId} />
 				))}
