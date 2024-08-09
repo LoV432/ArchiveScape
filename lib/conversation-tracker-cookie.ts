@@ -49,7 +49,7 @@ function getCookie() {
 	for (const cookie of allCookies) {
 		const [key, value] = cookie.split('=');
 		if (key.includes('conversationTracker')) {
-			return value;
+			return decodeURIComponent(value);
 		}
 	}
 	return undefined;
