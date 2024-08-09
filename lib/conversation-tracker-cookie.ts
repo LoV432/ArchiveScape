@@ -15,18 +15,20 @@ export function adduserToConversationTrackerCookie(userId: number) {
 
 export function addMutlipleUsersToConversationTrackerCookie(userIds: number[]) {
 	if (!document) return;
-	const sanitizedUserIds = userIds.filter((id) => !isNaN(id) && id > 0);
-	const cookie = getCookie();
+	const sanitizedUserIds = userIds.filter(
+		(id, index) => !isNaN(id) && id > 0 && userIds.indexOf(id) === index
+	);
+	let cookie = getCookie();
 	if (!cookie) {
 		setCookie(sanitizedUserIds.join(','));
 		return;
 	}
-	const cookieArray = cookie.split(',');
 	for (const userId of sanitizedUserIds) {
-		if (!cookieArray.includes(userId.toString())) {
-			setCookie(cookie + ',' + userId.toString());
+		if (!cookie.split(',').includes(userId.toString())) {
+			cookie = cookie + ',' + userId.toString();
 		}
 	}
+	setCookie(cookie);
 }
 
 export function removeuserFromConversationTrackerCookie(userId: number) {
