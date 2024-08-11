@@ -23,6 +23,12 @@ export default function SearchBar({
 	});
 	const [dateStart, setDateStart] = useState<string>('');
 	const [dateEnd, setDateEnd] = useState<string>('');
+	function search() {
+		const searchValue = searchElementRef.current?.value;
+		if (!searchValue) return;
+		cursorUpdate(searchValue);
+		router.push(`/search?search=${searchValue}${dateStart}${dateEnd}`);
+	}
 	useMemo(() => {
 		date?.from
 			? setDateStart(`&dateStart=${date.from.toISOString()}`)
@@ -63,12 +69,9 @@ export default function SearchBar({
 					}
 					onBlur={(e) => e.target.setAttribute('placeholder', 'Search')}
 					ref={searchElementRef}
-					onKeyUp={(e: any) => {
+					onKeyUp={(e) => {
 						if (e.key === 'Enter') {
-							cursorUpdate(e.target.value);
-							router.push(
-								`/search?search=${e.target.value}${dateStart}${dateEnd}`
-							);
+							search();
 						}
 					}}
 				/>
@@ -77,9 +80,7 @@ export default function SearchBar({
 				</div>
 				<div className="order-3 h-full rounded-r border border-l-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
 					<Button
-						onClick={() =>
-							router.push(`/search?search=${searchElementRef.current?.value}`)
-						}
+						onClick={search}
 						className="h-full w-full rounded bg-transparent px-3 text-3xl text-white hover:bg-zinc-800"
 					>
 						⏎
