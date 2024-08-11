@@ -1,11 +1,17 @@
-# What is this?
+Welcome to ArchiveScape
+=======================
 
-This is an archive of all messages sent on [Ventscape](https://www.ventscape.life/).
+What is ArchiveScape?
+---------------------
 
-# Why?
+ArchiveScape is an open source archive of [VentScape](https://ventscape.life). This archive was started on April 12, 2024 at 17:00 UTC and it is currently being updated every 5 minutes.
 
-Well, there's (sometimes) (rarely) genuinely heartfelt human interaction happening there, and the thought of it disappearing into the digital void makes me sad.
+Why Create ArchiveScape?
+------------------------
 
-# That's all nice and good, but what's the actual reason?
+You might be wondering, "Doesn't this website defeat the whole purpose of VentScape?" The answer is yes (╥﹏╥), but it's very unlikely that I am the only person recording messages from VentScape. Does that justify me also doing it? The answer is no (ง ͠ಥ\_ಥ)ง, but at least I am making a semi-useful website out of it.
 
-The primary reason behind this is to use the collected data for creating statistics and visualizations, such as word cloud maps and other fun stuff. It's all about turning the raw conversations into meaningful insights and fun charts! :D
+Project Structure
+-----------------
+
+The code of this project is split into two parts: the frontend (this repo) and the collection script. The frontend is a Next.js app that you can find [here](https://github.com/LoV432/archivescape) . The collection script is a JS/TS script that runs a Puppeteer instance to record messages from [VentScape](https://ventscape.life) . You can find the code [here](https://github.com/LoV432/ventscape-archive) .
