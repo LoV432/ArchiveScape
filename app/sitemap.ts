@@ -21,6 +21,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
 			priority: 0.5
 		},
 		{
+			url: `https://${process.env.HOST_NAME}/conversation-tracker`,
+			lastModified: new Date(),
+			changeFrequency: 'daily',
+			priority: 0.5
+		},
+		{
+			url: `https://${process.env.HOST_NAME}/random-message`,
+			lastModified: new Date(),
+			changeFrequency: 'daily',
+			priority: 0.5
+		},
+		{
 			url: `https://${process.env.HOST_NAME}/replay`,
 			lastModified: new Date(),
 			changeFrequency: 'daily',
@@ -52,6 +64,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		},
 		{
 			url: `https://${process.env.HOST_NAME}/stats/rickroll`,
+			lastModified: new Date(),
+			changeFrequency: 'daily',
+			priority: 0.5
+		},
+		{
+			url: `https://${process.env.HOST_NAME}/stats/daily-usage`,
 			lastModified: new Date(),
 			changeFrequency: 'daily',
 			priority: 0.5
