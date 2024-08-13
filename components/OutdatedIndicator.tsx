@@ -36,7 +36,7 @@ function OutdatedIndicatorWithQuery({
 }) {
 	const firstCookieInterval = useRef<NodeJS.Timeout | null>(null);
 	const localLastId = useRef<number | null>(null);
-	const { data, isError, dataUpdatedAt } = useQuery({
+	const { data, isError, dataUpdatedAt, refetch } = useQuery({
 		queryKey: ['latestMessage'],
 		queryFn: async () => {
 			const res = await fetch('/api/last-message-id');
@@ -59,7 +59,8 @@ function OutdatedIndicatorWithQuery({
 			},
 			position: 'bottom-right',
 			action: {
-				onClick: () => {
+				onClick: async () => {
+					await refetch();
 					setCookie(data);
 					location.reload();
 				},
