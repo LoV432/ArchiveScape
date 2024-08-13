@@ -11,6 +11,7 @@ export type Message = {
 };
 
 export async function getAllMessages(page: number) {
+	if (page > 500) return { messages: [] }; // Its very expensive to query pages above 500
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	const offset = Number(page) * itemsPerPage - itemsPerPage;
 	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
@@ -36,19 +37,5 @@ export async function getAllMessages(page: number) {
 		limit: itemsPerPage
 	});
 	const messages = await db.query(queryBuilder, paramsList);
-
-	let countQueryBuilder = `SELECT COUNT(*) FROM messages`;
-	let countParamsList = [] as any[];
-	if (localLastId) {
-		countQueryBuilder = addLocalLastId({
-			query: countQueryBuilder,
-			paramsList: countParamsList,
-			localLastId: localLastId
-		});
-	}
-	const totalPages = Math.ceil(
-		(await db.query(countQueryBuilder, countParamsList)).rows[0]['count'] /
-			itemsPerPage
-	);
-	return { messages: messages.rows as Message[], totalPages };
+	return { messages: messages.rows as Message[] };
 }

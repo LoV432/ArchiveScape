@@ -18,27 +18,19 @@ export default function AllMessagesPage({
 	page,
 	highlightedUser
 }: {
-	data: { messages: Message[]; totalPages: number };
+	data: { messages: Message[] };
 	page: number;
 	highlightedUser?: number;
 }) {
 	return (
 		<>
-			<MessagesPagination
-				totalPages={data.totalPages}
-				page={page}
-				order="desc"
-			/>
+			<MessagesPagination totalPages={500} page={page} order="desc" />
 			<MessageSection
 				messages={data.messages}
 				page={page}
 				highlightedUser={highlightedUser}
 			/>
-			<MessagesPagination
-				totalPages={data.totalPages}
-				page={page}
-				order="desc"
-			/>
+			<MessagesPagination totalPages={500} page={page} order="desc" />
 		</>
 	);
 }
