@@ -1,6 +1,11 @@
 import { db } from '@/lib/db';
 import { cookies } from 'next/headers';
-import { addLocalLastId, addOffsetLimit, addOrderBy } from './db-helpers';
+import {
+	addDateRange,
+	addLocalLastId,
+	addOffsetLimit,
+	addOrderBy
+} from './db-helpers';
 
 export async function getSearch(
 	searchQuery: string,
@@ -18,18 +23,13 @@ export async function getSearch(
 		// Build get messages query
 		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE lower(message_text) LIKE lower($1)`;
 		let params: any[] = [`%${searchQuery}%`];
-		if (dateStart) {
-			queryBuilder += ` AND created_at >= $${params.length + 1}`;
-			params.push(dateStart.toISOString());
-			if (!dateEnd) {
-				// If this is true we assume that the user wants to see all messages for the dateStart day
-				dateEnd = new Date(dateStart);
-				dateEnd.setDate(dateEnd.getDate() + 1);
-			}
-		}
-		if (dateEnd) {
-			queryBuilder += ` AND created_at <= $${params.length + 1}`;
-			params.push(dateEnd.toISOString());
+		if (dateStart || dateEnd) {
+			queryBuilder = addDateRange({
+				query: queryBuilder,
+				params: params,
+				dateStart,
+				dateEnd
+			});
 		}
 		if (localLastId) {
 			queryBuilder = addLocalLastId({
@@ -53,13 +53,13 @@ export async function getSearch(
 		// Build total pages query
 		let totalPagesQuery = `SELECT COUNT(*) FROM messages WHERE lower(message_text) LIKE lower($1)`;
 		params = [`%${searchQuery}%`];
-		if (dateStart) {
-			totalPagesQuery += ` AND created_at >= $${params.length + 1}`;
-			params.push(dateStart.toISOString());
-		}
-		if (dateEnd) {
-			totalPagesQuery += ` AND created_at <= $${params.length + 1}`;
-			params.push(dateEnd.toISOString());
+		if (dateStart || dateEnd) {
+			totalPagesQuery = addDateRange({
+				query: totalPagesQuery,
+				params: params,
+				dateStart,
+				dateEnd
+			});
 		}
 		if (localLastId) {
 			totalPagesQuery = addLocalLastId({

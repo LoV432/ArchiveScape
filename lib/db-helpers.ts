@@ -45,3 +45,32 @@ export function addOrderBy({
 	query += ` ORDER BY ${orderBy}`;
 	return query;
 }
+
+export function addDateRange({
+	query,
+	params,
+	dateStart,
+	dateEnd
+}: {
+	query: string;
+	params: any[];
+	dateStart?: Date;
+	dateEnd?: Date;
+}) {
+	let whereOrAnd = query.includes('WHERE') ? 'AND' : 'WHERE';
+	if (dateStart) {
+		query += ` ${whereOrAnd} created_at >= $${params.length + 1}`;
+		params.push(dateStart.toISOString());
+		if (!dateEnd) {
+			// If this is true we assume that the user wants to see all messages for the dateStart day
+			dateEnd = new Date(dateStart);
+			dateEnd.setDate(dateEnd.getDate() + 1);
+		}
+	}
+	whereOrAnd = query.includes('WHERE') ? 'AND' : 'WHERE';
+	if (dateEnd) {
+		query += ` ${whereOrAnd} created_at <= $${params.length + 1}`;
+		params.push(dateEnd.toISOString());
+	}
+	return query;
+}
