@@ -17,10 +17,7 @@ export default function SearchBar({
 }) {
 	const searchElementRef = useRef<HTMLInputElement>(null);
 	const router = useRouter();
-	const [date, setDate] = useState<DateRange | undefined>({
-		from: preSelectedDateStart,
-		to: preSelectedDateEnd
-	});
+	const initalDate = { from: preSelectedDateStart, to: preSelectedDateEnd };
 	const [dateStart, setDateStart] = useState<string>('');
 	const [dateEnd, setDateEnd] = useState<string>('');
 	function search() {
@@ -29,19 +26,6 @@ export default function SearchBar({
 		cursorUpdate(searchValue);
 		router.push(`/search?search=${searchValue}${dateStart}${dateEnd}`);
 	}
-	useMemo(() => {
-		date?.from
-			? setDateStart(`&dateStart=${date.from.toISOString()}`)
-			: setDateStart('');
-		if (date?.to) {
-			let dateEnd = new Date(date.to);
-			setDateEnd(
-				`&dateEnd=${new Date(dateEnd.setHours(23, 59, 59)).toISOString()}`
-			);
-		} else {
-			setDateEnd('');
-		}
-	}, [date]);
 	useEffect(() => {
 		document.addEventListener('keydown', (e) => {
 			if (e.key === '`' || e.key === '/') {
@@ -76,7 +60,11 @@ export default function SearchBar({
 					}}
 				/>
 				<div className="order-l h-full rounded-l border border-r-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
-					<DatePickerWithRange date={date} setDate={setDate} />
+					<DatePickerWithRange
+						setDateStart={setDateStart}
+						setDateEnd={setDateEnd}
+						initalDate={initalDate}
+					/>
 				</div>
 				<div className="order-3 h-full rounded-r border border-l-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
 					<Button

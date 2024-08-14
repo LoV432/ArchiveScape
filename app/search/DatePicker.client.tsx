@@ -11,16 +11,32 @@ import {
 	PopoverContent,
 	PopoverTrigger
 } from '@/components/ui/popover';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function DatePickerWithRange({
-	date,
-	setDate
+	initalDate,
+	setDateStart,
+	setDateEnd
 }: {
-	date?: DateRange;
-	setDate: (date: DateRange | undefined) => void;
+	initalDate?: DateRange;
+	setDateStart: (date: string) => void;
+	setDateEnd: (date: string) => void;
 }) {
 	const [isOpen, setIsOpen] = useState(false);
+	const [date, setDate] = useState<DateRange | undefined>(initalDate);
+	useEffect(() => {
+		date?.from
+			? setDateStart(`&dateStart=${date.from.toISOString()}`)
+			: setDateStart('');
+		if (date?.to) {
+			let dateEnd = new Date(date.to);
+			setDateEnd(
+				`&dateEnd=${new Date(dateEnd.setHours(23, 59, 59)).toISOString()}`
+			);
+		} else {
+			setDateEnd('');
+		}
+	}, [date]);
 	return (
 		<Popover open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
 			<PopoverTrigger asChild>
