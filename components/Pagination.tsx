@@ -12,13 +12,13 @@ import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 export function MessagesPagination({
 	totalPages,
 	page,
-	order,
-	type = 'messages'
+	type = 'messages',
+	initalOrder = 'desc'
 }: {
 	totalPages: number | 'infinite';
 	page: number;
-	order: 'asc' | 'desc';
 	type?: 'messages' | 'default';
+	initalOrder?: 'asc' | 'desc';
 }) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -35,6 +35,8 @@ export function MessagesPagination({
 
 	let buttonTextFirst, buttonTextLast;
 	if (type === 'messages') {
+		let order = searchParams.get('order');
+		if (order !== 'asc' && order != 'desc') order = initalOrder;
 		buttonTextFirst = order === 'asc' ? 'Older Messages' : 'Newer Messages';
 		buttonTextLast = order === 'asc' ? 'Newer Messages' : 'Older Messages';
 	} else {

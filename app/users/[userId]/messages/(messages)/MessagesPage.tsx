@@ -29,17 +29,9 @@ export default function MessagesPage({
 }) {
 	return (
 		<>
-			<MessagesPagination
-				page={page}
-				totalPages={data.totalPages}
-				order="desc"
-			/>
+			<MessagesPagination page={page} totalPages={data.totalPages} />
 			<MessageSection messages={data.messages} userId={userId} />
-			<MessagesPagination
-				page={page}
-				totalPages={data.totalPages}
-				order="desc"
-			/>
+			<MessagesPagination page={page} totalPages={data.totalPages} />
 		</>
 	);
 }

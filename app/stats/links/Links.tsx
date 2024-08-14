@@ -18,17 +18,9 @@ export default function AllMessagesWithLinks({ page }: { page: number }) {
 	const data = use(getAllLinks(page));
 	return (
 		<>
-			<MessagesPagination
-				page={page}
-				totalPages={data.totalPages}
-				order="desc"
-			/>
+			<MessagesPagination page={page} totalPages={data.totalPages} />
 			<MessageSection messages={data.links} page={page} />
-			<MessagesPagination
-				page={page}
-				totalPages={data.totalPages}
-				order="desc"
-			/>
+			<MessagesPagination page={page} totalPages={data.totalPages} />
 		</>
 	);
 }

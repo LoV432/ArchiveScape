@@ -44,19 +44,11 @@ export default function SearchPage({
 			{data.messages.length > 0 && (
 				<>
 					{data.totalPages > 1 && (
-						<MessagesPagination
-							order="desc"
-							page={page}
-							totalPages={data.totalPages}
-						/>
+						<MessagesPagination page={page} totalPages={data.totalPages} />
 					)}
 					<MessagesSection messages={data.messages} />
 					{data.totalPages > 1 && (
-						<MessagesPagination
-							order="desc"
-							page={page}
-							totalPages={data.totalPages}
-						/>
+						<MessagesPagination page={page} totalPages={data.totalPages} />
 					)}
 				</>
 			)}

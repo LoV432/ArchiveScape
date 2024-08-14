@@ -21,17 +21,9 @@ export default function AllMessagesPage({
 }) {
 	return (
 		<>
-			<MessagesPagination
-				totalPages={data.totalPages}
-				page={page}
-				order="desc"
-			/>
+			<MessagesPagination totalPages={data.totalPages} page={page} />
 			<MessageSection messages={data.messages} page={page} />
-			<MessagesPagination
-				totalPages={data.totalPages}
-				page={page}
-				order="desc"
-			/>
+			<MessagesPagination totalPages={data.totalPages} page={page} />
 		</>
 	);
 }

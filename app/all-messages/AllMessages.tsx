@@ -24,13 +24,13 @@ export default function AllMessagesPage({
 }) {
 	return (
 		<>
-			<MessagesPagination totalPages={500} page={page} order="desc" />
+			<MessagesPagination totalPages={500} page={page} />
 			<MessageSection
 				messages={data.messages}
 				page={page}
 				highlightedUser={highlightedUser}
 			/>
-			<MessagesPagination totalPages={500} page={page} order="desc" />
+			<MessagesPagination totalPages={500} page={page} />
 		</>
 	);
 }

@@ -23,14 +23,12 @@ export default function UsersPage({
 			<MessagesPagination
 				totalPages={data.totalPages}
 				page={page}
-				order="desc"
 				type="default"
 			/>
 			<UsersTable users={data.users} />
 			<MessagesPagination
 				totalPages={data.totalPages}
 				page={page}
-				order="desc"
 				type="default"
 			/>
 		</>

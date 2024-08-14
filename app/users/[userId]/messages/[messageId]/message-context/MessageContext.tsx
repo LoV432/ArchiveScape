@@ -31,9 +31,17 @@ export default function MessageContext({
 }) {
 	return (
 		<>
-			<MessagesPagination totalPages={'infinite'} page={page} order="asc" />
+			<MessagesPagination
+				totalPages={'infinite'}
+				initalOrder="asc"
+				page={page}
+			/>
 			<MessageSection messages={data.messages} userId={userId} />
-			<MessagesPagination totalPages={'infinite'} page={page} order="asc" />
+			<MessagesPagination
+				totalPages={'infinite'}
+				initalOrder="asc"
+				page={page}
+			/>
 			<ScrollIntoView messageId={messageId} />
 		</>
 	);
