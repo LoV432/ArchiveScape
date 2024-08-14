@@ -11,7 +11,8 @@ export async function getSearch(
 	searchQuery: string,
 	page: number,
 	dateStart?: Date,
-	dateEnd?: Date
+	dateEnd?: Date,
+	order: 'asc' | 'desc' = 'desc'
 ) {
 	if (!searchQuery || searchQuery === '') {
 		return { success: true as const, messages: [], totalPages: 0 };
@@ -40,7 +41,7 @@ export async function getSearch(
 		}
 		queryBuilder = addOrderBy({
 			query: queryBuilder,
-			orderBy: 'created_at DESC'
+			orderBy: `created_at ${order}`
 		});
 		queryBuilder = addOffsetLimit({
 			query: queryBuilder,

@@ -30,10 +30,12 @@ export default async function Page({
 		page: string;
 		dateStart?: string;
 		dateEnd?: string;
+		order?: string;
 	};
 }) {
 	const searchQuery = searchParams.search || '';
 	const page = Number(searchParams.page) || 1;
+	const order = searchParams.order === 'asc' ? 'asc' : 'desc';
 	let dateStart = searchParams.dateStart || '';
 	let dateEnd = searchParams.dateEnd || '';
 	let parsedDateStart: Date | undefined = new Date(dateStart);
@@ -48,7 +50,8 @@ export default async function Page({
 		searchQuery,
 		page,
 		parsedDateStart,
-		parsedDateEnd
+		parsedDateEnd,
+		order
 	);
 	if (!data.success) {
 		return <Error error={data.error} />;
