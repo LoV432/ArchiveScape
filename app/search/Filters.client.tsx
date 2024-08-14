@@ -52,8 +52,19 @@ export function Filters() {
 		setOrder(searchParams.get('order') === 'asc' ? 'asc' : 'desc');
 		const dateStart = searchParams.get('dateStart');
 		const dateEnd = searchParams.get('dateEnd');
-		if (dateStart) setDate({ from: new Date(dateStart) });
-		if (dateEnd) setDate({ from: date?.from, to: new Date(dateEnd) });
+		if (dateStart && dateEnd) {
+			setDate({
+				from: new Date(dateStart),
+				to: new Date(dateEnd)
+			});
+		} else if (dateStart) {
+			setDate({
+				from: new Date(dateStart),
+				to: undefined
+			});
+		} else {
+			setDate(undefined);
+		}
 	}, [searchParams]);
 	useEffect(() => {
 		date?.from
