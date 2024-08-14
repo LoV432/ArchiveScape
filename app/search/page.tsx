@@ -58,13 +58,7 @@ export default async function Page({
 	}
 	return (
 		<div className="grid">
-			<Main
-				data={data}
-				searchQuery={searchQuery}
-				page={page}
-				preSelectedDateStart={parsedDateStart}
-				preSelectedDateEnd={parsedDateEnd}
-			/>
+			<Main searchQuery={searchQuery} page={page} data={data} />
 		</div>
 	);
 }

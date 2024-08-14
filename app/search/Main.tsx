@@ -7,23 +7,15 @@ import Image from 'next/image';
 export default function SearchPage({
 	data,
 	searchQuery,
-	page,
-	preSelectedDateStart,
-	preSelectedDateEnd
+	page
 }: {
 	data: { messages: Message[]; totalPages: number };
 	page: number;
 	searchQuery: string;
-	preSelectedDateStart: Date | undefined;
-	preSelectedDateEnd: Date | undefined;
 }) {
 	return (
 		<>
-			<SearchBar
-				searchQuery={searchQuery}
-				preSelectedDateStart={preSelectedDateStart}
-				preSelectedDateEnd={preSelectedDateEnd}
-			/>
+			<SearchBar searchQuery={searchQuery} />
 			{data.messages.length === 0 && (
 				<div className="flex flex-col place-items-center gap-4">
 					{searchQuery !== '' && (

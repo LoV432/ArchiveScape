@@ -1,30 +1,26 @@
 'use client';
 import { useRouter } from 'next13-progressbar';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { DatePickerWithRange } from './DatePicker.client';
-import { DateRange } from 'react-day-picker';
+import { Filters } from './Filters.client';
 import cursorUpdate from './cursor-update';
+import { useSearchParams } from 'next/navigation';
 
-export default function SearchBar({
-	searchQuery,
-	preSelectedDateStart,
-	preSelectedDateEnd
-}: {
-	searchQuery: string;
-	preSelectedDateStart: Date | undefined;
-	preSelectedDateEnd: Date | undefined;
-}) {
+export default function SearchBar({ searchQuery }: { searchQuery: string }) {
 	const searchElementRef = useRef<HTMLInputElement>(null);
 	const router = useRouter();
-	const initalDate = { from: preSelectedDateStart, to: preSelectedDateEnd };
-	const [dateStart, setDateStart] = useState<string>('');
-	const [dateEnd, setDateEnd] = useState<string>('');
+	const searchParams = useSearchParams();
 	function search() {
 		const searchValue = searchElementRef.current?.value;
 		if (!searchValue) return;
 		cursorUpdate(searchValue);
-		router.push(`/search?search=${searchValue}${dateStart}${dateEnd}`);
+		let params: string = '';
+		searchParams.forEach((value, key) => {
+			if (key !== 'search' && key !== 'page') {
+				params += `&${key}=${value}`;
+			}
+		});
+		router.push(`/search?search=${searchValue}${params}`);
 	}
 	useEffect(() => {
 		document.addEventListener('keydown', (e) => {
@@ -60,11 +56,7 @@ export default function SearchBar({
 					}}
 				/>
 				<div className="order-l h-full rounded-l border border-r-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
-					<DatePickerWithRange
-						setDateStart={setDateStart}
-						setDateEnd={setDateEnd}
-						initalDate={initalDate}
-					/>
+					<Filters />
 				</div>
 				<div className="order-3 h-full rounded-r border border-l-0 border-gray-300 border-opacity-35 bg-[rgb(18,18,18)] p-2 peer-focus-visible:border-opacity-70 peer-focus-visible:outline-none">
 					<Button
