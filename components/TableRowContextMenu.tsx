@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/context-menu';
 import { adduserToConversationTrackerCookie } from '@/lib/conversation-tracker-cookie';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
 export default function TableRowContextMenu({
@@ -17,8 +17,7 @@ export default function TableRowContextMenu({
 	children,
 	isContextPage = false,
 	isAllMessagesPage = false,
-	copyToClipboard,
-	page
+	copyToClipboard
 }: {
 	user_id: number;
 	message_id: number;
@@ -26,11 +25,16 @@ export default function TableRowContextMenu({
 	isContextPage?: boolean;
 	isAllMessagesPage?: boolean;
 	copyToClipboard?: string;
-	page?: number;
 }) {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	let params: string = '';
+	searchParams.forEach((value, key) => {
+		if (key === 'user_id') return;
+		params += `&${key}=${value}`;
+	});
 	const contextLink = isAllMessagesPage
-		? `/all-messages?page=${page || 1}&user_id=${user_id}`
+		? `/all-messages?${params}&user_id=${user_id}`
 		: `/users/${user_id}/messages/${message_id}/message-context`;
 	return (
 		<ContextMenu>
@@ -53,10 +57,12 @@ export default function TableRowContextMenu({
 					rel="nofollow"
 					className="h-full w-full"
 					href={contextLink}
-					{...(isContextPage ? { scroll: false } : {})}
+					{...(isContextPage || isAllMessagesPage ? { scroll: false } : {})}
 				>
 					<ContextMenuItem>
-						{isContextPage ? 'Highlight This User' : 'Show Message Context'}
+						{isContextPage || isAllMessagesPage
+							? 'Highlight This User'
+							: 'Show Message Context'}
 					</ContextMenuItem>
 				</Link>
 				<ContextMenuSeparator />

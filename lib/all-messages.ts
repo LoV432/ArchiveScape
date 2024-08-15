@@ -1,6 +1,11 @@
 import { db } from './db';
 import { cookies } from 'next/headers';
-import { addLocalLastId, addOffsetLimit, addOrderBy } from './db-helpers';
+import {
+	addDateRange,
+	addLocalLastId,
+	addOffsetLimit,
+	addOrderBy
+} from './db-helpers';
 
 export type Message = {
 	id: number;
@@ -10,7 +15,12 @@ export type Message = {
 	color_name: string;
 };
 
-export async function getAllMessages(page: number) {
+export async function getAllMessages(
+	page: number,
+	order: 'asc' | 'desc' = 'desc',
+	dateStart?: Date,
+	dateEnd?: Date
+) {
 	if (page > 500) return { messages: [] }; // Its very expensive to query pages above 500
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	const offset = Number(page) * itemsPerPage - itemsPerPage;
@@ -26,9 +36,17 @@ export async function getAllMessages(page: number) {
 			localLastId: localLastId
 		});
 	}
+	if (dateStart || dateEnd) {
+		queryBuilder = addDateRange({
+			query: queryBuilder,
+			params: paramsList,
+			dateStart,
+			dateEnd
+		});
+	}
 	queryBuilder = addOrderBy({
 		query: queryBuilder,
-		orderBy: 'created_at DESC'
+		orderBy: `created_at ${order}`
 	});
 	queryBuilder = addOffsetLimit({
 		query: queryBuilder,

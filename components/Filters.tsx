@@ -17,6 +17,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '@/components/ui/button';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next13-progressbar';
+import { ListFilter } from 'lucide-react';
 
 export function Filters() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -88,22 +89,9 @@ export function Filters() {
 			<PopoverTrigger asChild>
 				<div
 					role="button"
-					className={`grid h-full w-[45px] place-items-center rounded hover:bg-accent active:bg-accent ${isOpen ? 'bg-accent' : ''} ${!date?.from ? 'text-muted-foreground' : ''} cursor-pointer`}
+					className={`grid h-full w-[45px] place-items-center rounded hover:bg-accent active:bg-accent ${isOpen ? 'bg-accent' : ''} cursor-pointer text-muted-foreground`}
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="ionicon h-full w-6"
-						viewBox="0 0 512 512"
-					>
-						<path
-							fill="none"
-							stroke="currentColor"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="32"
-							d="M32 144h448M112 256h288M208 368h96"
-						/>
-					</svg>
+					<ListFilter className="h-full w-6" />
 				</div>
 			</PopoverTrigger>
 			<PopoverContent className="flex w-[330px] flex-col gap-5" align="start">

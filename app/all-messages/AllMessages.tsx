@@ -12,6 +12,7 @@ import { mapToHex } from '@/lib/utils';
 import { Message } from '@/lib/all-messages';
 import { MessagesPagination } from '@/components/Pagination';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
+import { Filters } from '@/components/Filters';
 
 export default function AllMessagesPage({
 	data,
@@ -49,7 +50,12 @@ function MessageSection({
 			<TableCaption hidden>Messages</TableCaption>
 			<TableHeader>
 				<TableRow>
-					<TableHead>Message</TableHead>
+					<TableHead>
+						<div className="flex flex-row gap-2">
+							<Filters />
+							Message
+						</div>
+					</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
@@ -59,8 +65,6 @@ function MessageSection({
 						user_id={message.user_id}
 						message_id={message.id}
 						isAllMessagesPage
-						isContextPage
-						page={page}
 					>
 						<TableRow
 							tabIndex={0}

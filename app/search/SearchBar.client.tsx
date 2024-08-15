@@ -2,7 +2,7 @@
 import { useRouter } from 'next13-progressbar';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Filters } from './Filters.client';
+import { Filters } from '../../components/Filters';
 import cursorUpdate from './cursor-update';
 import { useSearchParams } from 'next/navigation';
 

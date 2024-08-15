@@ -25,7 +25,13 @@ export async function generateMetadata({
 export default function Page({
 	searchParams
 }: {
-	searchParams: { page: string; user_id: number };
+	searchParams: {
+		page: string;
+		user_id: number;
+		order: string;
+		dateStart: string;
+		dateEnd: string;
+	};
 }) {
 	const page = Number(searchParams.page) || 1;
 	if (page > 500) {
@@ -40,8 +46,15 @@ export default function Page({
 			</div>
 		);
 	}
+	const order = searchParams.order === 'asc' ? 'asc' : 'desc';
+	const dateStart = searchParams.dateStart
+		? new Date(searchParams.dateStart)
+		: undefined;
+	const dateEnd = searchParams.dateEnd
+		? new Date(searchParams.dateEnd)
+		: undefined;
 	const highlightedUser = Number(searchParams.user_id) || undefined;
-	const data = use(getAllMessages(page));
+	const data = use(getAllMessages(page, order, dateStart, dateEnd));
 	return (
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
