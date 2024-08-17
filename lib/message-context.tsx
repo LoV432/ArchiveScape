@@ -7,54 +7,40 @@ export async function getMessageContext(
 	page: number
 ) {
 	try {
-		const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
-
-		// Get the row number of the message. This is used to determine what page the message is on
-		// We are using row instead of id because id can have gaps in it
-		const messageIndex = await db.query(
-			`SELECT message_index, messages.user_id FROM (SELECT messages.id, messages.user_id, ROW_NUMBER() OVER (ORDER BY created_at ASC) AS message_index FROM messages) AS messages WHERE messages.id = $1`,
-			[Number(messageId)]
+		//TODO: Use the global messages per page limit instead of hardcoded 40
+		const anchorMessage = await db.query(
+			`SELECT messages.id, created_at, user_id, user_name FROM messages JOIN users ON messages.user_id = users.id WHERE messages.id = $1 AND users.id = $2`,
+			[messageId, userId]
 		);
-		if (messageIndex.rows.length === 0) {
+		if (anchorMessage.rows.length === 0) {
 			return {
 				success: false as const,
-				error: 'Message not found'
+				error: 'Message or user not found'
 			};
 		}
-		if (messageIndex.rows[0]['user_id'] !== userId) {
+		const anchorMessageCreatedAt = anchorMessage.rows[0].created_at;
+		if (page === 0) {
 			return {
-				success: false as const,
-				error: 'This message does not belong to specified user'
+				success: true as const,
+				messages: await getFirstPage(
+					anchorMessageCreatedAt,
+					anchorMessage.rows[0].id
+				),
+				user_name: anchorMessage.rows[0].user_name
 			};
-		}
-		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
-			userId
-		]);
-		if (user.rows.length === 0) {
-			// This should never trigger because of the "messageIndex.rows[0]['user_id'] !== userId" check above
-			// But just in case
+		} else if (page < 0) {
 			return {
-				success: false as const,
-				error: 'User not found'
+				success: true as const,
+				messages: await getNegativePage(anchorMessageCreatedAt, page),
+				user_name: anchorMessage.rows[0].user_name
+			};
+		} else {
+			return {
+				success: true as const,
+				messages: await getPositivePage(anchorMessageCreatedAt, page),
+				user_name: anchorMessage.rows[0].user_name
 			};
 		}
-		// Once we have the row number we can determine what page it is on
-		const messagePage = Math.ceil(
-			messageIndex.rows[0]['message_index'] / itemsPerPage - 1
-		);
-		// Then we minus or plus the page number requested by the user to get the offset
-		const offset =
-			messagePage * itemsPerPage + (Number(page) - 1) * itemsPerPage;
-		// Then we can get the messages for that page
-		const messages = await db.query(
-			`SELECT messages.id, message_text, created_at, colors.color_name, user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id ORDER BY created_at ASC LIMIT $2 OFFSET $1`,
-			[offset, itemsPerPage]
-		);
-		return {
-			success: true as const,
-			messages: messages.rows as Message[],
-			user_name: user.rows[0].user_name
-		};
 	} catch (error) {
 		console.log(error);
 		return {
@@ -62,4 +48,60 @@ export async function getMessageContext(
 			error: 'Something went wrong. Please try again later.'
 		};
 	}
+}
+
+async function getFirstPage(
+	anchorMessageCreatedAt: Date,
+	anchorMessageId: number
+) {
+	const query = `
+        (
+            SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+			LEFT JOIN colors ON messages.color_id = colors.id
+            WHERE created_at < $2
+            ORDER BY created_at DESC
+            LIMIT 20
+        )
+        UNION ALL
+        (
+            SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+			LEFT JOIN colors ON messages.color_id = colors.id
+            WHERE messages.id = $1
+        )
+        UNION ALL
+        (
+            SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+			LEFT JOIN colors ON messages.color_id = colors.id
+            WHERE created_at > $2
+            ORDER BY created_at ASC
+            LIMIT 19
+        )
+        ORDER BY created_at ASC;
+    `;
+	const params = [anchorMessageId, anchorMessageCreatedAt];
+	return (await db.query(query, params)).rows as Message[];
+}
+
+async function getNegativePage(anchorMessageCreatedAt: Date, page: number) {
+	const offset = Math.abs(page + 1) * 40 + 20;
+	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+					LEFT JOIN colors ON messages.color_id = colors.id
+					WHERE created_at < $1
+            		ORDER BY created_at DESC
+					OFFSET $2
+            		LIMIT 40`;
+	const params = [anchorMessageCreatedAt, offset];
+	return (await db.query(query, params)).rows.reverse() as Message[];
+}
+
+async function getPositivePage(anchorMessageCreatedAt: Date, page: number) {
+	const offset = (page - 1) * 40 + 19;
+	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+					LEFT JOIN colors ON messages.color_id = colors.id
+					WHERE created_at > $1
+            		ORDER BY created_at ASC
+					OFFSET $2
+            		LIMIT 40`;
+	const params = [anchorMessageCreatedAt, offset];
+	return (await db.query(query, params)).rows as Message[];
 }

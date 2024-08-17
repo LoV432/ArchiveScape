@@ -29,7 +29,7 @@ export default async function Page({
 	}
 	let page = Number(searchParams.page);
 	if (isNaN(page)) {
-		page = 1;
+		page = 0;
 	}
 	const data = await getMessageContext(Number(userId), Number(messageId), page);
 	if (!data.success) {
