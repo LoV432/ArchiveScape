@@ -31,13 +31,21 @@ export async function getMessageContext(
 		} else if (page < 0) {
 			return {
 				success: true as const,
-				messages: await getNegativePage(anchorMessageCreatedAt, page),
+				messages: await getNegativePage(
+					anchorMessageCreatedAt,
+					anchorMessage.rows[0].id,
+					page
+				),
 				user_name: anchorMessage.rows[0].user_name
 			};
 		} else {
 			return {
 				success: true as const,
-				messages: await getPositivePage(anchorMessageCreatedAt, page),
+				messages: await getPositivePage(
+					anchorMessageCreatedAt,
+					anchorMessage.rows[0].id,
+					page
+				),
 				user_name: anchorMessage.rows[0].user_name
 			};
 		}
@@ -58,23 +66,17 @@ async function getFirstPage(
         (
             SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
-            WHERE created_at < $2
-            ORDER BY created_at DESC
+            WHERE created_at <= $2 AND messages.id < $1
+            ORDER BY created_at DESC, messages.id DESC
             LIMIT 20
         )
         UNION ALL
         (
             SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
-            WHERE messages.id = $1
-        )
-        UNION ALL
-        (
-            SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
-			LEFT JOIN colors ON messages.color_id = colors.id
-            WHERE created_at > $2
-            ORDER BY created_at ASC
-            LIMIT 19
+            WHERE created_at >= $2 AND messages.id >= $1
+            ORDER BY created_at ASC, messages.id ASC
+            LIMIT 20
         )
         ORDER BY created_at ASC;
     `;
@@ -82,26 +84,34 @@ async function getFirstPage(
 	return (await db.query(query, params)).rows as Message[];
 }
 
-async function getNegativePage(anchorMessageCreatedAt: Date, page: number) {
+async function getNegativePage(
+	anchorMessageCreatedAt: Date,
+	anchorMessageId: number,
+	page: number
+) {
 	const offset = Math.abs(page + 1) * 40 + 20;
 	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
-					WHERE created_at < $1
-            		ORDER BY created_at DESC
-					OFFSET $2
+					WHERE created_at <= $1 AND messages.id < $2
+            		ORDER BY created_at DESC, messages.id DESC
+					OFFSET $3
             		LIMIT 40`;
-	const params = [anchorMessageCreatedAt, offset];
+	const params = [anchorMessageCreatedAt, anchorMessageId, offset];
 	return (await db.query(query, params)).rows.reverse() as Message[];
 }
 
-async function getPositivePage(anchorMessageCreatedAt: Date, page: number) {
-	const offset = (page - 1) * 40 + 19;
+async function getPositivePage(
+	anchorMessageCreatedAt: Date,
+	anchorMessageId: number,
+	page: number
+) {
+	const offset = (page - 1) * 40 + 20;
 	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
-					WHERE created_at > $1
-            		ORDER BY created_at ASC
-					OFFSET $2
+					WHERE created_at >= $1 AND messages.id >= $2
+            		ORDER BY created_at ASC, messages.id ASC
+					OFFSET $3
             		LIMIT 40`;
-	const params = [anchorMessageCreatedAt, offset];
+	const params = [anchorMessageCreatedAt, anchorMessageId, offset];
 	return (await db.query(query, params)).rows as Message[];
 }
