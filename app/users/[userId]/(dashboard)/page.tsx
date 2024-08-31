@@ -161,10 +161,15 @@ function FirstLastSeenText({
 	firstLastSeen: Promise<{ firstSeen: Date; lastSeen: Date } | null>;
 	isFirstSeen: boolean;
 }) {
-	if (isFirstSeen) {
-		return <>{use(firstLastSeen)?.firstSeen.toLocaleString()}</>;
+	const dateObject = use(firstLastSeen);
+	if (!dateObject) {
+		return <></>;
 	}
-	return <>{use(firstLastSeen)?.lastSeen.toLocaleString()}</>;
+	if (isFirstSeen) {
+		return <>{new Date(dateObject.firstSeen).toLocaleString()}</>;
+	}
+
+	return <>{new Date(dateObject.lastSeen).toLocaleString()}</>;
 }
 
 function BadgeComponent({
