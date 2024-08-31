@@ -30,6 +30,7 @@ import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { FirstLastSeenText } from './FirstLastSeen.client';
 
 export default function Page({ params }: { params: { userId: string } }) {
 	if (!params.userId || params.userId === '' || isNaN(Number(params.userId))) {
@@ -154,28 +155,10 @@ function AvatarComponent({ userName }: { userName: Promise<string | null> }) {
 	);
 }
 
-function FirstLastSeenText({
-	firstLastSeen,
-	isFirstSeen
-}: {
-	firstLastSeen: Promise<{ firstSeen: Date; lastSeen: Date } | null>;
-	isFirstSeen: boolean;
-}) {
-	const dateObject = use(firstLastSeen);
-	if (!dateObject) {
-		return <></>;
-	}
-	if (isFirstSeen) {
-		return <>{new Date(dateObject.firstSeen).toLocaleString()}</>;
-	}
-
-	return <>{new Date(dateObject.lastSeen).toLocaleString()}</>;
-}
-
 function BadgeComponent({
 	firstLastSeen
 }: {
-	firstLastSeen: Promise<{ firstSeen: Date; lastSeen: Date } | null>;
+	firstLastSeen: Promise<{ firstSeen: string; lastSeen: string } | null>;
 }) {
 	const now = new Date().getTime();
 	const lastSeen = use(firstLastSeen)?.lastSeen;

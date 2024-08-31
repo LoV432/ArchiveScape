@@ -31,8 +31,8 @@ export async function getFirstLastSeen(userId: number) {
         ) 
         `;
 		const firstLastSeen = (await db.query(query, [userId])).rows as [
-			{ created_at: Date },
-			{ created_at: Date }
+			{ created_at: string },
+			{ created_at: string }
 		];
 		return {
 			firstSeen: firstLastSeen[0].created_at,
