@@ -7,6 +7,7 @@ import {
 	HoverCardTrigger
 } from '@/components/ui/hover-card';
 import { HeatmapData } from './heatmap-data';
+import { DateTime } from 'luxon';
 
 export default function Heatmap({
 	heatmapData
@@ -20,19 +21,29 @@ export default function Heatmap({
 	if (loading) {
 		return <HeatMapLoading />;
 	}
-	const startDate = new Date(new Date().getFullYear(), 0, 1);
-	const startOfYear = startDate.getDay();
+	const firstDateOfYear = DateTime.fromObject({
+		year: new Date().getFullYear(),
+		month: 1,
+		day: 1
+	}) as DateTime<true>;
+	const firstDayOfYear = firstDateOfYear.day;
 	function getCellDate(cellIndex: number) {
-		const date = new Date(startDate);
-		const actualIndex = cellIndex - startOfYear;
-		date.setDate(date.getDate() + actualIndex);
-		return date;
+		const daysToAdd = cellIndex - firstDayOfYear;
+		const newDate = firstDateOfYear.plus({ days: daysToAdd });
+		return newDate;
 	}
 	function getCount(index: number) {
-		const date = getCellDate(index).toISOString();
+		const date = getCellDate(index);
 		const count =
-			use(heatmapData).find((data) => data.date.toISOString() === date)
-				?.count || 0;
+			use(heatmapData).find(
+				(data) => data.date.toISOString().slice(0, 10) === date.toISODate()
+			)?.count || 0;
+		// if (count) {
+		// 	const countDate = use(heatmapData).find(
+		// 		(data) => data.date.toISOString().slice(0, 10) === date.toISODate()
+		// 	)?.date;
+		// 	console.log(countDate?.toISOString().slice(0, 10), date);
+		// }
 		return count;
 	}
 	function getColor(index: number) {
@@ -81,22 +92,18 @@ export default function Heatmap({
 					<p className="text-center"></p>
 				</div>
 				<div className="grid grid-flow-col grid-cols-[repeat(53,10px)] grid-rows-[repeat(7,10px)] gap-1">
-					{Array.from({ length: 365 + startOfYear + 1 }).map((_, i) => (
+					{Array.from({ length: 365 + firstDayOfYear + 1 }).map((_, i) => (
 						<HoverCard key={i} openDelay={200} closeDelay={200}>
 							<HoverCardTrigger asChild>
 								<button
 									key={i}
-									className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= startOfYear ? getColor(i) : 'opacity-0'}`}
+									className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= firstDayOfYear ? getColor(i) : 'opacity-0'}`}
 								/>
 							</HoverCardTrigger>
 							<HoverCardContent side="top" className="w-fit">
 								<p>
 									{getCount(i)} messages on{' '}
-									{getCellDate(i).toLocaleDateString('en-US', {
-										month: 'short',
-										day: 'numeric',
-										year: 'numeric'
-									})}
+									{getCellDate(i).toLocaleString(DateTime.DATE_FULL)}
 								</p>
 							</HoverCardContent>
 						</HoverCard>
