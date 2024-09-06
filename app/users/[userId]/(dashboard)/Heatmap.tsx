@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useRef } from 'react';
+import { use, useEffect, useState } from 'react';
 import {
 	HoverCard,
 	HoverCardContent,
@@ -13,21 +13,27 @@ export default function Heatmap({
 }: {
 	heatmapData: Promise<HeatmapData>;
 }) {
+	const [loading, setLoading] = useState(true);
+	useEffect(() => {
+		setLoading(false);
+	}, []);
+	if (loading) {
+		return <HeatMapLoading />;
+	}
 	const startDate = new Date(new Date().getFullYear(), 0, 1);
 	const startOfYear = startDate.getDay();
-	const dateRef = useRef(startDate);
 	function getCellDate(cellIndex: number) {
-		const date = new Date(dateRef.current);
+		const date = new Date(startDate);
 		const actualIndex = cellIndex - startOfYear;
 		date.setDate(date.getDate() + actualIndex);
 		return date;
 	}
 	function getCount(index: number) {
-		const date = getCellDate(index);
-		return (
-			use(heatmapData).find((data) => data.date.getTime() === date.getTime())
-				?.count || 0
-		);
+		const date = getCellDate(index).toISOString();
+		const count =
+			use(heatmapData).find((data) => data.date.toISOString() === date)
+				?.count || 0;
+		return count;
 	}
 	function getColor(index: number) {
 		const count = getCount(index);
