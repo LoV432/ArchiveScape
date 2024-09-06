@@ -2,11 +2,10 @@
 
 import { use, useRef } from 'react';
 import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger
-} from '@/components/ui/tooltip';
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger
+} from '@/components/ui/hover-card';
 import { HeatmapData } from './heatmap-data';
 
 export default function Heatmap({
@@ -50,7 +49,7 @@ export default function Heatmap({
 		}
 	}
 	return (
-		<div className="mx-auto w-fit max-w-[100vw] overflow-scroll rounded-sm border p-4 shadow-md">
+		<div className="mx-auto w-fit max-w-[90vw] overflow-scroll rounded-sm border p-4 shadow-md">
 			<div className="flex gap-[35px] pl-7">
 				<div className="text-center">Jan</div>
 				<div className="text-center">Feb</div>
@@ -77,26 +76,24 @@ export default function Heatmap({
 				</div>
 				<div className="grid grid-flow-col grid-cols-[repeat(53,10px)] grid-rows-[repeat(7,10px)] gap-1">
 					{Array.from({ length: 365 + startOfYear }).map((_, i) => (
-						<TooltipProvider key={i}>
-							<Tooltip delayDuration={100}>
-								<TooltipTrigger>
-									<div
-										key={i}
-										className={`h-full w-full cursor-default rounded-[2px] border border-green-800 ${i >= startOfYear ? getColor(i) : 'opacity-0'}`}
-									/>
-								</TooltipTrigger>
-								<TooltipContent>
-									<p>
-										{getCount(i)} messages on{' '}
-										{getCellDate(i).toLocaleDateString('en-US', {
-											month: 'short',
-											day: 'numeric',
-											year: 'numeric'
-										})}
-									</p>
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
+						<HoverCard key={i} openDelay={100} closeDelay={20}>
+							<HoverCardTrigger asChild>
+								<button
+									key={i}
+									className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= startOfYear ? getColor(i) : 'opacity-0'}`}
+								/>
+							</HoverCardTrigger>
+							<HoverCardContent side="top" className="w-fit">
+								<p>
+									{getCount(i)} messages on{' '}
+									{getCellDate(i).toLocaleDateString('en-US', {
+										month: 'short',
+										day: 'numeric',
+										year: 'numeric'
+									})}
+								</p>
+							</HoverCardContent>
+						</HoverCard>
 					))}
 				</div>
 			</div>
@@ -106,21 +103,19 @@ export default function Heatmap({
 
 export function HeatMapLoading() {
 	return (
-		<div className="mx-auto grid h-[152px] w-full max-w-3xl place-items-center rounded-sm border p-4 shadow-md">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="2"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				className="animate-spin"
-			>
-				<path d="M21 12a9 9 0 1 1-6.219-8.56" />
-			</svg>
-		</div>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			className="animate-spin"
+		>
+			<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+		</svg>
 	);
 }
