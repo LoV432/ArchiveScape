@@ -75,8 +75,8 @@ export default function Heatmap({
 					<p className="text-center"></p>
 				</div>
 				<div className="grid grid-flow-col grid-cols-[repeat(53,10px)] grid-rows-[repeat(7,10px)] gap-1">
-					{Array.from({ length: 365 + startOfYear }).map((_, i) => (
-						<HoverCard key={i} openDelay={100} closeDelay={20}>
+					{Array.from({ length: 365 + startOfYear + 1 }).map((_, i) => (
+						<HoverCard key={i} openDelay={200} closeDelay={200}>
 							<HoverCardTrigger asChild>
 								<button
 									key={i}
