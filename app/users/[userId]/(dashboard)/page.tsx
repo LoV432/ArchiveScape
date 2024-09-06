@@ -31,6 +31,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { FirstLastSeenText } from './FirstLastSeen.client';
+import Heatmap, { HeatMapLoading } from './Heatmap';
+import { getHeatmapData } from './heatmap-data';
 
 export default function Page({ params }: { params: { userId: string } }) {
 	if (!params.userId || params.userId === '' || isNaN(Number(params.userId))) {
@@ -41,6 +43,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 	const firstLastSeen = getFirstLastSeen(userId);
 	const totalMessages = getTotalMessages(userId);
 	const recentMessages = getRecentMessages(userId);
+	const heatmapData = getHeatmapData(userId);
 	return (
 		<div className="container mx-auto space-y-12 p-4">
 			<Card className="mx-auto w-full max-w-3xl rounded-none border-l-0 border-r-0 border-t-0">
@@ -115,15 +118,9 @@ export default function Page({ params }: { params: { userId: string } }) {
 					</div>
 				</CardContent>
 			</Card>
-
-			{/* <Card>
-        <CardHeader>
-          <CardTitle>Message Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ChartWrapper content={Chart} className="w-full aspect-[2/1]" />
-        </CardContent>
-      </Card> */}
+			<Suspense fallback={<HeatMapLoading />}>
+				<Heatmap heatmapData={heatmapData} />
+			</Suspense>
 			<Suspense
 				fallback={<div className="flex justify-center">Loading...</div>}
 			>
