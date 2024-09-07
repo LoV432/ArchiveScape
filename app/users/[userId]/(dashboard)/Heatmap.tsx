@@ -66,48 +66,50 @@ export default function Heatmap({
 		}
 	}
 	return (
-		<div className="mx-auto w-fit max-w-[90vw] overflow-scroll rounded-sm border p-4 shadow-md">
-			<div className="flex gap-[35px] pl-7">
-				<div className="text-center">Jan</div>
-				<div className="text-center">Feb</div>
-				<div className="text-center">Mar</div>
-				<div className="text-center">Apr</div>
-				<div className="text-center">May</div>
-				<div className="text-center">Jun</div>
-				<div className="text-center">Jul</div>
-				<div className="text-center">Aug</div>
-				<div className="text-center">Sep</div>
-				<div className="text-center">Oct</div>
-				<div className="text-center">Nov</div>
-				<div className="text-center">Dec</div>
-			</div>
-			<div className="flex flex-row gap-2">
-				<div className="grid grid-rows-[repeat(7,10px)] gap-1">
-					<p className="text-center"></p>
-					<p className="-mt-2 text-center text-[15px]">Mon</p>
-					<p className="text-center"></p>
-					<p className="-mt-2 text-center text-[15px]">Wed</p>
-					<p className="text-center"></p>
-					<p className="-mt-2 text-center text-[15px]">Fri</p>
-					<p className="text-center"></p>
+		<div className="mx-auto w-fit max-w-[90vw] rounded-sm border p-4 shadow-md">
+			<div className="overflow-auto">
+				<div className="flex gap-[35px] pl-7">
+					<div className="text-center">Jan</div>
+					<div className="text-center">Feb</div>
+					<div className="text-center">Mar</div>
+					<div className="text-center">Apr</div>
+					<div className="text-center">May</div>
+					<div className="text-center">Jun</div>
+					<div className="text-center">Jul</div>
+					<div className="text-center">Aug</div>
+					<div className="text-center">Sep</div>
+					<div className="text-center">Oct</div>
+					<div className="text-center">Nov</div>
+					<div className="text-center">Dec</div>
 				</div>
-				<div className="grid grid-flow-col grid-cols-[repeat(53,10px)] grid-rows-[repeat(7,10px)] gap-1">
-					{Array.from({ length: 365 + firstDayOfYear + 1 }).map((_, i) => (
-						<HoverCard key={i} openDelay={200} closeDelay={200}>
-							<HoverCardTrigger asChild>
-								<button
-									key={i}
-									className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= firstDayOfYear ? getColor(i) : 'opacity-0'}`}
-								/>
-							</HoverCardTrigger>
-							<HoverCardContent side="top" className="w-fit">
-								<p>
-									{getCount(i)} messages on{' '}
-									{getCellDate(i).toLocaleString(DateTime.DATE_FULL)}
-								</p>
-							</HoverCardContent>
-						</HoverCard>
-					))}
+				<div className="flex flex-row gap-2">
+					<div className="grid grid-rows-[repeat(7,10px)] gap-1">
+						<p className="text-center"></p>
+						<p className="-mt-2 text-center text-[15px]">Mon</p>
+						<p className="text-center"></p>
+						<p className="-mt-2 text-center text-[15px]">Wed</p>
+						<p className="text-center"></p>
+						<p className="-mt-2 text-center text-[15px]">Fri</p>
+						<p className="text-center"></p>
+					</div>
+					<div className="grid grid-flow-col grid-cols-[repeat(53,10px)] grid-rows-[repeat(7,10px)] gap-1">
+						{Array.from({ length: 365 + firstDayOfYear + 1 }).map((_, i) => (
+							<HoverCard key={i} openDelay={200} closeDelay={200}>
+								<HoverCardTrigger asChild>
+									<button
+										key={i}
+										className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= firstDayOfYear ? getColor(i) : 'opacity-0'}`}
+									/>
+								</HoverCardTrigger>
+								<HoverCardContent side="top" className="w-fit">
+									<p>
+										{getCount(i)} messages on{' '}
+										{getCellDate(i).toLocaleString(DateTime.DATE_FULL)}
+									</p>
+								</HoverCardContent>
+							</HoverCard>
+						))}
+					</div>
 				</div>
 			</div>
 		</div>
