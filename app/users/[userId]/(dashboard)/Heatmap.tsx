@@ -118,7 +118,7 @@ export default function Heatmap({
 
 export function HeatMapLoading() {
 	return (
-		<div className="mx-auto grid h-[152px] max-w-3xl place-items-center overflow-scroll rounded-sm border p-4 shadow-md">
+		<div className="mx-auto grid h-[152px] max-w-3xl place-items-center overflow-auto rounded-sm border p-4 shadow-md">
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="24"
