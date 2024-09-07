@@ -3,6 +3,7 @@ import { Metadata } from 'next/types';
 import Error from '@/components/Error';
 import MessageContext from './MessageContext';
 import { getMessageContext } from '@/lib/message-context';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
 	title: 'Message Context | ArchiveScape',
@@ -39,7 +40,12 @@ export default async function Page({
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-2">Highlighted User</p>
-				<p>{data.user_name}</p>
+				<Link
+					href={`/users/${userId}`}
+					className="underline underline-offset-8"
+				>
+					{data.user_name}
+				</Link>
 			</h1>
 			<MessageContext
 				data={data}

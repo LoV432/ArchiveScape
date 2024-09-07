@@ -43,7 +43,7 @@ export default async function Home() {
 								className={`block max-w-[calc(100vw/1.5)] overflow-hidden text-ellipsis font-medium ${colorGradientByIndex(index)}`}
 							>
 								<LinkWithHoverPrefetch
-									href={`/users/${user.user_id}/messages`}
+									href={`/users/${user.user_id}`}
 									className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
 								>
 									{user.user_name}

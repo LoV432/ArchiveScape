@@ -53,7 +53,7 @@ function UsersTable({ users }: { users: User[] }) {
 						>
 							<LinkWithHoverPrefetch
 								className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
-								href={`/users/${user.id}/messages`}
+								href={`/users/${user.id}`}
 							>
 								{user.user_name}
 							</LinkWithHoverPrefetch>

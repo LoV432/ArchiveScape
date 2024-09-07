@@ -3,6 +3,7 @@ import { Metadata } from 'next/types';
 import Error from '@/components/Error';
 import MessagesPage from './MessagesPage';
 import { getUserMessages } from '@/lib/user-messages';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
 	title: 'Messages By User | ArchiveScape',
@@ -32,7 +33,13 @@ export default async function Main({
 	return (
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-				<p className="pb-1">All Messages From</p> <p>{data.user_name}</p>
+				<p className="pb-1">All Messages From</p>{' '}
+				<Link
+					href={`/users/${userId}`}
+					className="underline underline-offset-8"
+				>
+					{data.user_name}
+				</Link>
 			</h1>
 			<MessagesPage data={data} userId={Number(userId)} page={page} />
 		</div>
