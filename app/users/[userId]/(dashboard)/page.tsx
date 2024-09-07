@@ -36,24 +36,14 @@ import { getHeatmapData } from './heatmap-data';
 import LinkWithHoverPrefetch from '@/components/LinkWithHoverPrefetch';
 import { Metadata } from 'next/types';
 
-export async function generateMetadata({
-	searchParams
-}: {
-	searchParams: { page: string };
-}) {
-	let metaObject: Metadata = {
-		title: 'User Dashboard | ArchiveScape',
-		description:
-			'An archive of all messages sent on https://www.ventscape.life/'
-	};
-	if (searchParams.page) {
-		metaObject.robots = {
-			index: false,
-			follow: false
-		};
+export const metadata: Metadata = {
+	title: 'User Dashboard | ArchiveScape',
+	description: 'An archive of all messages sent on https://www.ventscape.life/',
+	robots: {
+		index: false,
+		follow: false
 	}
-	return metaObject;
-}
+};
 
 export default function Page({ params }: { params: { userId: string } }) {
 	if (!params.userId || params.userId === '' || isNaN(Number(params.userId))) {
