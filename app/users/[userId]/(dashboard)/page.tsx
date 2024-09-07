@@ -33,6 +33,7 @@ import Image from 'next/image';
 import { FirstLastSeenText } from './FirstLastSeen.client';
 import Heatmap, { HeatMapLoading } from './Heatmap';
 import { getHeatmapData } from './heatmap-data';
+import LinkWithHoverPrefetch from '@/components/LinkWithHoverPrefetch';
 
 export default function Page({ params }: { params: { userId: string } }) {
 	if (!params.userId || params.userId === '' || isNaN(Number(params.userId))) {
@@ -124,7 +125,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 			<Suspense
 				fallback={<div className="flex justify-center">Loading...</div>}
 			>
-				<MessageSection messages={recentMessages} />
+				<MessageSection messages={recentMessages} userId={userId} />
 				<Link
 					className="flex justify-center pb-4"
 					href={`/users/${userId}/messages`}
@@ -175,7 +176,13 @@ function BadgeComponent({
 	);
 }
 
-function MessageSection({ messages }: { messages: Promise<Message[] | null> }) {
+function MessageSection({
+	messages,
+	userId
+}: {
+	messages: Promise<Message[] | null>;
+	userId: number;
+}) {
 	const messagesData = use(messages);
 	if (!messagesData) {
 		return <></>;
@@ -192,12 +199,17 @@ function MessageSection({ messages }: { messages: Promise<Message[] | null> }) {
 			</TableHeader>
 			<TableBody>
 				{messagesData.map((message) => (
-					<TableRow tabIndex={0} key={message.id}>
+					<TableRow tabIndex={0} key={message.id} className="relative">
 						<TableCell
 							style={{ color: message.color_name }}
 							className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 						>
-							<p>{message.message_text}</p>
+							<LinkWithHoverPrefetch
+								href={`/users/${userId}/messages/${message.id}/message-context`}
+								className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
+							>
+								<p>{message.message_text}</p>
+							</LinkWithHoverPrefetch>
 							<MessageCreatedAt time={message.created_at} />
 							<p className="float-right text-sm text-gray-500">
 								{message.user_id} -&nbsp;
