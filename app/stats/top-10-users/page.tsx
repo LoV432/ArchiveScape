@@ -15,13 +15,11 @@ import LinkWithHoverPrefetch from '../../../components/LinkWithHoverPrefetch';
 
 export default async function Home() {
 	const data = (
-		await db.query(`SELECT u.user_name, m.user_id, COUNT(*) AS message_count
-	FROM messages m
-	JOIN users u ON m.user_id = u.id
-	GROUP BY u.user_name, m.user_id
-	ORDER BY message_count DESC
-	LIMIT 10`)
-	).rows as { user_name: string; user_id: number; message_count: number }[];
+		await db.query(`SELECT users.id, users.user_name, COUNT(*) AS message_count
+        FROM users
+        INNER JOIN messages m ON m.user_id = users.id
+        GROUP BY users.id, users.user_name ORDER BY message_count DESC, users.user_name DESC LIMIT 10;`)
+	).rows as { user_name: string; id: number; message_count: number }[];
 
 	return (
 		<main className="grid">
@@ -38,12 +36,12 @@ export default async function Home() {
 				</TableHeader>
 				<TableBody>
 					{data.map((user, index) => (
-						<TableRow className="relative" key={user.user_id}>
+						<TableRow className="relative" key={user.id}>
 							<TableCell
 								className={`block max-w-[calc(100vw/1.5)] overflow-hidden text-ellipsis font-medium ${colorGradientByIndex(index)}`}
 							>
 								<LinkWithHoverPrefetch
-									href={`/users/${user.user_id}`}
+									href={`/users/${user.id}`}
 									className="text-base before:absolute before:left-0 before:top-0 before:h-full before:w-full sm:text-lg"
 								>
 									{user.user_name}
