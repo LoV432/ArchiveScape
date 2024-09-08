@@ -15,18 +15,20 @@ export async function getUserName(userId: number) {
 
 export async function getFirstLastSeen(userId: number) {
 	try {
+		// The interval '0 second' is a hack to make the query faster
+		// https://pganalyze.com/blog/5mins-postgres-planner-order-by-limit
 		const query = `
         (
             SELECT created_at from messages
             WHERE user_id = $1
-            ORDER BY created_at ASC
+            ORDER BY created_at + interval '0 second' ASC
             LIMIT 1
         )
              UNION ALL
         (
             SELECT created_at from messages
             WHERE user_id = $1
-            ORDER BY created_at DESC
+            ORDER BY created_at + interval '0 second' DESC
             LIMIT 1
         ) 
         `;
