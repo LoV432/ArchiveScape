@@ -51,6 +51,9 @@ export default function Heatmap({
 		return count;
 	}
 	function getColor(index: number) {
+		if (index < firstDayOfYear) {
+			return 'opacity-0';
+		}
 		const count = getCount(index);
 		if (count === 0) {
 			return 'bg-green-950 opacity-30';
@@ -99,19 +102,12 @@ export default function Heatmap({
 					<div className="grid grid-flow-col grid-cols-[repeat(53,10px)] grid-rows-[repeat(7,10px)] gap-1">
 						{Array.from({ length: 366 + firstDayOfYear }).map((_, i) =>
 							getCount(i) > 0 ? (
-								<HoverCard key={i} openDelay={200} closeDelay={200}>
-									<HoverCardTrigger asChild>
-										<button
-											className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= firstDayOfYear ? getColor(i) : 'opacity-0'}`}
-										/>
-									</HoverCardTrigger>
-									<HoverCardContent side="top" className="w-fit">
-										<p>
-											{getCount(i)} messages on{' '}
-											{getCellDate(i).toLocaleString(DateTime.DATE_FULL)}
-										</p>
-									</HoverCardContent>
-								</HoverCard>
+								<CellWithCount
+									key={i}
+									count={getCount(i)}
+									date={getCellDate(i)}
+									color={getColor(i)}
+								/>
 							) : (
 								<button
 									key={i}
@@ -144,5 +140,41 @@ export function HeatMapLoading() {
 				<path d="M21 12a9 9 0 1 1-6.219-8.56" />
 			</svg>
 		</div>
+	);
+}
+
+function CellWithCount({
+	count,
+	date,
+	color
+}: {
+	count: number;
+	date: DateTime<true>;
+	color: string;
+}) {
+	const [isOpen, setIsOpen] = useState(false);
+	return (
+		<HoverCard
+			openDelay={200}
+			closeDelay={200}
+			open={isOpen}
+			onOpenChange={setIsOpen}
+		>
+			<HoverCardTrigger asChild>
+				<button
+					className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${color}`}
+				/>
+			</HoverCardTrigger>
+			<HoverCardContent
+				onMouseEnter={() => setIsOpen(false)}
+				onMouseLeave={() => setIsOpen(false)}
+				side="top"
+				className="w-fit"
+			>
+				<p>
+					{count} messages on {date.toLocaleString(DateTime.DATE_FULL)}
+				</p>
+			</HoverCardContent>
+		</HoverCard>
 	);
 }
