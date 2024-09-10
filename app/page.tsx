@@ -1,11 +1,26 @@
 import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 import { getCount } from '@/lib/get-count';
+import { WebSite } from 'schema-dts';
+import Script from 'next/script';
+
+const richText: WebSite = {
+	'@type': 'WebSite',
+	'@id': 'https://archivescape.monib.xyz',
+	url: 'https://archivescape.monib.xyz',
+	name: 'ArchiveScape',
+	description: 'An open source archive of VentScape.'
+};
 
 export default async function Home() {
 	const { usersCount, messagesCount } = await getCount();
 	return (
 		<div className="prose lg:prose-xl mx-4 flex w-fit max-w-[800px] flex-col gap-5 pb-8 text-slate-200 sm:mx-auto sm:w-1/2 sm:pt-5">
+			<Script
+				id="rich-text"
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(richText) }}
+			/>
 			<h1 className="mb-5 w-full text-4xl font-bold sm:text-6xl">
 				Welcome to ArchiveScape
 			</h1>
