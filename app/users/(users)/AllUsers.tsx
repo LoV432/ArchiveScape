@@ -15,19 +15,19 @@ export default function UsersPage({
 	data,
 	page
 }: {
-	data: { users: User[]; totalPages: number };
+	data: { users: User[] };
 	page: number;
 }) {
 	return (
 		<>
 			<MessagesPagination
-				totalPages={data.totalPages}
+				totalPages={'positive-infinity'}
 				page={page}
 				type="default"
 			/>
 			<UsersTable users={data.users} />
 			<MessagesPagination
-				totalPages={data.totalPages}
+				totalPages={'positive-infinity'}
 				page={page}
 				type="default"
 			/>

@@ -15,10 +15,16 @@ import LinkWithHoverPrefetch from '../../../components/LinkWithHoverPrefetch';
 
 export default async function Home() {
 	const data = (
-		await db.query(`SELECT users.id, users.user_name, COUNT(*) AS message_count
-        FROM users
-        INNER JOIN messages m ON m.user_id = users.id
-        GROUP BY users.id, users.user_name ORDER BY message_count DESC, users.user_name DESC LIMIT 10;`)
+		await db.query(`SELECT u.user_name, m.message_count, m.user_id as id
+							FROM users u
+							INNER JOIN (
+								SELECT COUNT(*) AS message_count, user_id
+								FROM messages
+								GROUP BY user_id
+								ORDER BY message_count desc
+								LIMIT 10
+							) m ON u.id = m.user_id
+							ORDER BY m.message_count DESC;`)
 	).rows as { user_name: string; id: number; message_count: number }[];
 
 	return (

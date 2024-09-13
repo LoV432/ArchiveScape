@@ -15,7 +15,7 @@ export function MessagesPagination({
 	type = 'messages',
 	initalOrder = 'desc'
 }: {
-	totalPages: number | 'infinite';
+	totalPages: number | 'infinite' | 'positive-infinity';
 	page: number;
 	type?: 'messages' | 'default';
 	initalOrder?: 'asc' | 'desc';
@@ -29,9 +29,13 @@ export function MessagesPagination({
 		}
 	});
 
-	const isInfinite = totalPages === 'infinite';
+	const isInfinite =
+		totalPages === 'infinite' || totalPages === 'positive-infinity';
 	const isLastPage = isInfinite ? false : page === totalPages;
-	const isFirstPage = isInfinite ? false : page === 1;
+	const isFirstPage = (() => {
+		if (totalPages !== 'infinite' && page === 1) return true;
+		return false;
+	})();
 
 	let buttonTextFirst, buttonTextLast;
 	if (type === 'messages') {

@@ -9,16 +9,18 @@ export type User = {
 export async function getAllUsers(page: number) {
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	const usersWithMessagesCount = await db.query(
-		`SELECT users.id, users.user_name, COUNT(*) AS message_count
-        FROM users
-        INNER JOIN messages m ON m.user_id = users.id
-        GROUP BY users.id, users.user_name ORDER BY message_count DESC, users.user_name DESC OFFSET $1 LIMIT $2;`,
+		`SELECT u.user_name, m.message_count, m.user_id as id
+			FROM users u
+			INNER JOIN (
+				SELECT COUNT(*) AS message_count, user_id
+				FROM messages
+				GROUP BY user_id
+				ORDER BY message_count desc
+				OFFSET $1
+				LIMIT $2
+			) m ON u.id = m.user_id
+			ORDER BY m.message_count DESC;`,
 		[Number(page) * itemsPerPage - itemsPerPage, itemsPerPage]
 	);
-
-	const totalPages = Math.ceil(
-		(await db.query('SELECT COUNT(*) FROM users')).rows[0]['count'] /
-			itemsPerPage
-	);
-	return { users: usersWithMessagesCount.rows as User[], totalPages };
+	return { users: usersWithMessagesCount.rows as User[] };
 }
