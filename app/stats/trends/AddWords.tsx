@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useEffect, useState } from 'react';
 
 export function AddWords({
 	selectedWords,
@@ -28,8 +29,15 @@ export function AddWords({
 		const wordsWithoutEmpty = words.filter((word) => word.length > 0);
 		setSelectedWords([...wordsWithoutEmpty]);
 	}
+	const [isOpen, setIsOpen] = useState(false);
+
+	useEffect(() => {
+		// TODO: This isn't very good.
+		// If user presses the button to add words and then quickly closes and opens the dialog again, the dialog will still close when this is triggered.
+		if (!isLoading) setIsOpen(false);
+	}, [isLoading]);
 	return (
-		<Dialog>
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
 				<Button variant="outline">Add Words</Button>
 			</DialogTrigger>
