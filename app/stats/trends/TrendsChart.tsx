@@ -29,7 +29,7 @@ export function TrendsChart() {
 	for (let i = 0; i < 6; i++) {
 		lastSixMonths.push({
 			month: new Date(sevenMonthsAgo).toLocaleDateString('en-US', {
-				month: 'long',
+				month: 'short',
 				year: '2-digit'
 			})
 		});
@@ -60,7 +60,7 @@ export function TrendsChart() {
 				};
 				for (const dataItem of wordObject.word_data) {
 					const month = new Date(dataItem.month).toLocaleDateString('en-US', {
-						month: 'long',
+						month: 'short',
 						year: '2-digit'
 					});
 					const dataItemIndex = chartDataRef.current.findIndex(
@@ -83,6 +83,7 @@ export function TrendsChart() {
 		}
 	}
 	useEffect(() => {
+		if (selectedWords.length === 0) return;
 		chartDataRef.current = lastSixMonths;
 		chartConfigRef.current = {};
 		getTrendsData(selectedWords);
@@ -90,7 +91,9 @@ export function TrendsChart() {
 	return (
 		<Card className="flex h-full flex-col items-center justify-center border-0 text-center">
 			<CardHeader>
-				<CardTitle>Word Trends on VentScape (Last 6 Months)</CardTitle>
+				<CardTitle className="leading-10">
+					Word Trends on VentScape <br /> (Last 6 Months)
+				</CardTitle>
 			</CardHeader>
 			<CardContent className="p-0">
 				<ChartContainer
@@ -101,7 +104,7 @@ export function TrendsChart() {
 						accessibilityLayer
 						data={chartData}
 						margin={{
-							left: 12,
+							left: -15,
 							right: 12
 						}}
 					>
@@ -111,8 +114,14 @@ export function TrendsChart() {
 							tickLine={false}
 							axisLine={false}
 							tickMargin={8}
+							fontSize={15}
 						/>
-						<YAxis tickLine={false} axisLine={false} tickMargin={8} />
+						<YAxis
+							tickLine={false}
+							axisLine={false}
+							tickMargin={12}
+							fontSize={15}
+						/>
 						<ChartTooltip cursor={false} content={<ChartTooltipContent />} />
 						<ChartLegend content={<ChartLegendContent />} />
 						{Object.keys(chartConfig).map((key) => (
