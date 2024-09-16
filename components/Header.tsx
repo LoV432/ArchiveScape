@@ -53,6 +53,11 @@ export default function Header() {
 							name="Daily Usage"
 						/>
 						<NavDropDownItem
+							link="/stats/trends"
+							currentPath={currentPath}
+							name="Word Trends"
+						/>
+						<NavDropDownItem
 							link="/stats/top-10-users"
 							currentPath={currentPath}
 							name="Top 10 Users"
@@ -184,6 +189,12 @@ export default function Header() {
 									link="/stats/daily-usage"
 									currentPath={currentPath}
 									name="Daily Usage"
+									onClick={() => setIsOpen(false)}
+								/>
+								<NavDropDownItem
+									link="/stats/trends"
+									currentPath={currentPath}
+									name="Word Trends"
 									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItem
