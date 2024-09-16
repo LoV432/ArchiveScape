@@ -30,16 +30,20 @@ export function AddWords({
 		setSelectedWords([...wordsWithoutEmpty]);
 	}
 	const [isOpen, setIsOpen] = useState(false);
+	const [buttonText, setButtonText] = useState('Loading...');
 
 	useEffect(() => {
 		// TODO: This isn't very good.
 		// If user presses the button to add words and then quickly closes and opens the dialog again, the dialog will still close when this is triggered.
 		if (!isLoading) setIsOpen(false);
 	}, [isLoading]);
+	useEffect(() => {
+		setButtonText('Add Words');
+	}, []);
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button variant="outline">Add Words</Button>
+				<Button variant="outline">{buttonText}</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
