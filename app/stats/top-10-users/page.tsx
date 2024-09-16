@@ -12,6 +12,12 @@ import { Button } from '@/components/ui/button';
 import { db } from '@/lib/db';
 export const dynamic = 'force-dynamic';
 import LinkWithHoverPrefetch from '../../../components/LinkWithHoverPrefetch';
+import { Metadata } from 'next/types';
+
+export const metadata: Metadata = {
+	title: 'Top 10 Users | ArchiveScape',
+	description: 'An archive of all messages sent on https://www.ventscape.life/'
+};
 
 export default async function Home() {
 	const data = (
