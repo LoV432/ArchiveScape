@@ -26,8 +26,28 @@ export function AddWords({
 		const words = Array.from(formData.entries()).map(
 			([key, value]) => value
 		) as string[];
-		const wordsWithoutEmpty = words.filter((word) => word.length > 0);
+		if (checkAnswer(words.join(' '))) return;
+		const wordsWithoutEmpty = words.filter((word) => word.length >= 3);
 		setSelectedWords([...wordsWithoutEmpty]);
+	}
+	function checkAnswer(answer: string) {
+		const correctAnswer = 'd2hvIGlzIHdhdGNoaW5nIG1lID8=';
+		if (answer.length < 1) {
+			return false;
+		}
+		if (btoa(answer.toLowerCase()) === correctAnswer) {
+			document
+				.querySelector<HTMLElement>(':root')
+				?.style.setProperty('--cursor', `url(/cursor-ZXll.cur), auto`);
+			document
+				.querySelector<HTMLElement>(':root')
+				?.style.setProperty(
+					'--cursor-pointer',
+					`url(/cursor-ZXll-pointer.cur), pointer`
+				);
+			setIsOpen(false);
+			return true;
+		}
 	}
 	const [isOpen, setIsOpen] = useState(false);
 	const [buttonText, setButtonText] = useState('Loading...');
