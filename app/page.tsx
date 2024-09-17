@@ -31,7 +31,7 @@ export default async function Home() {
 					</span>
 				</h2>
 				<p className="text-base sm:text-xl">
-					ArchiveScape is an open source archive of{' '}
+					ArchiveScape is a public archive of{' '}
 					<a
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="https://ventscape.life"
@@ -106,6 +106,25 @@ export default async function Home() {
 						target="_blank"
 					>
 						here
+					</a>
+					.
+				</p>
+			</section>
+			<section>
+				<h2 className="mb-5 w-fit text-xl font-bold sm:text-3xl">
+					<span className="relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-full after:border-b after:border-b-white after:border-opacity-30">
+						Disclaimer
+					</span>
+				</h2>
+				<p className="text-base sm:text-xl">
+					ArchiveScape is run by a completely separate person and has no
+					connection to the original developer of{' '}
+					<a
+						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
+						href="https://ventscape.life"
+						target="_blank"
+					>
+						VentScape
 					</a>
 					.
 				</p>
