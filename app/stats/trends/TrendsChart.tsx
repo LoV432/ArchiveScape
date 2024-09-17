@@ -104,7 +104,7 @@ export function TrendsChart() {
 						accessibilityLayer
 						data={chartData}
 						margin={{
-							left: -15,
+							left: -12,
 							right: 12
 						}}
 					>
