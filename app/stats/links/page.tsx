@@ -31,20 +31,33 @@ export default async function Page({
 	const page = Number(searchParams.page) || 1;
 	return (
 		<main className="mx-auto flex flex-col gap-3 pt-5">
-			<h1 className="text-center text-2xl text-rose-700 sm:text-5xl">
-				Most Sent Domain:
+			<h1 className="text-center text-2xl font-bold text-rose-700 sm:text-5xl">
+				Top Domain:
 			</h1>
 			<Suspense
 				fallback={<Skeleton className="h-11 w-[80vw] sm:h-14 sm:w-[600px]" />}
 			>
-				<p className="pb-3 text-center text-2xl text-rose-700 sm:text-5xl">
+				<p className="pb-3 text-center text-2xl font-bold text-rose-700 sm:text-5xl">
 					<TopDomain />
 				</p>
 			</Suspense>
 			<Suspense
 				fallback={
-					<div className="border-t text-center text-2xl sm:text-5xl">
-						Loading Messages...
+					<div className="mx-auto mt-28 grid place-items-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="38"
+							height="38"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							className="animate-spin"
+						>
+							<path d="M21 12a9 9 0 1 1-6.219-8.56" />
+						</svg>
 					</div>
 				}
 			>
