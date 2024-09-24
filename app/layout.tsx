@@ -27,12 +27,13 @@ export default function RootLayout({
 			></Script>
 			<body className="relative grid min-h-svh grid-rows-[auto_auto_1fr] font-mono sm:min-h-screen">
 				<SpinnerProvider>
-					<GlobalConsoleLog />
-					<Header />
-					<BreadcrumbComponent />
-					<OutdatedIndicator />
-					{children}
-					<Toaster closeButton={true} />
+					<OutdatedIndicator>
+						<GlobalConsoleLog />
+						<Header />
+						<BreadcrumbComponent />
+						{children}
+						<Toaster closeButton={true} />
+					</OutdatedIndicator>
 				</SpinnerProvider>
 			</body>
 		</html>
