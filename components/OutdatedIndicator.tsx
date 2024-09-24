@@ -68,6 +68,10 @@ function OutdatedIndicatorWithQuery({
 	useEffect(() => {
 		// On page load, we sync the ref and state with the cookie
 		const currentCookie = getCookie();
+		if (isOutdated && currentCookie === null) {
+			// This is triggered when the cookie has expired but the user hasn't left the site so the isOutdated is still true
+			setIsOutdated(false);
+		}
 		updateLocalLastId(currentCookie);
 	}, []);
 
@@ -98,10 +102,6 @@ function OutdatedIndicatorWithQuery({
 		if (!localLastIdRef.current) return;
 		const currentCookie = getCookie();
 		if (currentCookie === null) {
-			if (isOutdated) {
-				// This is triggered when the cookie has expired but the user hasn't left the site so the isOutdated is still true
-				setIsOutdated(false);
-			}
 			setTimeout(() => {
 				// We delay the inital cookie add because i don't want to pin the DB if the user quickly opens and closes the page
 				if (!localLastIdRef.current) return;
