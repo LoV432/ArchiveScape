@@ -8,14 +8,14 @@ export const metadata: Metadata = {
 	description: 'An archive of all messages sent on https://www.ventscape.life/'
 };
 export default async function Page() {
-	const { message_text, color_name } = await getRandomMessage();
+	const { message_text, color_name, id } = await getRandomMessage();
 	let messageTime = Math.floor(message_text.length / 10);
 	messageTime = messageTime < 9 ? 9 : messageTime;
-	return (
-		<RandomMessage
-			message_text={message_text}
-			color_name={color_name}
-			messageTime={messageTime}
-		/>
-	);
+	const initialMessage = {
+		message_text,
+		color_name,
+		messageTime,
+		id
+	};
+	return <RandomMessage initialMessage={initialMessage} />;
 }

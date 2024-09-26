@@ -10,27 +10,23 @@ export const metadata: Metadata = {
 };
 
 export default function RandomMessage({
-	message_text,
-	color_name,
-	messageTime
+	initialMessage
 }: {
-	message_text: string;
-	color_name: string;
-	messageTime: number;
-}) {
-	const [activeMessage, setActiveMessage] = useState({
-		message_text,
-		color_name,
-		messageTime
-	});
-	const messagesListRef = useRef([
-		{ message_text, color_name, messageTime }
-	] as {
+	initialMessage: {
 		message_text: string;
 		color_name: string;
 		messageTime: number;
+		id: number;
+	};
+}) {
+	const [activeMessage, setActiveMessage] = useState(initialMessage);
+	const messagesListRef = useRef([initialMessage] as {
+		message_text: string;
+		color_name: string;
+		messageTime: number;
+		id: number;
 	}[]);
-	const [countdown, setCountdown] = useState(messageTime);
+	const [countdown, setCountdown] = useState(initialMessage.messageTime);
 	const [startCountDown, setStartCountDown] = useState(true);
 
 	useEffect(() => {
@@ -52,10 +48,13 @@ export default function RandomMessage({
 		return () => clearInterval(timerInterval);
 	}, [startCountDown]);
 	return (
-		<>
+		<div className="my-auto grid h-[80%]">
+			<div className="mx-auto place-self-start bg-white p-2 text-center font-bold text-black sm:text-2xl">
+				Archive Entry #{activeMessage.id}
+			</div>
 			<div
 				style={{ color: activeMessage.color_name || 'white' }}
-				className="relative m-auto flex max-w-[90vw] flex-col"
+				className="relative mx-auto max-w-[90vw] place-self-center"
 			>
 				<div className="absolute -left-4 -top-4">
 					<Quote className="h-4 rotate-180 sm:h-10" />
@@ -67,10 +66,10 @@ export default function RandomMessage({
 					{activeMessage.message_text}
 				</p>
 			</div>
-			<div className="bold absolute bottom-5 mt-14 w-full text-center sm:text-2xl">
+			<div className="bold mx-auto place-self-end sm:text-2xl">
 				Next Message in: {countdown}s
 			</div>
-		</>
+		</div>
 	);
 
 	async function nextMessage() {
@@ -94,7 +93,8 @@ export default function RandomMessage({
 		const errorMessage = {
 			message_text: 'Error: Failed to fetch random message.',
 			color_name: 'red',
-			messageTime: 5000
+			messageTime: 5000,
+			id: 6969696969
 		};
 		try {
 			const res = await fetch('/api/random-message');
@@ -108,7 +108,8 @@ export default function RandomMessage({
 			const newItem = {
 				message_text: response.message_text,
 				color_name: response.color_name,
-				messageTime: Math.floor(time)
+				messageTime: Math.floor(time),
+				id: response.id
 			};
 			messagesListRef.current = [...messagesListRef.current, newItem];
 		} catch (error) {

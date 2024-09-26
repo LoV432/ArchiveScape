@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 export type RandomMessage = {
 	message_text: string;
 	color_name: string;
+	id: number;
 };
 
 export async function getRandomMessage() {
@@ -25,7 +26,7 @@ export async function getRandomMessage() {
 	).rows;
 	const messages = (
 		await db.query(
-			`SELECT message_text, colors.color_name, user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = ANY($1::int[])`,
+			`SELECT message_text, colors.color_name, messages.id as id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = ANY($1::int[])`,
 			[users.map((user) => user.user_id)]
 		)
 	).rows as RandomMessage[];
@@ -42,6 +43,7 @@ export async function getRandomMessage() {
 	}
 	return {
 		message_text: bestMessage.message_text,
-		color_name: bestMessage.color_name
+		color_name: bestMessage.color_name,
+		id: bestMessage.id
 	};
 }
