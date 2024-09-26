@@ -9,7 +9,8 @@ export const metadata: Metadata = {
 };
 export default async function Page() {
 	const { message_text, color_name } = await getRandomMessage();
-	const messageTime = message_text.length * 30 + 5000;
+	let messageTime = Math.floor(message_text.length / 10);
+	messageTime = messageTime < 9 ? 9 : messageTime;
 	return (
 		<RandomMessage
 			message_text={message_text}

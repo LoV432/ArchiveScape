@@ -1,5 +1,6 @@
 'use client';
 import { RandomMessage as RandomMessageType } from '@/lib/random-message';
+import { Quote } from 'lucide-react';
 import { Metadata } from 'next/types';
 import { useEffect, useRef, useState } from 'react';
 
@@ -22,7 +23,6 @@ export default function RandomMessage({
 		color_name,
 		messageTime
 	});
-	const timerCircleRef = useRef<SVGCircleElement>(null);
 	const messagesListRef = useRef([
 		{ message_text, color_name, messageTime }
 	] as {
@@ -30,35 +30,47 @@ export default function RandomMessage({
 		color_name: string;
 		messageTime: number;
 	}[]);
+	const [countdown, setCountdown] = useState(messageTime);
+	const [startCountDown, setStartCountDown] = useState(true);
 
 	useEffect(() => {
 		addNewMessage();
-		restartAnimation();
 	}, []);
+
+	useEffect(() => {
+		const timerInterval = setInterval(() => {
+			setCountdown((prevTime) => {
+				if (prevTime === 0) {
+					clearInterval(timerInterval);
+					nextMessage();
+					return 0;
+				} else {
+					return prevTime - 1;
+				}
+			});
+		}, 1000);
+		return () => clearInterval(timerInterval);
+	}, [startCountDown]);
 	return (
-		<div className="mx-auto max-w-[99vw] px-10 pt-24 text-center sm:pt-44">
+		<>
 			<div
-				onAnimationEnd={nextMessage}
-				id="countdown"
-				className="relative h-8 w-full pb-24 text-center"
-			>
-				<svg className="mx-auto h-[40px] w-[40px]">
-					<circle
-						style={{ stroke: activeMessage.color_name || 'white' }}
-						ref={timerCircleRef}
-						r="18"
-						cx="20"
-						cy="20"
-					></circle>
-				</svg>
-			</div>
-			<p
 				style={{ color: activeMessage.color_name || 'white' }}
-				className="break-words text-3xl font-extrabold sm:text-7xl"
+				className="relative m-auto flex max-w-[90vw] flex-col"
 			>
-				{activeMessage.message_text}
-			</p>
-		</div>
+				<div className="absolute -left-4 -top-4">
+					<Quote className="h-4 rotate-180 sm:h-10" />
+				</div>
+				<div className="absolute -right-4 bottom-4">
+					<Quote className="h-4 sm:h-10" />
+				</div>
+				<p className="mb-8 max-w-[1000px] px-8 py-4 text-center text-xl font-bold sm:text-4xl">
+					{activeMessage.message_text}
+				</p>
+			</div>
+			<div className="bold absolute bottom-5 mt-14 w-full text-center sm:text-2xl">
+				Next Message in: {countdown}s
+			</div>
+		</>
 	);
 
 	async function nextMessage() {
@@ -70,18 +82,12 @@ export default function RandomMessage({
 			}, 200);
 			return;
 		}
-		await new Promise((r) => setTimeout(r, 200));
+		await new Promise((r) => setTimeout(r, 10));
 		messagesListRef.current.shift();
 		setActiveMessage(messagesListRef.current[0]);
-		restartAnimation();
+		setCountdown(messagesListRef.current[0].messageTime);
+		setStartCountDown(!startCountDown);
 		addNewMessage();
-	}
-
-	function restartAnimation() {
-		timerCircleRef.current && (timerCircleRef.current.style.animation = 'none');
-		timerCircleRef.current && timerCircleRef.current.getBBox();
-		timerCircleRef.current &&
-			(timerCircleRef.current.style.animation = `countdown ${messagesListRef.current[0].messageTime / 1000}s linear forwards`);
 	}
 
 	async function addNewMessage() {
@@ -97,10 +103,12 @@ export default function RandomMessage({
 				return;
 			}
 			const response = (await res.json()) as RandomMessageType;
+			let time = Math.floor(response.message_text.length / 10);
+			time = time < 9 ? 9 : time;
 			const newItem = {
 				message_text: response.message_text,
 				color_name: response.color_name,
-				messageTime: response.message_text.length * 30 + 5000
+				messageTime: Math.floor(time)
 			};
 			messagesListRef.current = [...messagesListRef.current, newItem];
 		} catch (error) {
