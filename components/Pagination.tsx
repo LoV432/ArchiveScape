@@ -41,8 +41,8 @@ export function MessagesPagination({
 	if (type === 'messages') {
 		let order = searchParams.get('order');
 		if (order !== 'asc' && order != 'desc') order = initalOrder;
-		buttonTextFirst = order === 'asc' ? 'Older Messages' : 'Newer Messages';
-		buttonTextLast = order === 'asc' ? 'Newer Messages' : 'Older Messages';
+		buttonTextFirst = order === 'asc' ? 'Older' : 'Newer';
+		buttonTextLast = order === 'asc' ? 'Newer' : 'Older';
 	} else {
 		buttonTextFirst = '< Previous';
 		buttonTextLast = 'Next >';
