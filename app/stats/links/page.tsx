@@ -30,7 +30,7 @@ export default async function Page({
 }) {
 	const page = Number(searchParams.page) || 1;
 	return (
-		<main className="mx-auto flex flex-col gap-3 pt-5">
+		<main className="grid">
 			<h1 className="text-center text-2xl font-bold text-rose-700 sm:text-5xl">
 				Top Domain:
 			</h1>
