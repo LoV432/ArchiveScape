@@ -8,6 +8,7 @@ import {
 	PaginationButton
 } from '@/components/ui/pagination';
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export function MessagesPagination({
 	totalPages,
@@ -44,8 +45,8 @@ export function MessagesPagination({
 		buttonTextFirst = order === 'asc' ? 'Older' : 'Newer';
 		buttonTextLast = order === 'asc' ? 'Newer' : 'Older';
 	} else {
-		buttonTextFirst = '< Previous';
-		buttonTextLast = 'Next >';
+		buttonTextFirst = 'Previous';
+		buttonTextLast = 'Next';
 	}
 
 	let previousPage, nextPage;
@@ -68,8 +69,9 @@ export function MessagesPagination({
 						isActive={!isFirstPage}
 						href={`${pathname}?page=${previousPage}${params}`}
 						className={`${isFirstPage ? 'pointer-events-none opacity-0' : ''} select-none`}
-						buttonText={buttonTextFirst}
-					/>
+					>
+						<ChevronLeft className="inline h-4 w-4" /> {buttonTextFirst}
+					</PaginationButton>
 				</PaginationItem>
 				<PaginationItem>
 					<PaginationLink rel="nofollow" className="pointer-events-none">
@@ -85,8 +87,9 @@ export function MessagesPagination({
 						isActive={!isLastPage}
 						href={`${pathname}?page=${nextPage}${params}`}
 						className={`${isLastPage ? 'pointer-events-none opacity-0' : ''} select-none`}
-						buttonText={buttonTextLast}
-					/>
+					>
+						{buttonTextLast} <ChevronRight className="inline h-4 w-4" />
+					</PaginationButton>
 				</PaginationItem>
 			</PaginationContent>
 		</Pagination>

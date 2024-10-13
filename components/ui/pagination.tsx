@@ -96,10 +96,10 @@ PaginationNext.displayName = 'PaginationNext';
 
 const PaginationButton = ({
 	className,
-	buttonText,
+	children,
 	...props
 }: React.ComponentProps<typeof PaginationLink> & {
-	buttonText: string;
+	children: React.ReactNode;
 }) => (
 	<PaginationLink
 		aria-label="Load newer messages"
@@ -107,7 +107,7 @@ const PaginationButton = ({
 		className={cn('gap-1', className)}
 		{...props}
 	>
-		<span>{buttonText}</span>
+		<span>{children}</span>
 	</PaginationLink>
 );
 PaginationButton.displayName = 'PaginationButton';
