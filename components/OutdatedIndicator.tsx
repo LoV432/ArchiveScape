@@ -23,6 +23,9 @@ export default function OutdatedIndicator({
 	const [localLastId, setLocalLastId] = useState<number | null>(null);
 	const pathname = usePathname();
 	if (!pathname.match(allowedPaths)) {
+		if (isOutdated) {
+			setIsOutdated(false);
+		}
 		return children;
 	}
 	return (
@@ -62,6 +65,7 @@ function OutdatedIndicatorWithQuery({
 			return data.id;
 		},
 		refetchInterval: 1000 * 60,
+		refetchOnWindowFocus: 'always',
 		enabled: !isOutdated
 	});
 
@@ -172,9 +176,9 @@ function OutdatedIndicatorWithQuery({
 function setCookie(id: number) {
 	if (typeof id !== 'number' || Number.isNaN(id)) return;
 	if (process.env.NODE_ENV === 'development') {
-		document.cookie = `localLastId=${id};path=/;samesite=lax;max-age=120`;
+		document.cookie = `localLastId=${id};path=/;samesite=lax;max-age=240`;
 	} else {
-		document.cookie = `localLastId=${id};path=/;samesite=lax;secure;max-age=120`;
+		document.cookie = `localLastId=${id};path=/;samesite=lax;secure;max-age=240`;
 	}
 }
 
