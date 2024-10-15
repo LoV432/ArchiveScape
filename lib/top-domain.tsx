@@ -1,10 +1,14 @@
 import { db } from './db';
 
 let lastUpdated = 0;
-let topDomainCache: { domain: string; count: number };
+let topDomainCache: { domain: string; count: number } | undefined;
 export async function getTopDomain() {
 	const now = Date.now();
-	if (now - lastUpdated < 1000 * 60 * 5 && topDomainCache.count > 0) {
+	if (
+		now - lastUpdated < 1000 * 60 * 5 &&
+		topDomainCache &&
+		topDomainCache.count > 0
+	) {
 		return {
 			domain: topDomainCache.domain,
 			count: topDomainCache.count

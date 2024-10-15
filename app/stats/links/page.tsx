@@ -31,19 +31,21 @@ export default async function Page({
 	const page = Number(searchParams.page) || 1;
 	return (
 		<main className="grid">
-			<h1 className="text-center text-2xl font-bold text-rose-700 sm:text-5xl">
-				Top Domain:
-			</h1>
-			<Suspense
-				fallback={<Skeleton className="h-11 w-[80vw] sm:h-14 sm:w-[600px]" />}
-			>
-				<p className="pb-3 text-center text-2xl font-bold text-rose-700 sm:text-5xl">
-					<TopDomain />
-				</p>
-			</Suspense>
+			<div className="py-5">
+				<h1 className="text-center text-2xl font-bold text-rose-700 sm:text-5xl">
+					Top Domain:
+				</h1>
+				<Suspense
+					fallback={<Skeleton className="h-11 w-[80vw] sm:h-14 sm:w-[600px]" />}
+				>
+					<p className="text-center text-2xl font-bold text-rose-700 sm:text-5xl">
+						<TopDomain />
+					</p>
+				</Suspense>
+			</div>
 			<Suspense
 				fallback={
-					<div className="mx-auto mt-28 grid place-items-center">
+					<div className="mx-auto grid">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							width="38"
