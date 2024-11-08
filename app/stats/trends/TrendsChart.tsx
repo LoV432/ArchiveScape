@@ -17,26 +17,31 @@ import {
 	ChartTooltip,
 	ChartTooltipContent
 } from '@/components/ui/chart';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { TrendsData } from './trends-data';
 import { AddWords } from './AddWords';
+import { DateTime } from 'luxon';
+
+type Data = {
+	day: string;
+	[key: string]: any;
+}[];
 
 export function TrendsChart() {
-	const sevenMonthsAgo = new Date();
-	sevenMonthsAgo.setMonth(sevenMonthsAgo.getMonth() - 6);
-	let lastSixMonths = [];
-	for (let i = 0; i < 6; i++) {
-		lastSixMonths.push({
-			month: new Date(sevenMonthsAgo).toLocaleDateString('en-US', {
-				month: 'short',
-				year: '2-digit'
-			})
-		});
-		sevenMonthsAgo.setMonth(sevenMonthsAgo.getMonth() + 1);
-	}
-	const [chartData, setChartData] = useState<any[]>(lastSixMonths);
-	const chartDataRef = useRef<any[]>(lastSixMonths);
+	const lastSixMonths: Data = useMemo(() => {
+		let sixMonthsAgo = DateTime.now().minus({ months: 6 });
+		const data: Data = [];
+		while (sixMonthsAgo <= DateTime.now()) {
+			data.push({
+				day: sixMonthsAgo.toFormat('yyyy-MM-dd')
+			});
+			sixMonthsAgo = sixMonthsAgo.plus({ days: 1 });
+		}
+		return data;
+	}, []);
+	const [chartData, setChartData] = useState(lastSixMonths);
+	const chartDataRef = useRef(lastSixMonths);
 	const [chartConfig, setChartConfig] = useState<ChartConfig>({});
 	const chartConfigRef = useRef<ChartConfig>({});
 	const [selectedWords, setSelectedWords] = useState<string[]>([]);
@@ -52,27 +57,23 @@ export function TrendsChart() {
 					'Content-Type': 'application/json'
 				}
 			});
-			const data = (await queryData.json()) as { data: TrendsData };
-			for (const wordObject of data.data) {
+			const { data } = (await queryData.json()) as { data: TrendsData };
+			for (const wordObject of data) {
 				chartConfigRef.current[wordObject.word] = {
 					label: wordObject.word,
 					color: `hsl(var(--chart-${words.indexOf(wordObject.word) + 1}))`
 				};
-				for (const dataItem of wordObject.word_data) {
-					const month = new Date(dataItem.month).toLocaleDateString('en-US', {
-						month: 'short',
-						year: '2-digit'
-					});
-					const dataItemIndex = chartDataRef.current.findIndex(
-						(item) => item.month === month
-					);
-					if (dataItemIndex !== -1) {
-						chartDataRef.current[dataItemIndex][wordObject.word] = Number(
-							dataItem.message_count
-						);
-					}
-				}
 			}
+			chartDataRef.current.map((datesData, index) => {
+				data.map((word) => {
+					const findIndex = word.word_data.findIndex(
+						(item) => item.day.slice(0, 10) === datesData.day
+					);
+					chartDataRef.current[index][word.word] = Number(
+						word.word_data[findIndex]?.message_count || 0
+					);
+				});
+			});
 			setChartData(chartDataRef.current);
 			setChartConfig(chartConfigRef.current);
 		} catch (error) {
@@ -110,11 +111,13 @@ export function TrendsChart() {
 					>
 						<CartesianGrid vertical={false} />
 						<XAxis
-							dataKey="month"
+							dataKey="day"
 							tickLine={false}
 							axisLine={false}
 							tickMargin={8}
 							fontSize={15}
+							interval={29}
+							tickFormatter={(value) => DateTime.fromISO(value).toFormat('MMM')}
 						/>
 						<YAxis
 							tickLine={false}
@@ -128,7 +131,7 @@ export function TrendsChart() {
 							<Line
 								key={key}
 								dataKey={key}
-								type="monotone"
+								type="bump"
 								stroke={chartConfig[key].color}
 								strokeWidth={2}
 								dot={false}
