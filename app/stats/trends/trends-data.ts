@@ -1,4 +1,5 @@
 import { db } from '@/lib/db';
+import { DateTime } from 'luxon';
 export type TrendsData = {
 	word: string;
 	word_data: {
@@ -12,8 +13,7 @@ export async function getTrendsData(words: string[]) {
 	if (words.length > 5) words = words.slice(0, 5);
 	try {
 		let data: TrendsData = [];
-		const sevenMonthsAgo = new Date();
-		sevenMonthsAgo.setMonth(sevenMonthsAgo.getMonth() - 6);
+		const sevenMonthsAgo = DateTime.now().minus({ months: 6 }).toISO();
 		await Promise.all(
 			words.map(async (word) => {
 				const queryData = await db.query(
@@ -22,7 +22,7 @@ export async function getTrendsData(words: string[]) {
 		            WHERE message_text ILIKE $1 AND created_at >= $2
 		            GROUP BY day
 		            ORDER BY day ASC;`,
-					[`% ${word} %`, sevenMonthsAgo.toISOString()]
+					[`% ${word} %`, sevenMonthsAgo]
 				);
 				data.push({
 					word,
