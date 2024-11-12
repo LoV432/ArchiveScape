@@ -19,14 +19,32 @@ export default async function Main({
 	searchParams
 }: {
 	params: { userId: string };
-	searchParams: { page: string };
+	searchParams: {
+		page: string;
+		order: string;
+		dateStart: string;
+		dateEnd: string;
+	};
 }) {
 	const { userId } = params;
 	if (!userId || userId === '' || isNaN(Number(userId))) {
 		redirect('/');
 	}
 	const page = Number(searchParams.page) || 1;
-	const data = await getUserMessages(Number(userId), page);
+	const order = searchParams.order === 'asc' ? 'asc' : 'desc';
+	const dateStart = searchParams.dateStart
+		? new Date(searchParams.dateStart)
+		: undefined;
+	const dateEnd = searchParams.dateEnd
+		? new Date(searchParams.dateEnd)
+		: undefined;
+	const data = await getUserMessages(
+		Number(userId),
+		page,
+		order,
+		dateStart,
+		dateEnd
+	);
 	if (!data.success) {
 		return <Error error={data.error} />;
 	}

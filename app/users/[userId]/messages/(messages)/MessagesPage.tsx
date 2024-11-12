@@ -13,6 +13,7 @@ import { MessagesPagination } from '@/components/Pagination';
 import { Message } from '@/lib/all-messages';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 import LinkWithHoverPrefetch from '@/components/LinkWithHoverPrefetch';
+import { Filters } from '@/components/Filters';
 
 export default function MessagesPage({
 	data,
@@ -49,7 +50,12 @@ function MessageSection({
 				<TableCaption hidden>Messages</TableCaption>
 				<TableHeader>
 					<TableRow>
-						<TableHead>Message</TableHead>
+						<TableHead>
+							<div className="flex flex-row gap-2">
+								<Filters />
+								Message
+							</div>
+						</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>

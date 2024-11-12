@@ -1,8 +1,19 @@
 import { db } from '@/lib/db';
 import { cookies } from 'next/headers';
-import { addLocalLastId, addOffsetLimit, addOrderBy } from './db-helpers';
+import {
+	addDateRange,
+	addLocalLastId,
+	addOffsetLimit,
+	addOrderBy
+} from './db-helpers';
 
-export async function getUserMessages(userId: number, page: number) {
+export async function getUserMessages(
+	userId: number,
+	page: number,
+	order: 'asc' | 'desc' = 'desc',
+	dateStart?: Date,
+	dateEnd?: Date
+) {
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	const offset = Number(page) * itemsPerPage - itemsPerPage;
 	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
@@ -25,9 +36,17 @@ export async function getUserMessages(userId: number, page: number) {
 				localLastId: localLastId
 			});
 		}
+		if (dateStart || dateEnd) {
+			queryBuilder = addDateRange({
+				query: queryBuilder,
+				params: paramsList,
+				dateStart,
+				dateEnd
+			});
+		}
 		queryBuilder = addOrderBy({
 			query: queryBuilder,
-			orderBy: 'created_at DESC'
+			orderBy: `created_at ${order}`
 		});
 		queryBuilder = addOffsetLimit({
 			query: queryBuilder,
@@ -44,6 +63,14 @@ export async function getUserMessages(userId: number, page: number) {
 				query: countQueryBuilder,
 				paramsList: countParamsList,
 				localLastId: localLastId
+			});
+		}
+		if (dateStart || dateEnd) {
+			countQueryBuilder = addDateRange({
+				query: countQueryBuilder,
+				params: countParamsList,
+				dateStart,
+				dateEnd
 			});
 		}
 		const totalPages = Math.ceil(
