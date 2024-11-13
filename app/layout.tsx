@@ -28,11 +28,11 @@ export default function RootLayout({
 			<body className="relative grid min-h-svh grid-rows-[auto_auto_1fr] font-mono sm:min-h-screen">
 				<SpinnerProvider>
 					<OutdatedIndicator>
+						<Toaster closeButton={true} />
 						<GlobalConsoleLog />
 						<Header />
 						<BreadcrumbComponent />
 						{children}
-						<Toaster closeButton={true} />
 					</OutdatedIndicator>
 				</SpinnerProvider>
 			</body>
