@@ -6,7 +6,7 @@ type Message = {
 };
 
 // TODO: Check if we can use React/Next.js built-in caching stuff?
-let wordCloudListCache: { x: string; y: number }[] = [];
+let wordCloudListCache: { x: string; y: number; occurrence: number }[] = [];
 let lastUpdated = 0;
 
 export async function wordCloudList() {
@@ -46,7 +46,8 @@ export async function wordCloudList() {
 		.slice(0, 200)
 		.map(([word, count]) => ({
 			x: word,
-			y: Math.round(count * normalizationFactor)
+			y: Math.round(count * normalizationFactor),
+			occurrence: count
 		}));
 	wordCloudListCache = allWordsCountArray;
 	return allWordsCountArray;

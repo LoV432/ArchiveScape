@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function Canvas({
 	words
 }: {
-	words: { x: string; y: number }[];
+	words: { x: string; y: number; occurrence: number }[];
 }) {
 	const wordsRef = useRef(words);
 	const router = useRouter();
@@ -18,9 +18,11 @@ export default function Canvas({
 				...Object.values(wordsRef.current).map((d) => d.y)
 			);
 			const normalizationFactor = 70 / maxCount;
-			wordsRef.current = wordsRef.current
-				.slice(0, 100)
-				.map((d) => ({ x: d.x, y: Math.round(d.y * normalizationFactor) }));
+			wordsRef.current = wordsRef.current.slice(0, 100).map((d) => ({
+				x: d.x,
+				y: Math.round(d.y * normalizationFactor),
+				occurrence: d.occurrence
+			}));
 		}
 
 		Chart.register(WordCloudController, WordElement, LinearScale, Tooltip);
@@ -57,7 +59,12 @@ export default function Canvas({
 					},
 					plugins: {
 						tooltip: {
-							enabled: true
+							enabled: true,
+							callbacks: {
+								label: (tooltipItem) => {
+									return ` ${words[tooltipItem.dataIndex].occurrence} Times`;
+								}
+							}
 						}
 					}
 				}
