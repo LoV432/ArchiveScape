@@ -69,7 +69,10 @@ export default function Canvas({
 		};
 	});
 	return (
-		<div className="mx-auto grid h-5/6 w-[95vw] justify-center sm:place-self-center">
+		<div className="mx-auto grid h-5/6 w-[95vw] justify-center gap-5 pt-10">
+			<h1 className="text-center text-xl font-bold sm:text-2xl">
+				(Last 3 Hours)
+			</h1>
 			<canvas ref={canvasRef} id="word-cloud"></canvas>
 		</div>
 	);

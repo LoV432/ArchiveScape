@@ -65,7 +65,7 @@ export default function Header() {
 						<NavDropDownItem
 							link="/stats/words-cloud"
 							currentPath={currentPath}
-							name="Most Used Words"
+							name="Words Cloud"
 						/>
 						<NavDropDownItem
 							link="/stats/rickroll"
@@ -206,7 +206,7 @@ export default function Header() {
 								<NavDropDownItem
 									link="/stats/words-cloud"
 									currentPath={currentPath}
-									name="Most Used Words"
+									name="Words Cloud"
 									onClick={() => setIsOpen(false)}
 								/>
 								<NavDropDownItem
