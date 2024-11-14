@@ -13,23 +13,21 @@ export async function getRandomMessage() {
 	const randomOffset = Math.floor(Math.random() * (totalUsers - 1000));
 	// We are calculating offset like this to avoid using random() sort in DB
 	// This drops total time from 350ms~ to 50ms~
-	const users = (
+	const messages = (
 		await db.query(
-			`SELECT m.user_id
+			`SELECT
+				m.id as id,
+				m.message_text as message_text,
+				colors.color_name as color_name
 			FROM messages m
 			JOIN users u ON m.user_id = u.id
+			LEFT JOIN colors ON m.color_id = colors.id
 			WHERE m.user_id > $1
-			GROUP BY m.user_id
+			GROUP BY m.id, m.message_text, colors.color_name
 			HAVING COUNT(*) < 3 limit 10`,
 			[randomOffset]
 		)
-	).rows;
-	const messages = (
-		await db.query(
-			`SELECT message_text, colors.color_name, messages.id as id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = ANY($1::int[])`,
-			[users.map((user) => user.user_id)]
-		)
-	).rows as RandomMessage[];
+	).rows as { id: number; message_text: string; color_name: string }[];
 	let bestMessage = messages[0];
 	for (const message of messages) {
 		// TODO: Somehow filter out obvious troll messages, maybe using LLM?
