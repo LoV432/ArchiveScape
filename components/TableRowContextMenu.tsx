@@ -101,7 +101,6 @@ export default function TableRowContextMenu({
 										'Clipboard API not supported, please copy manually',
 										{
 											position: 'top-right',
-											important: true,
 											style: {
 												color: 'black',
 												backgroundColor: '#9f1239',
@@ -118,7 +117,6 @@ export default function TableRowContextMenu({
 									'Copied to clipboard, this is an untrusted link. Open it at your own risk.',
 									{
 										position: 'top-right',
-										important: true,
 										style: {
 											color: 'black',
 											backgroundColor: '#9f1239',
