@@ -44,7 +44,10 @@ export const metadata: Metadata = {
 	}
 };
 
-export default function Page({ params }: { params: { userId: string } }) {
+export default async function Page(props: {
+	params: Promise<{ userId: string }>;
+}) {
+	const params = await props.params;
 	if (!params.userId || params.userId === '' || isNaN(Number(params.userId))) {
 		redirect('/404');
 	}

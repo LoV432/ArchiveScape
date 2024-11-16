@@ -14,18 +14,17 @@ export const metadata: Metadata = {
 	}
 };
 
-export default async function Main({
-	params,
-	searchParams
-}: {
-	params: { userId: string };
-	searchParams: {
+export default async function Main(props: {
+	params: Promise<{ userId: string }>;
+	searchParams: Promise<{
 		page: string;
 		order: string;
 		dateStart: string;
 		dateEnd: string;
-	};
+	}>;
 }) {
+	const searchParams = await props.searchParams;
+	const params = await props.params;
 	const { userId } = params;
 	if (!userId || userId === '' || isNaN(Number(userId))) {
 		redirect('/');

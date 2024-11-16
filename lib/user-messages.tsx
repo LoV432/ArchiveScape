@@ -16,7 +16,8 @@ export async function getUserMessages(
 ) {
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	const offset = Number(page) * itemsPerPage - itemsPerPage;
-	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
+	const localLastId =
+		Number((await cookies()).get('localLastId')?.value) || undefined;
 	try {
 		const user = await db.query(`SELECT user_name FROM users WHERE id = $1`, [
 			userId

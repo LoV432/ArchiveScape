@@ -28,7 +28,7 @@ export default function ReplayPage() {
 	const messagesInBufferRef = useRef<Replay[]>([]);
 	const removeFromBuffer = useRef<number[]>([]);
 	const messageRendered = useRef<number[]>([]);
-	const playInterval = useRef<NodeJS.Timeout>();
+	const playInterval = useRef<NodeJS.Timeout>(undefined);
 
 	async function fetchMessages() {
 		try {
@@ -163,10 +163,10 @@ function Message({
 	removeFromBuffer,
 	messageRendered
 }: {
-	canvas: RefObject<HTMLDivElement>;
+	canvas: RefObject<HTMLDivElement | null>;
 	message: Replay;
-	removeFromBuffer: MutableRefObject<number[]>;
-	messageRendered: MutableRefObject<number[]>;
+	removeFromBuffer: RefObject<number[]>;
+	messageRendered: RefObject<number[]>;
 }) {
 	const childElementref = useRef<HTMLDivElement>(null);
 	const parentWidth = canvas.current?.clientWidth || 0;

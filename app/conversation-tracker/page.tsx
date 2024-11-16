@@ -5,11 +5,10 @@ import { cookies } from 'next/headers';
 import AddUsers from './AddUsers';
 import { Metadata } from 'next';
 
-export async function generateMetadata({
-	searchParams
-}: {
-	searchParams: { page: string; user_id: number };
+export async function generateMetadata(props: {
+	searchParams: Promise<{ page: string; user_id: number }>;
 }) {
+	const searchParams = await props.searchParams;
 	let metaObject: Metadata = {
 		title: 'Conversation Tracker | ArchiveScape',
 		description:
@@ -24,13 +23,14 @@ export async function generateMetadata({
 	return metaObject;
 }
 
-export default async function Page({
-	searchParams
-}: {
-	searchParams: { page: string };
+export default async function Page(props: {
+	searchParams: Promise<{ page: string }>;
 }) {
+	const searchParams = await props.searchParams;
 	const page = Number(searchParams.page) || 1;
-	const conversationTrackerCookie = cookies().get('conversationTracker')?.value;
+	const conversationTrackerCookie = (await cookies()).get(
+		'conversationTracker'
+	)?.value;
 	if (!conversationTrackerCookie) {
 		return (
 			<div className="flex flex-col gap-5">

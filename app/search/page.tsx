@@ -3,11 +3,10 @@ import Main from './Main';
 import { getSearch } from '@/lib/search';
 import Error from '@/components/Error';
 
-export async function generateMetadata({
-	searchParams
-}: {
-	searchParams: { search: string; page: string };
+export async function generateMetadata(props: {
+	searchParams: Promise<{ search: string; page: string }>;
 }) {
+	const searchParams = await props.searchParams;
 	let metaObject: Metadata = {
 		title: 'Search | ArchiveScape',
 		description:
@@ -22,17 +21,16 @@ export async function generateMetadata({
 	return metaObject;
 }
 
-export default async function Page({
-	searchParams
-}: {
-	searchParams: {
+export default async function Page(props: {
+	searchParams: Promise<{
 		search: string;
 		page: string;
 		dateStart?: string;
 		dateEnd?: string;
 		order?: string;
-	};
+	}>;
 }) {
+	const searchParams = await props.searchParams;
 	const searchQuery = searchParams.search || '';
 	const page = Number(searchParams.page) || 1;
 	const order = searchParams.order === 'asc' ? 'asc' : 'desc';

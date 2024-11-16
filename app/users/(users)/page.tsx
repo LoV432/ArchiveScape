@@ -3,11 +3,10 @@ import UsersPage from './AllUsers';
 import { getAllUsers } from '@/lib/all-users';
 import { use } from 'react';
 
-export async function generateMetadata({
-	searchParams
-}: {
-	searchParams: { page: string };
+export async function generateMetadata(props: {
+	searchParams: Promise<{ page: string }>;
 }) {
+	const searchParams = await props.searchParams;
 	let metaObject: Metadata = {
 		title: 'Users | ArchiveScape',
 		description:
@@ -22,11 +21,10 @@ export async function generateMetadata({
 	return metaObject;
 }
 
-export default function Page({
-	searchParams
-}: {
-	searchParams: { page: string };
+export default function Page(props: {
+	searchParams: Promise<{ page: string }>;
 }) {
+	const searchParams = use(props.searchParams);
 	const page = Number(searchParams.page) || 1;
 	const data = use(getAllUsers(page));
 	return (
