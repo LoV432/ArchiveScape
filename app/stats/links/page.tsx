@@ -4,11 +4,10 @@ import { Metadata } from 'next/types';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export async function generateMetadata({
-	searchParams
-}: {
-	searchParams: { page: string };
+export async function generateMetadata(props: {
+	searchParams: Promise<{ page: string }>;
 }) {
+	const searchParams = await props.searchParams;
 	let metaObject: Metadata = {
 		title: 'Links Sent By Users | ArchiveScape',
 		description:
@@ -23,11 +22,10 @@ export async function generateMetadata({
 	return metaObject;
 }
 
-export default async function Page({
-	searchParams
-}: {
-	searchParams: { page: string };
+export default async function Page(props: {
+	searchParams: Promise<{ page: string }>;
 }) {
+	const searchParams = await props.searchParams;
 	const page = Number(searchParams.page) || 1;
 	return (
 		<main className="grid">

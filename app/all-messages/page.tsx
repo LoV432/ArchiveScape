@@ -3,11 +3,10 @@ import { getAllMessages } from '@/lib/all-messages';
 import { use } from 'react';
 import AllMessages from './AllMessages';
 
-export async function generateMetadata({
-	searchParams
-}: {
-	searchParams: { page: string; user_id: number };
+export async function generateMetadata(props: {
+	searchParams: Promise<{ page: string; user_id: number }>;
 }) {
+	const searchParams = await props.searchParams;
 	let metaObject: Metadata = {
 		title: 'All Messages | ArchiveScape',
 		description:
@@ -22,17 +21,16 @@ export async function generateMetadata({
 	return metaObject;
 }
 
-export default function Page({
-	searchParams
-}: {
-	searchParams: {
+export default function Page(props: {
+	searchParams: Promise<{
 		page: string;
 		user_id: number;
 		order: string;
 		dateStart: string;
 		dateEnd: string;
-	};
+	}>;
 }) {
+	const searchParams = use(props.searchParams);
 	const page = Number(searchParams.page) || 1;
 	if (page > 500) {
 		return (

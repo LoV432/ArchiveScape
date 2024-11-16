@@ -24,7 +24,8 @@ export async function getAllMessages(
 	if (page > 500) return { messages: [] }; // Its very expensive to query pages above 500
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
 	const offset = Number(page) * itemsPerPage - itemsPerPage;
-	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
+	const localLastId =
+		Number((await cookies()).get('localLastId')?.value) || undefined;
 	let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id
 						FROM messages
 						LEFT JOIN colors ON messages.color_id = colors.id

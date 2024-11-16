@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-	const headersList = headers();
+	const headersList = await headers();
 	const { device } = userAgentFromString(
 		headersList.get('user-agent') as string
 	);

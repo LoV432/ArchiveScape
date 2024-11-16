@@ -89,7 +89,7 @@ function Message({
 	removeFromBuffer,
 	messageRendered
 }: {
-	canvas: RefObject<HTMLDivElement>;
+	canvas: RefObject<HTMLDivElement | null>;
 	message: Replay;
 	removeFromBuffer: (message: Replay) => void;
 	messageRendered: (message: Replay) => void;
