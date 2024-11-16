@@ -16,9 +16,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Extract branch name
+        shell: bash
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: lov432/archivescape:latest, lov432/archivescape:${{ github.sha }}
+          tags: |
+            ${{ github.ref == 'refs/heads/master' && format('lov432/archivescape:latest,lov432/archivescape:{0}', github.sha) || format('lov432/archivescape:{0},lov432/archivescape:{1}', env.BRANCH_NAME, github.sha) }}
