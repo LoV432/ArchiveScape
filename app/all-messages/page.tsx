@@ -1,7 +1,9 @@
 import { Metadata } from 'next/types';
 import { getAllMessages } from '@/lib/all-messages';
 import { use } from 'react';
-import AllMessages from './AllMessages';
+import { MessageSection, LoadingTable } from './AllMessages';
+import { MessagesPagination } from '@/components/Pagination';
+import { Suspense } from 'react';
 
 export async function generateMetadata(props: {
 	searchParams: Promise<{ page: string; user_id: number }>;
@@ -52,13 +54,21 @@ export default function Page(props: {
 		? new Date(searchParams.dateEnd)
 		: undefined;
 	const highlightedUser = Number(searchParams.user_id) || undefined;
-	const data = use(getAllMessages(page, order, dateStart, dateEnd));
+	const data = getAllMessages(page, order, dateStart, dateEnd);
 	return (
-		<div className="grid">
+		<div className="grid grid-rows-[min-content,min-content,1fr,min-content]">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-1">All Messages</p>
 			</h1>
-			<AllMessages data={data} page={page} highlightedUser={highlightedUser} />
+			<MessagesPagination totalPages={500} page={page} />
+			<Suspense
+				fallback={
+					<LoadingTable ariaLabel="Messages" tableHeadValues={['Message']} />
+				}
+			>
+				<MessageSection data={data} highlightedUser={highlightedUser} />
+			</Suspense>
+			<MessagesPagination totalPages={500} page={page} />
 		</div>
 	);
 }

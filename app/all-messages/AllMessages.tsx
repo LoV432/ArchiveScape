@@ -10,41 +10,19 @@ import {
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import { Message } from '@/lib/all-messages';
-import { MessagesPagination } from '@/components/Pagination';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 import { Filters } from '@/components/Filters';
+import { use } from 'react';
+import { Loader2 } from 'lucide-react';
 
-export default function AllMessagesPage({
+export function MessageSection({
 	data,
-	page,
 	highlightedUser
 }: {
-	data: { messages: Message[] };
-	page: number;
+	data: Promise<{ messages: Message[] }>;
 	highlightedUser?: number;
 }) {
-	return (
-		<>
-			<MessagesPagination totalPages={500} page={page} />
-			<MessageSection
-				messages={data.messages}
-				page={page}
-				highlightedUser={highlightedUser}
-			/>
-			<MessagesPagination totalPages={500} page={page} />
-		</>
-	);
-}
-
-function MessageSection({
-	messages,
-	page,
-	highlightedUser
-}: {
-	messages: Message[];
-	page: number;
-	highlightedUser?: number;
-}) {
+	const { messages } = use(data);
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
 			<TableCaption hidden>Messages</TableCaption>
@@ -90,5 +68,40 @@ function MessageSection({
 				))}
 			</TableBody>
 		</Table>
+	);
+}
+
+export function LoadingTable({
+	ariaLabel,
+	tableHeadValues
+}: {
+	ariaLabel: string;
+	tableHeadValues: string[];
+}) {
+	return (
+		<div className="flex flex-col gap-12">
+			<Table className="mx-auto max-w-3xl text-base">
+				<TableCaption hidden>{ariaLabel}</TableCaption>
+				<TableHeader>
+					<TableRow>
+						{tableHeadValues.map((value, index) =>
+							index === 0 ? (
+								<TableHead key={value}>
+									<div className="flex flex-row gap-2">
+										<Filters />
+										{value}
+									</div>
+								</TableHead>
+							) : (
+								<TableHead key={value}>{value}</TableHead>
+							)
+						)}
+					</TableRow>
+				</TableHeader>
+			</Table>
+			<div className="flex w-full justify-center">
+				<Loader2 className="h-8 w-8 animate-spin" />
+			</div>
+		</div>
 	);
 }
