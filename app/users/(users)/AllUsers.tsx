@@ -7,35 +7,12 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
-import { MessagesPagination } from '@/components/Pagination';
-import { User } from '@/lib/all-users';
+import type { User } from '@/lib/all-users';
 import LinkWithHoverPrefetch from '@/components/LinkWithHoverPrefetch';
+import { use } from 'react';
 
-export default function UsersPage({
-	data,
-	page
-}: {
-	data: { users: User[] };
-	page: number;
-}) {
-	return (
-		<>
-			<MessagesPagination
-				totalPages={'positive-infinity'}
-				page={page}
-				type="default"
-			/>
-			<UsersTable users={data.users} />
-			<MessagesPagination
-				totalPages={'positive-infinity'}
-				page={page}
-				type="default"
-			/>
-		</>
-	);
-}
-
-function UsersTable({ users }: { users: User[] }) {
+export function UsersTable({ data }: { data: Promise<{ users: User[] }> }) {
+	const { users } = use(data);
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
 			<TableCaption hidden>All Users</TableCaption>
