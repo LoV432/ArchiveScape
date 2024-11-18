@@ -1,7 +1,8 @@
 import { Metadata } from 'next/types';
 import { getAllMessages } from '@/lib/all-messages';
 import { use } from 'react';
-import { MessageSection, LoadingTable } from './AllMessages';
+import { MessageSection } from './AllMessages';
+import { LoadingTable } from '@/components/LoadingTable';
 import { MessagesPagination } from '@/components/Pagination';
 import { Suspense } from 'react';
 
