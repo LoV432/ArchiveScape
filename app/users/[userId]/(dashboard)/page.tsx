@@ -59,7 +59,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 		<div className="container mx-auto space-y-12 p-4">
 			<Card className="mx-auto w-full max-w-3xl rounded-none border-l-0 border-r-0 border-t-0">
 				<CardHeader className="flex flex-row items-center space-x-4 pb-5">
-					<Avatar className="h-20 w-20 border-2">
+					<Avatar className="grid h-20 w-20 place-items-center border-2">
 						<Suspense>
 							<AvatarComponent userName={userName} />
 						</Suspense>
@@ -149,13 +149,9 @@ export default function Page({ params }: { params: { userId: string } }) {
 
 function AvatarComponent({ userName }: { userName: Promise<string | null> }) {
 	return (
-		<img
-			// The image doesn't really require optimization
-			// So with the proxy, we can cache the image on cloudflare without the optimization step
-			// Probably!
-			className="object-cover p-1"
+		<AvatarImage
+			className="h-[70px] w-[70px]"
 			src={`/api/image-proxy?url=https://api.dicebear.com/9.x/adventurer/png?seed=${use(userName) || 'UwU'}`}
-			alt="Random Avatar"
 		/>
 	);
 }
