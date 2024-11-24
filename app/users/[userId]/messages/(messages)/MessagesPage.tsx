@@ -8,36 +8,12 @@ import {
 	TableRow
 } from '@/components/ui/table';
 
-import { MessagesPagination } from '@/components/Pagination';
-
 import { Message } from '@/lib/all-messages';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 import LinkWithHoverPrefetch from '@/components/LinkWithHoverPrefetch';
 import { Filters } from '@/components/Filters';
 
-export default function MessagesPage({
-	data,
-	page,
-	userId
-}: {
-	data: {
-		messages: Message[];
-		totalPages: number;
-		user_name: string;
-	};
-	userId: number;
-	page: number;
-}) {
-	return (
-		<>
-			<MessagesPagination page={page} totalPages={data.totalPages} />
-			<MessageSection messages={data.messages} userId={userId} />
-			<MessagesPagination page={page} totalPages={data.totalPages} />
-		</>
-	);
-}
-
-function MessageSection({
+export function MessagesTable({
 	messages,
 	userId
 }: {
