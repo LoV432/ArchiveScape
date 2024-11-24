@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation';
 import { Metadata } from 'next/types';
 import Error from '@/components/Error';
-import MessagesPage from './MessagesPage';
+import { MessagesTable } from './MessagesPage';
 import { getUserMessages } from '@/lib/user-messages';
 import Link from 'next/link';
+import { MessagesPagination } from '@/components/Pagination';
 
 export const metadata: Metadata = {
 	title: 'Messages By User | ArchiveScape',
@@ -58,7 +59,9 @@ export default async function Main(props: {
 					{data.user_name}
 				</Link>
 			</h1>
-			<MessagesPage data={data} userId={Number(userId)} page={page} />
+			<MessagesPagination page={page} totalPages={data.totalPages} />
+			<MessagesTable messages={data.messages} userId={Number(userId)} />
+			<MessagesPagination page={page} totalPages={data.totalPages} />
 		</div>
 	);
 }
