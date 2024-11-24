@@ -29,7 +29,6 @@ import { Message } from '@/lib/all-messages';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 import { FirstLastSeenText } from './FirstLastSeen.client';
 import Heatmap, { HeatMapLoading } from './Heatmap';
 import { getHeatmapData } from './heatmap-data';
@@ -63,7 +62,7 @@ export default function Page({ params }: { params: { userId: string } }) {
 						<Suspense>
 							<AvatarComponent userName={userName} />
 						</Suspense>
-						<AvatarFallback>UwU</AvatarFallback>
+						<AvatarFallbackComponent />
 					</Avatar>
 					<div>
 						<Suspense
@@ -153,6 +152,15 @@ function AvatarComponent({ userName }: { userName: Promise<string | null> }) {
 			className="h-[70px] w-[70px]"
 			src={`/api/image-proxy?url=https://api.dicebear.com/9.x/adventurer/png?seed=${use(userName) || 'UwU'}`}
 		/>
+	);
+}
+
+const asciiFallbacks = ['ʕ·͡ᴥ·ʔ', '◕_◕', '(ಥ﹏ಥ)', '(ÒДÓױ)'];
+function AvatarFallbackComponent() {
+	return (
+		<AvatarFallback className="bg-gradient-to-r from-pink-600 to-blue-400 bg-clip-text font-semibold tracking-wide text-transparent">
+			{asciiFallbacks[Math.floor(Math.random() * asciiFallbacks.length)]}
+		</AvatarFallback>
 	);
 }
 
