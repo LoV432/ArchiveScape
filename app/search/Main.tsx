@@ -25,20 +25,32 @@ export default function SearchPage({
 								loading="eager"
 								src="/scribble.gif"
 								alt="no search results"
+								unoptimized
 								width={200}
 								height={200}
 							/>
 						</>
 					)}
-					{searchQuery === '' && (
-						<Image
-							loading="eager"
-							src="/cat.gif"
-							alt="cat waiting patiently"
-							width={400}
-							height={400}
-						/>
-					)}
+					{searchQuery === '' &&
+						(Math.random() * 100 > 5 ? (
+							<Image
+								loading="eager"
+								src="/cat.gif"
+								alt="cat waiting patiently"
+								unoptimized
+								width={400}
+								height={400}
+							/>
+						) : (
+							<Image
+								loading="eager"
+								src="/duck.gif"
+								alt="duck being a duck"
+								unoptimized
+								width={150}
+								height={150}
+							/>
+						))}
 				</div>
 			)}
 			{data.messages.length > 0 && (

@@ -42,6 +42,7 @@ export default function Loading() {
 					loading="eager"
 					src="/cat.gif"
 					alt="cat waiting patiently"
+					unoptimized
 					width={400}
 					height={400}
 				/>
