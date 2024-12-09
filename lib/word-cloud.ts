@@ -32,7 +32,11 @@ export async function wordCloudList() {
 		if (
 			word.length < 3 || // remove words less than 3 characters TODO: Consider changing this.
 			[...stopWords].includes(word.toLowerCase()) || // remove stop words
-			word.startsWith('-') // remove messages starting with - because they are usually just name tags
+			word.startsWith('-') || // remove messages starting with - because they are usually just name tags
+			// remove links
+			word.includes('https://') ||
+			word.includes('http://') ||
+			word.includes('www.')
 		)
 			return;
 		// This basically checks for [word] in allWordsCount Object and if it doesn't exist, it creates it with a value of 1

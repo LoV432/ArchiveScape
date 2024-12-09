@@ -31,6 +31,13 @@ export async function getRandomMessage() {
 	let bestMessage = messages[0];
 	for (const message of messages) {
 		// TODO: Somehow filter out obvious troll messages, maybe using LLM?
+		if (
+			message.message_text.includes('https://') ||
+			message.message_text.includes('http://') ||
+			message.message_text.includes('www.')
+		) {
+			continue;
+		}
 		if (Math.random() < 0.05 && message.message_text.length > 20) {
 			bestMessage = message;
 			break;
