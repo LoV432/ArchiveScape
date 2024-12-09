@@ -66,10 +66,12 @@ export default async function Home() {
 				</h2>
 				<p className="text-base sm:text-xl">
 					You might be wondering, &quot;Doesn&apos;t this website defeat the
-					whole purpose of VentScape?&quot; The answer is yes (╥﹏╥), but
-					it&apos;s very unlikely that I am the only person recording messages
-					from VentScape. Does that justify me also doing it? The answer is no
-					(ง ͠ಥ_ಥ)ง, but at least I am making a semi-useful website out of it.
+					whole purpose of VentScape?&quot; The answer is yes
+					<span className="text-nowrap">&nbsp;(╥﹏╥)</span>, but it&apos;s very
+					unlikely that I am the only person recording messages from VentScape.
+					Does that justify me also doing it? The answer is no
+					<span className="text-nowrap">&nbsp;(ง ͠ಥ_ಥ)ง</span>, but at least I am
+					making a semi-useful website out of it.
 				</p>
 			</section>
 
