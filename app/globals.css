@@ -189,3 +189,15 @@ div[role='button'] {
 		transform: scale(0.8);
 	}
 }
+
+@keyframes pulse-current-day {
+	0% {
+		@apply shadow-[0px_0px_6px_2px_rgb(5_150_105_/_1)];
+	}
+	50% {
+		@apply shadow-[0px_0px_6px_2px_rgb(5_150_105_/_0.5)];
+	}
+	100% {
+		@apply shadow-[0px_0px_6px_2px_rgb(5_150_105_/_1)];
+	}
+}

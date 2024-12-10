@@ -21,6 +21,7 @@ export default function Heatmap({
 	if (loading) {
 		return <HeatMapLoading />;
 	}
+	const today = DateTime.now();
 	const firstDateOfYear = DateTime.fromObject({
 		year: new Date().getFullYear(),
 		month: 1,
@@ -107,11 +108,12 @@ export default function Heatmap({
 									count={getCount(i)}
 									date={getCellDate(i)}
 									color={getColor(i)}
+									isToday={getCellDate(i).toISODate() === today.toISODate()}
 								/>
 							) : (
 								<button
 									key={i}
-									className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= firstDayOfYear ? 'opacity-30' : 'opacity-0'}`}
+									className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${i >= firstDayOfYear ? 'opacity-30' : 'opacity-0'} ${getCellDate(i).toISODate() === today.toISODate() ? 'animate-[pulse-current-day_3s_ease-in-out_infinite] !opacity-100' : ''}`}
 								/>
 							)
 						)}
@@ -146,11 +148,13 @@ export function HeatMapLoading() {
 function CellWithCount({
 	count,
 	date,
-	color
+	color,
+	isToday
 }: {
 	count: number;
 	date: DateTime<true>;
 	color: string;
+	isToday: boolean;
 }) {
 	const [isOpen, setIsOpen] = useState(false);
 	return (
@@ -162,7 +166,7 @@ function CellWithCount({
 		>
 			<HoverCardTrigger asChild>
 				<button
-					className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${color}`}
+					className={`h-full w-full !cursor-default rounded-[2px] border border-green-800 ${color} ${isToday ? 'animate-[pulse-current-day_3s_ease-in-out_infinite]' : ''}`}
 				/>
 			</HoverCardTrigger>
 			<HoverCardContent
