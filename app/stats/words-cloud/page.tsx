@@ -9,10 +9,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-	return <CanvasWithSuspense />;
-}
-
-async function CanvasWithSuspense() {
 	const words = await wordCloudList();
 	return <Canvas words={words} />;
 }
