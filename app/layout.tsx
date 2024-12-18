@@ -7,6 +7,7 @@ import SpinnerProvider from '@/components/spinner-provider';
 import OutdatedIndicator from '@/components/OutdatedIndicator';
 import { Toaster } from '@/components/ui/sonner';
 import GlobalConsoleLog from '@/components/GlobalConsoleLog';
+import ConfirmationProvider from '@/components/ConfirmationProvider';
 
 export const metadata: Metadata = {
 	title: 'Home | ArchiveScape',
@@ -28,9 +29,11 @@ export default function RootLayout({
 			<body className="relative grid min-h-svh grid-rows-[auto_auto_1fr] font-mono sm:min-h-screen">
 				<SpinnerProvider>
 					<OutdatedIndicator>
-						<Header />
-						<BreadcrumbComponent />
-						{children}
+						<ConfirmationProvider>
+							<Header />
+							<BreadcrumbComponent />
+							{children}
+						</ConfirmationProvider>
 					</OutdatedIndicator>
 					<Toaster closeButton={true} />
 					<GlobalConsoleLog />

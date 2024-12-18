@@ -10,6 +10,12 @@ import { adduserToConversationTrackerCookie } from '@/lib/conversation-tracker-c
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
+import { useConfirmation } from './ConfirmationProvider';
+
+const linkRegex = new RegExp(
+	'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+	'g'
+);
 
 export default function TableRowContextMenu({
 	user_id,
@@ -28,6 +34,54 @@ export default function TableRowContextMenu({
 }) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const setConfirmation = useConfirmation();
+	function handleToast(text: string) {
+		toast.error(text, {
+			position: 'top-right',
+			style: {
+				color: 'black',
+				backgroundColor: '#9f1239',
+				fontSize: '1rem'
+			},
+			closeButton: false,
+			duration: 15000
+		});
+	}
+	function handleConfirmation(text: string) {
+		setConfirmation({
+			onConfirm: async () => {
+				if (!navigator.clipboard) {
+					handleToast('Clipboard API not supported, please copy manually');
+					return;
+				}
+				const matchedText = text.match(linkRegex)?.flat();
+				if (
+					!matchedText ||
+					matchedText.length === 0 ||
+					matchedText.length === 2
+				) {
+					navigator.clipboard.writeText(text);
+				} else {
+					navigator.clipboard.writeText(matchedText[0]);
+				}
+				handleToast(
+					'Copied to clipboard, this is an untrusted link. Open it at your own risk.'
+				);
+			},
+			title: 'Copy Link to Clipboard?',
+			description:
+				'Please only open links that you know or trust. Opening untrusted links is like having raw sex with a stranger. It might feel good, but you are probably getting all the STDs.',
+			confirmText: 'Copy',
+			styles: {
+				confirmButton: {
+					variant: 'destructive'
+				},
+				cancelButton: {
+					variant: 'outline'
+				}
+			}
+		});
+	}
 	let params: string = '';
 	searchParams.forEach((value, key) => {
 		if (key === 'user_id') return;
@@ -95,38 +149,7 @@ export default function TableRowContextMenu({
 						<div
 							rel="nofollow"
 							className="h-full w-full"
-							onClick={() => {
-								if (!navigator.clipboard) {
-									toast.error(
-										'Clipboard API not supported, please copy manually',
-										{
-											position: 'top-right',
-											style: {
-												color: 'black',
-												backgroundColor: '#9f1239',
-												fontSize: '1rem'
-											},
-											closeButton: false,
-											duration: 15000
-										}
-									);
-									return;
-								}
-								navigator.clipboard.writeText(copyToClipboard);
-								toast.error(
-									'Copied to clipboard, this is an untrusted link. Open it at your own risk.',
-									{
-										position: 'top-right',
-										style: {
-											color: 'black',
-											backgroundColor: '#9f1239',
-											fontSize: '1rem'
-										},
-										closeButton: false,
-										duration: 15000
-									}
-								);
-							}}
+							onClick={() => handleConfirmation(copyToClipboard)}
 						>
 							<ContextMenuItem>Copy to Clipboard</ContextMenuItem>
 						</div>
