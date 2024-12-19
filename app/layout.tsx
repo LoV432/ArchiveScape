@@ -28,13 +28,12 @@ export default function RootLayout({
 			></Script>
 			<body className="relative grid min-h-svh grid-rows-[auto_auto_1fr] font-mono sm:min-h-screen">
 				<SpinnerProvider>
-					<OutdatedIndicator>
-						<ConfirmationProvider>
-							<Header />
-							<BreadcrumbComponent />
-							{children}
-						</ConfirmationProvider>
-					</OutdatedIndicator>
+					<ConfirmationProvider>
+						<Header />
+						<BreadcrumbComponent />
+						{children}
+					</ConfirmationProvider>
+					<OutdatedIndicator />
 					<Toaster closeButton={true} />
 					<GlobalConsoleLog />
 				</SpinnerProvider>

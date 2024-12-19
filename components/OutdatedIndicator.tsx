@@ -5,40 +5,33 @@ import {
 	QueryClient,
 	QueryClientProvider
 } from '@tanstack/react-query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { usePathname } from 'next/navigation';
-import { LocalLastIdContext } from './LocalLastIdContext';
 
 const queryClient = new QueryClient();
 const allowedPaths =
 	/^\/(all-messages|search|stats\/links|users\/\d+\/messages|conversation-tracker)$/;
 
-export default function OutdatedIndicator({
-	children
-}: {
-	children: React.ReactNode;
-}) {
+export default function OutdatedIndicator() {
 	const [isOutdated, setIsOutdated] = useState(false);
-	const [localLastId, setLocalLastId] = useState<number | null>(null);
+	const [latestIdFromServer, setLatestIdFromServer] = useState<number | null>(
+		null
+	);
+
 	const pathname = usePathname();
 	if (!pathname.match(allowedPaths)) {
-		if (isOutdated) {
-			setIsOutdated(false);
-		}
-		return children;
+		return <></>;
 	}
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<OutdatedIndicatorWithQuery
 				isOutdated={isOutdated}
 				setIsOutdated={setIsOutdated}
-				localLastId={localLastId}
-				setLocalLastId={setLocalLastId}
+				latestIdFromServer={latestIdFromServer}
+				setLatestIdFromServer={setLatestIdFromServer}
 			/>
-			<LocalLastIdContext.Provider value={localLastId}>
-				{children}
-			</LocalLastIdContext.Provider>
 		</QueryClientProvider>
 	);
 }
@@ -46,93 +39,26 @@ export default function OutdatedIndicator({
 function OutdatedIndicatorWithQuery({
 	isOutdated,
 	setIsOutdated,
-	localLastId,
-	setLocalLastId
+	latestIdFromServer,
+	setLatestIdFromServer
 }: {
 	isOutdated: boolean;
 	setIsOutdated: React.Dispatch<React.SetStateAction<boolean>>;
-	localLastId: number | null;
-	setLocalLastId: React.Dispatch<React.SetStateAction<number | null>>;
+	latestIdFromServer: number | null;
+	setLatestIdFromServer: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
-	const keepCookieFreshInterval = useRef<NodeJS.Timeout | null>(null);
-	const localLastIdRef = useRef<number | null>(localLastId);
 	const { isError, refetch } = useQuery({
 		queryKey: ['latestMessage'],
 		queryFn: async () => {
 			const res = await fetch('/api/last-message-id');
 			const data = (await res.json()) as { id: number };
-			handleNewData(data.id);
+			setLatestIdFromServer(data.id);
 			return data.id;
 		},
 		refetchInterval: 1000 * 60,
 		refetchOnWindowFocus: 'always',
 		enabled: !isOutdated
 	});
-
-	useEffect(() => {
-		// On page load, we sync the ref and state with the cookie
-		const currentCookie = getCookie();
-		if (isOutdated && currentCookie === null) {
-			// This is triggered when the cookie has expired but the user hasn't left the site so the isOutdated is still true
-			setIsOutdated(false);
-		}
-		updateLocalLastId(currentCookie);
-	}, []);
-
-	useEffect(() => {
-		// This effect takes care of keeping the cookie fresh when the ID is outdated
-		if (!isOutdated) {
-			if (keepCookieFreshInterval.current) {
-				clearInterval(keepCookieFreshInterval.current);
-			}
-			return;
-		}
-		keepCookieFreshInterval.current = setInterval(() => {
-			if (isOutdated && localLastIdRef.current !== null) {
-				setCookie(localLastIdRef.current);
-			}
-		}, 1000 * 10);
-		return () => {
-			if (keepCookieFreshInterval.current) {
-				clearInterval(keepCookieFreshInterval.current);
-			}
-		};
-	}, [isOutdated]);
-
-	function updateLocalLastId(id: number | null) {
-		localLastIdRef.current = id;
-		setLocalLastId(localLastIdRef.current);
-
-		if (!localLastIdRef.current) return;
-		const currentCookie = getCookie();
-		if (currentCookie === null) {
-			setTimeout(() => {
-				// We delay the inital cookie add because i don't want to pin the DB if the user quickly opens and closes the page
-				if (!localLastIdRef.current) return;
-				setCookie(localLastIdRef.current as number);
-			}, 1000 * 10);
-		}
-	}
-
-	function handleNewData(data: number | null | undefined) {
-		if (!data) return;
-		if (localLastIdRef.current === null) {
-			// This will set the inital cookie
-			updateLocalLastId(data);
-			return;
-		}
-
-		if (localLastIdRef.current === data) {
-			// This is to keep cookie from expiring while the id is not outdated
-			// Once its outdated, keepCookieFreshInterval ref keeps the cookie fresh
-			setCookie(localLastIdRef.current);
-			return;
-		}
-
-		if (localLastIdRef.current !== data && !isOutdated) {
-			setIsOutdated(true);
-		}
-	}
 
 	function createUpdateToast() {
 		toast('New messages found, Do you want to update?', {
@@ -159,7 +85,47 @@ function OutdatedIndicatorWithQuery({
 		});
 	}
 
-	if (isError) return;
+	useEffect(() => {
+		const currentCookie = getCookie();
+		if (!currentCookie || isOutdated) {
+			setIsOutdated(false);
+		}
+
+		const keepCookieFreshInterval = setInterval(() => {
+			const currentCookie = getCookie();
+			if (currentCookie !== null) {
+				setCookie(currentCookie);
+			}
+		}, 1000 * 10);
+		return () => {
+			if (keepCookieFreshInterval) {
+				clearInterval(keepCookieFreshInterval);
+			}
+		};
+	}, []);
+
+	useEffect(() => {
+		const currentLocalCookie = getCookie();
+		if (latestIdFromServer === null) {
+			return;
+		}
+		let cookieSetTimeout: NodeJS.Timeout | null = null;
+		if (currentLocalCookie === null) {
+			cookieSetTimeout = setTimeout(() => {
+				// We delay the inital cookie add because i don't want to pin the DB if the user quickly opens and closes the page
+				setCookie(latestIdFromServer);
+			}, 1000 * 10);
+		} else if (currentLocalCookie !== latestIdFromServer) {
+			setIsOutdated(true);
+		}
+		return () => {
+			if (cookieSetTimeout) {
+				clearTimeout(cookieSetTimeout);
+			}
+		};
+	}, [latestIdFromServer]);
+
+	if (isError) return <></>;
 	if (isOutdated) {
 		return (
 			<div
@@ -171,6 +137,7 @@ function OutdatedIndicatorWithQuery({
 			</div>
 		);
 	}
+	return <></>;
 }
 
 function setCookie(id: number) {
