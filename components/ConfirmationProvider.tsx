@@ -63,7 +63,7 @@ function Confirmation({
 	}
 	return (
 		<Dialog open={confirmation.isOpen} onOpenChange={() => closeConfirmation()}>
-			<DialogContent className="w-[90%] sm:w-fit">
+			<DialogContent className="w-[90%] rounded-lg sm:w-fit">
 				<DialogHeader className="gap-3 pb-1">
 					<DialogTitle>{confirmation.title || 'Are you sure?'}</DialogTitle>
 					<DialogDescription>
