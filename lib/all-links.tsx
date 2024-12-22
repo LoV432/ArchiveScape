@@ -9,7 +9,7 @@ export async function getAllLinks(page: number) {
 	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
 	let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id
 						FROM messages 
-						LEFT JOIN colors ON messages.color_id = colors.id WHERE message_text ~ 'http'`;
+						LEFT JOIN colors ON messages.color_id = colors.id WHERE message_text ~ 'http' AND messages.is_deleted = false`;
 	let paramsList = [] as any[];
 	if (localLastId) {
 		queryBuilder = addLocalLastId({
@@ -31,7 +31,7 @@ export async function getAllLinks(page: number) {
 	const messagesWithLinks = (await db.query(queryBuilder, paramsList))
 		.rows as Message[];
 
-	let countQueryBuilder = `SELECT COUNT(*) FROM messages WHERE message_text ~ 'http'`;
+	let countQueryBuilder = `SELECT COUNT(*) FROM messages WHERE message_text ~ 'http' AND messages.is_deleted = false`;
 	let countParamsList = [] as any[];
 	if (localLastId) {
 		countQueryBuilder = addLocalLastId({

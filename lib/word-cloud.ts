@@ -21,7 +21,7 @@ export async function wordCloudList() {
 	const threeHoursAgo = new Date(Date.now() - 1000 * 60 * 60 * 3);
 
 	const allMessages = await db.query(
-		`SELECT message_text FROM messages WHERE created_at > $1 ORDER BY created_at DESC`,
+		`SELECT message_text FROM messages WHERE created_at > $1 AND messages.is_deleted = false ORDER BY created_at DESC`,
 		[threeHoursAgo.toUTCString()]
 	);
 	allMessages.rows.forEach((message: Message) => {

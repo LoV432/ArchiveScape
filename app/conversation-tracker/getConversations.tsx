@@ -12,7 +12,7 @@ export default async function getConversations(users: number[], page: number) {
 		let messagesQuery = `SELECT messages.id as id, user_id, message_text, created_at, colors.color_name
 			FROM messages 
 			LEFT JOIN colors ON messages.color_id = colors.id 
-			WHERE user_id = ANY($1::int[])`;
+			WHERE user_id = ANY($1::int[]) AND messages.is_deleted = false`;
 		let messagesParams: any[] = [users];
 
 		if (localLastId) {
@@ -37,7 +37,7 @@ export default async function getConversations(users: number[], page: number) {
 			.rows as Message[];
 
 		let countQuery =
-			'SELECT COUNT(*) FROM messages WHERE user_id = ANY($1::int[])';
+			'SELECT COUNT(*) FROM messages WHERE user_id = ANY($1::int[]) AND messages.is_deleted = false';
 		let countParams: any[] = [users];
 		if (localLastId) {
 			countQuery = addLocalLastId({

@@ -22,7 +22,7 @@ export async function getRandomMessage() {
 			FROM messages m
 			JOIN users u ON m.user_id = u.id
 			LEFT JOIN colors ON m.color_id = colors.id
-			WHERE m.user_id > $1
+			WHERE m.user_id > $1 AND m.is_deleted = false
 			GROUP BY m.id, m.message_text, colors.color_name
 			HAVING COUNT(*) < 3 limit 10`,
 			[randomOffset]

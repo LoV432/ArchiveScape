@@ -14,7 +14,7 @@ export default async function Page() {
 		await db.query(
 			`SELECT messages.id as id, messages.created_at as created_at, users.id as user_id, users.user_name as user_name, colors.color_name as color_name FROM messages
 		 	LEFT JOIN colors ON messages.color_id = colors.id JOIN users ON messages.user_id = users.id 
-		 	WHERE message_text LIKE '%dQw4w9WgXcQ%' 
+		 	WHERE message_text LIKE '%dQw4w9WgXcQ%' AND messages.is_deleted = false
 			ORDER BY created_at + interval '0 second' DESC 
 			LIMIT 1`
 		)

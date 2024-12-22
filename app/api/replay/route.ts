@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 		const fifteenMintues = new Date(timeObj.getTime() + 15 * 60 * 1000);
 		const messages = (
 			await db.query(
-				`SELECT message_text, created_at, color_name FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE created_at > $1 AND created_at < $2 ORDER BY created_at ASC`,
+				`SELECT message_text, created_at, color_name FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE created_at > $1 AND created_at < $2 AND messages.is_deleted = false ORDER BY created_at ASC`,
 				[timeObj.toISOString(), fifteenMintues.toISOString()]
 			)
 		).rows as Message[];

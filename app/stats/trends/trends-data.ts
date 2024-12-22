@@ -19,7 +19,7 @@ export async function getTrendsData(words: string[]) {
 				const queryData = await db.query(
 					`SELECT COUNT(*) AS message_count, DATE_TRUNC('day', created_at) AS day
 		            FROM messages
-		            WHERE message_text ILIKE $1 AND created_at >= $2
+		            WHERE message_text ILIKE $1 AND created_at >= $2 AND messages.is_deleted = false
 		            GROUP BY day
 		            ORDER BY day ASC;`,
 					[`% ${word} %`, sevenMonthsAgo]

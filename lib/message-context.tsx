@@ -9,7 +9,7 @@ export async function getMessageContext(
 	try {
 		//TODO: Use the global messages per page limit instead of hardcoded 40
 		const anchorMessage = await db.query(
-			`SELECT messages.id, created_at, user_id, user_name FROM messages JOIN users ON messages.user_id = users.id WHERE messages.id = $1 AND users.id = $2`,
+			`SELECT messages.id, created_at, user_id, user_name FROM messages JOIN users ON messages.user_id = users.id WHERE messages.id = $1 AND users.id = $2 AND messages.is_deleted = false`,
 			[messageId, userId]
 		);
 		if (anchorMessage.rows.length === 0) {
@@ -56,7 +56,7 @@ async function getFirstPage(anchorMessageCreatedAt: Date) {
         (
             SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
-            WHERE created_at <= $1
+            WHERE created_at <= $1 AND messages.is_deleted = false
             ORDER BY created_at DESC
             LIMIT 20
         )
@@ -64,7 +64,7 @@ async function getFirstPage(anchorMessageCreatedAt: Date) {
         (
             SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
-            WHERE created_at > $1
+            WHERE created_at > $1 AND messages.is_deleted = false
             ORDER BY created_at ASC
             LIMIT 20
         )
@@ -78,7 +78,7 @@ async function getNegativePage(anchorMessageCreatedAt: Date, page: number) {
 	const offset = Math.abs(page + 1) * 40 + 20;
 	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
-					WHERE created_at <= $1
+					WHERE created_at <= $1 AND messages.is_deleted = false
             		ORDER BY created_at DESC
 					OFFSET $2
             		LIMIT 40`;
@@ -90,7 +90,7 @@ async function getPositivePage(anchorMessageCreatedAt: Date, page: number) {
 	const offset = (page - 1) * 40 + 20;
 	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
-					WHERE created_at > $1 
+					WHERE created_at > $1  AND messages.is_deleted = false
             		ORDER BY created_at ASC
 					OFFSET $2
             		LIMIT 40`;

@@ -63,7 +63,7 @@ export async function getRecentMessages(userId: number) {
 		const query = `
         SELECT messages.id as id, created_at, message_text, user_id, color_name FROM messages
         LEFT JOIN colors ON messages.color_id = colors.id
-        WHERE user_id = $1
+        WHERE user_id = $1 AND messages.is_deleted = false
         ORDER BY created_at DESC
         LIMIT 10
         `;

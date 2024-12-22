@@ -22,7 +22,7 @@ export async function getSearch(
 	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
 	try {
 		// Build get messages query
-		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE message_text ILIKE $1`;
+		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE message_text ILIKE $1 AND messages.is_deleted = false`;
 		let params: any[] = [`%${searchQuery}%`];
 		if (dateStart || dateEnd) {
 			queryBuilder = addDateRange({
@@ -52,7 +52,7 @@ export async function getSearch(
 		const messages = await db.query(queryBuilder, params);
 
 		// Build total pages query
-		let totalPagesQuery = `SELECT COUNT(*) FROM messages WHERE message_text ILIKE $1`;
+		let totalPagesQuery = `SELECT COUNT(*) FROM messages WHERE message_text ILIKE $1 AND messages.is_deleted = false`;
 		params = [`%${searchQuery}%`];
 		if (dateStart || dateEnd) {
 			totalPagesQuery = addDateRange({

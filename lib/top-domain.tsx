@@ -16,7 +16,7 @@ export async function getTopDomain() {
 	}
 	lastUpdated = now;
 	const messagesWithLinks = (
-		await db.query(`SELECT message_text FROM messages WHERE message_text ~ 'http';
+		await db.query(`SELECT message_text FROM messages WHERE message_text ~ 'http' AND messages.is_deleted = false;
     `)
 	).rows as {
 		message_text: string;

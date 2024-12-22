@@ -27,7 +27,7 @@ export async function getUserMessages(
 				error: 'User not found'
 			};
 		}
-		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = $1`;
+		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = $1 AND messages.is_deleted = false`;
 		let paramsList = [userId] as any[];
 		if (localLastId) {
 			queryBuilder = addLocalLastId({
@@ -56,7 +56,7 @@ export async function getUserMessages(
 		});
 		const messages = await db.query(queryBuilder, paramsList);
 
-		let countQueryBuilder = `SELECT COUNT(*) FROM messages WHERE user_id = $1`;
+		let countQueryBuilder = `SELECT COUNT(*) FROM messages WHERE user_id = $1 AND messages.is_deleted = false`;
 		let countParamsList = [userId] as any[];
 		if (localLastId) {
 			countQueryBuilder = addLocalLastId({
