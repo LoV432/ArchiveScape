@@ -5,6 +5,7 @@ import {
 	RefObject,
 	SetStateAction,
 	useEffect,
+	useMemo,
 	useRef,
 	useState
 } from 'react';
@@ -24,29 +25,30 @@ export default function ReplayPage() {
 		new Date(new Date().getTime() - 1000 * 60 * 60)
 	);
 	const [messagesInBuffer, setMessagesInBuffer] = useState<Replay[]>([]);
-	const messagesPlayer = useRef<MessagesPlayer>(
-		new MessagesPlayer([], [], setMessagesInBuffer)
+	const messagesPlayer = useMemo(
+		() => new MessagesPlayer([], [], setMessagesInBuffer),
+		[]
 	);
 
 	async function fetchMessages() {
-		return messagesPlayer.current.fetchMessages(time);
+		return messagesPlayer.fetchMessages(time);
 	}
 
 	function removeMessageFromBuffer(message: Replay) {
-		messagesPlayer.current.removeMessageFromBuffer(message);
+		messagesPlayer.removeMessageFromBuffer(message);
 	}
 
 	function messageRendered(message: Replay) {
-		messagesPlayer.current.messageRendered(message);
+		messagesPlayer.messageRendered(message);
 	}
 
 	function startPlay() {
-		messagesPlayer.current.play();
+		messagesPlayer.play();
 	}
 
 	useEffect(() => {
 		return () => {
-			messagesPlayer.current.cleanUp();
+			messagesPlayer.cleanUp();
 		};
 	}, []);
 
@@ -57,10 +59,10 @@ export default function ReplayPage() {
 				setTime={setTime}
 				fetchMessage={fetchMessages}
 				startPlaying={startPlay}
-				isPlaying={messagesPlayer.current.isPlaying()}
+				isPlaying={messagesPlayer.isPlaying()}
 			/>
 			<div
-				className={`absolute right-0 top-0 mr-5 h-4 w-4 animate-pulse rounded-full bg-red-500 ${!messagesPlayer.current.isPlaying() && 'hidden'}`}
+				className={`absolute right-0 top-0 mr-5 h-4 w-4 animate-pulse rounded-full bg-red-500 ${!messagesPlayer.isPlaying() && 'hidden'}`}
 			></div>
 			<div
 				ref={canvas}
@@ -252,7 +254,7 @@ function Settings({
 					<div className="grid w-full gap-5">
 						<div>
 							<p>This feature is very not stable. </p>
-							<p> It's a miracle that it works at all.</p>
+							<p> It&apos;s a miracle that it works at all.</p>
 						</div>
 						<DateTimePicker setTime={setTime} time={time} />
 						<Button
