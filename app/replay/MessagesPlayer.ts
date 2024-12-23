@@ -6,7 +6,6 @@ class MessagesPlayer {
 	messages: Replay[];
 	messagesInBuffer: Replay[];
 	messagesRendered: Number[];
-	nextMessageIndex: number;
 	playInterval: NodeJS.Timeout | null;
 	setMessagesInBuffer: React.Dispatch<React.SetStateAction<Replay[]>>;
 	time: Date;
@@ -19,7 +18,6 @@ class MessagesPlayer {
 		this.setMessagesInBuffer = setMessagesInBuffer;
 		this.messagesInBuffer = messagesInBuffer;
 		this.messagesRendered = [];
-		this.nextMessageIndex = 0;
 		this.playInterval = null;
 		this.time = new Date();
 	}
@@ -111,7 +109,6 @@ class MessagesPlayer {
 			clearInterval(this.playInterval);
 			this.playInterval = null;
 		}
-		this.nextMessageIndex = 0;
 		this.playInterval = null;
 		this.messagesInBuffer = [];
 		this.messagesRendered = [];
