@@ -2,7 +2,6 @@
 
 import {
 	Dispatch,
-	MutableRefObject,
 	RefObject,
 	SetStateAction,
 	useEffect,
@@ -17,111 +16,37 @@ import {
 	PopoverContent,
 	PopoverTrigger
 } from '@/components/ui/popover';
+import MessagesPlayer from './MessagesPlayer';
 
 export default function ReplayPage() {
 	const canvas = useRef<HTMLDivElement>(null);
 	const [time, setTime] = useState(
 		new Date(new Date().getTime() - 1000 * 60 * 60)
 	);
-	const masterRecord = useRef<Replay[]>([]);
 	const [messagesInBuffer, setMessagesInBuffer] = useState<Replay[]>([]);
-	const messagesInBufferRef = useRef<Replay[]>([]);
-	const removeFromBuffer = useRef<number[]>([]);
-	const messageRendered = useRef<number[]>([]);
-	const playInterval = useRef<NodeJS.Timeout>();
+	const messagesPlayer = useRef<MessagesPlayer>(
+		new MessagesPlayer([], [], setMessagesInBuffer)
+	);
 
 	async function fetchMessages() {
-		try {
-			const res = await fetch(`/api/replay?time=${time.toISOString()}`);
-			if (!res.ok) {
-				return {
-					success: false as const,
-					error: 'Something went wrong'
-				};
-			}
-			const data = await res.json();
-			if (data.length === 0) {
-				return {
-					success: false as const,
-					error: 'No messages found'
-				};
-			}
-			masterRecord.current = data;
-			return {
-				success: true as const,
-				error: null
-			};
-		} catch (e) {
-			console.error(e);
-			return {
-				success: false as const,
-				error: 'Something went wrong'
-			};
-		}
-	}
-	function removeMessagesFromBuffer() {
-		let didRemove = false;
-		messagesInBufferRef.current = messagesInBufferRef.current.filter(
-			(message) => {
-				if (removeFromBuffer.current.includes(message.index)) {
-					didRemove = true;
-					return false;
-				}
-				return true;
-			}
-		);
-		if (didRemove) setMessagesInBuffer([...messagesInBufferRef.current]);
+		return messagesPlayer.current.fetchMessages(time);
 	}
 
-	function cleanUp() {
-		clearInterval(playInterval.current);
-		masterRecord.current = [];
-		messagesInBufferRef.current = [];
-		removeFromBuffer.current = [];
-		messageRendered.current = [];
-		setMessagesInBuffer([]);
+	function removeMessageFromBuffer(message: Replay) {
+		messagesPlayer.current.removeMessageFromBuffer(message);
+	}
+
+	function messageRendered(message: Replay) {
+		messagesPlayer.current.messageRendered(message);
 	}
 
 	function startPlay() {
-		if (masterRecord.current.length === 0) {
-			return;
-		}
-		let startTime = new Date().getTime();
-		let index = 0;
-		playInterval.current = setInterval(() => {
-			removeMessagesFromBuffer();
-			if (!messageRendered.current.includes(index - 1) && index > 0) return;
-			const now = new Date().getTime();
-			const timeDiff = now - startTime;
-			if (index === 0) {
-				messagesInBufferRef.current.push(masterRecord.current[0]);
-				setMessagesInBuffer([...messagesInBufferRef.current]);
-				startTime = now;
-				index++;
-				return;
-			}
-			if (timeDiff > masterRecord.current[index].time) {
-				messagesInBufferRef.current.push(masterRecord.current[index]);
-				setMessagesInBuffer([...messagesInBufferRef.current]);
-				startTime = now;
-				index++;
-				return;
-			}
-			if (index + 1 >= masterRecord.current.length) {
-				clearInterval(playInterval.current);
-				setTimeout(() => {
-					cleanUp();
-				}, 15000);
-			}
-			return;
-		}, 100);
+		messagesPlayer.current.play();
 	}
 
 	useEffect(() => {
 		return () => {
-			if (playInterval.current) {
-				clearInterval(playInterval.current);
-			}
+			messagesPlayer.current.cleanUp();
 		};
 	}, []);
 
@@ -132,11 +57,10 @@ export default function ReplayPage() {
 				setTime={setTime}
 				fetchMessage={fetchMessages}
 				startPlaying={startPlay}
-				cleanUp={cleanUp}
-				isPlaying={!!masterRecord.current.length}
+				isPlaying={messagesPlayer.current.isPlaying()}
 			/>
 			<div
-				className={`absolute right-0 top-0 mr-5 h-4 w-4 animate-pulse rounded-full bg-red-500 ${!masterRecord.current.length && 'hidden'}`}
+				className={`absolute right-0 top-0 mr-5 h-4 w-4 animate-pulse rounded-full bg-red-500 ${!messagesPlayer.current.isPlaying() && 'hidden'}`}
 			></div>
 			<div
 				ref={canvas}
@@ -148,7 +72,7 @@ export default function ReplayPage() {
 						key={message.index}
 						canvas={canvas}
 						message={message}
-						removeFromBuffer={removeFromBuffer}
+						removeFromBuffer={removeMessageFromBuffer}
 						messageRendered={messageRendered}
 					/>
 				))}
@@ -165,8 +89,8 @@ function Message({
 }: {
 	canvas: RefObject<HTMLDivElement>;
 	message: Replay;
-	removeFromBuffer: MutableRefObject<number[]>;
-	messageRendered: MutableRefObject<number[]>;
+	removeFromBuffer: (message: Replay) => void;
+	messageRendered: (message: Replay) => void;
 }) {
 	const childElementref = useRef<HTMLDivElement>(null);
 	const parentWidth = canvas.current?.clientWidth || 0;
@@ -192,9 +116,6 @@ function Message({
 			) as unknown as HTMLDivElement[];
 			for (let i = 0; i < allOtherMessages.length; i++) {
 				const el = allOtherMessages[i];
-				// This line works in dev but not in prod. I don't know why
-				// TODO: figure out why
-				// if (el.id === childElementref.current.id) return;
 				if (el.id === childElementref.current.id) continue;
 				if (checkOverlapBetweenMessages(childElementref.current, el)) {
 					randomizePosition();
@@ -206,9 +127,9 @@ function Message({
 		}
 		if (!childElementref.current) return;
 		childElementref.current.style.animation = 'venter 10s linear forwards';
-		messageRendered.current.push(message.index);
+		messageRendered(message);
 		setTimeout(() => {
-			removeFromBuffer.current.push(message.index);
+			removeFromBuffer(message);
 		}, 10000);
 	}
 
@@ -270,19 +191,20 @@ function Settings({
 	setTime,
 	fetchMessage,
 	startPlaying,
-	cleanUp,
 	time,
 	isPlaying
 }: {
 	setTime: Dispatch<SetStateAction<Date>>;
-	fetchMessage: () => Promise<{ success: boolean; error: string | null }>;
+	fetchMessage: () => Promise<{
+		success: boolean;
+		error: string | null;
+	}>;
 	startPlaying: () => void;
-	cleanUp: () => void;
 	time: Date;
 	isPlaying: boolean;
 }) {
 	const [showSettings, setShowSettings] = useState(false);
-	const [fetchResult, setFetchResult] = useState<{
+	const [fetchResponse, setFetchResponse] = useState<{
 		success: Boolean;
 		error: String | null;
 	}>({ success: true, error: null });
@@ -295,16 +217,18 @@ function Settings({
 	}, []);
 	return (
 		<>
-			{!fetchResult.success && fetchResult.error === 'No messages found' && (
-				<p className="fixed bottom-20 left-1/2 w-full translate-x-[-50%] p-4 text-center text-rose-900">
-					No messages within the timeframe. Please select a different time.
-				</p>
-			)}
-			{!fetchResult.success && fetchResult.error !== 'No messages found' && (
-				<p className="fixed bottom-20 left-1/2 w-full translate-x-[-50%] p-4 text-center text-rose-900">
-					Something went wrong. Please try again.
-				</p>
-			)}
+			{!fetchResponse.success &&
+				fetchResponse.error === 'No messages found' && (
+					<p className="fixed bottom-20 left-1/2 w-full translate-x-[-50%] p-4 text-center text-rose-900">
+						No messages within the timeframe. Please select a different time.
+					</p>
+				)}
+			{!fetchResponse.success &&
+				fetchResponse.error !== 'No messages found' && (
+					<p className="fixed bottom-20 left-1/2 w-full translate-x-[-50%] p-4 text-center text-rose-900">
+						Something went wrong. Please try again.
+					</p>
+				)}
 			<Popover
 				onOpenChange={() => setShowSettings(!showSettings)}
 				open={showSettings}
@@ -326,15 +250,19 @@ function Settings({
 					}}
 				>
 					<div className="grid w-full gap-5">
+						<div>
+							<p>This feature is very not stable. </p>
+							<p> It's a miracle that it works at all.</p>
+						</div>
 						<DateTimePicker setTime={setTime} time={time} />
 						<Button
 							variant={'outline'}
 							className="mx-auto w-28"
 							onClick={async () => {
 								setShowSettings(!showSettings);
-								cleanUp();
 								const result = await fetchMessage();
-								setFetchResult(result);
+								setFetchResponse(result);
+								if (!result.success) return;
 								startPlaying();
 							}}
 						>
