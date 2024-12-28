@@ -1,3 +1,5 @@
+'use client';
+
 import {
 	Table,
 	TableBody,
@@ -10,28 +12,30 @@ import {
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import { Message } from '@/lib/all-messages';
-import { MessagesPagination } from '@/components/Pagination';
+import { MessagesPagination } from './Pagination';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 import { Filters } from '@/components/Filters';
+import { useState } from 'react';
 
 export default function AllMessagesPage({
 	data,
-	page,
+	initalPage,
 	highlightedUser
 }: {
 	data: { messages: Message[] };
-	page: number;
+	initalPage: number;
 	highlightedUser?: number;
 }) {
+	const [page, setPage] = useState(initalPage);
 	return (
 		<>
-			<MessagesPagination totalPages={500} page={page} />
+			<MessagesPagination totalPages={500} page={page} setPage={setPage} />
 			<MessageSection
 				messages={data.messages}
 				page={page}
 				highlightedUser={highlightedUser}
 			/>
-			<MessagesPagination totalPages={500} page={page} />
+			<MessagesPagination totalPages={500} page={page} setPage={setPage} />
 		</>
 	);
 }
