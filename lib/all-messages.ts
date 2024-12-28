@@ -1,3 +1,5 @@
+'use server';
+
 import { db } from './db';
 import { cookies } from 'next/headers';
 import {

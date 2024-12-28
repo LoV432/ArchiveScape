@@ -58,8 +58,8 @@ export default function Page({
 				<p className="pb-1">All Messages</p>
 			</h1>
 			<AllMessages
-				data={data}
-				initalPage={page}
+				initialData={data}
+				initialPage={page}
 				highlightedUser={highlightedUser}
 			/>
 		</div>
