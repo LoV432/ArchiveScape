@@ -2,6 +2,7 @@ import { Metadata } from 'next/types';
 import { getAllMessages } from '@/lib/all-messages';
 import { use } from 'react';
 import AllMessages from './AllMessages';
+import { Filters } from './Filters.z';
 
 export async function generateMetadata({
 	searchParams
@@ -33,27 +34,23 @@ export default function Page({
 		dateEnd: string;
 	};
 }) {
-	const page = Number(searchParams.page) || 1;
+	const parsedFilters = Filters.safeParse({
+		page: searchParams.page,
+		order: searchParams.order,
+		dateStart: searchParams.dateStart,
+		dateEnd: searchParams.dateEnd,
+		highlightedUser: searchParams.user_id
+	});
+	if (!parsedFilters.success) {
+		return <ErrorPage message="There was an error parsing the filters." />;
+	}
+	const { page, order, dateStart, dateEnd, highlightedUser } =
+		parsedFilters.data;
 	if (page > 500) {
 		return (
-			<div className="grid">
-				<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
-					<p className="pb-1">All Messages</p>
-				</h1>
-				<p className="text-center">
-					You cannot view more than 500 pages at a time.
-				</p>
-			</div>
+			<ErrorPage message="You cannot view more than 500 pages at a time." />
 		);
 	}
-	const order = searchParams.order === 'asc' ? 'asc' : 'desc';
-	const dateStart = searchParams.dateStart
-		? new Date(searchParams.dateStart)
-		: undefined;
-	const dateEnd = searchParams.dateEnd
-		? new Date(searchParams.dateEnd)
-		: undefined;
-	const highlightedUser = Number(searchParams.user_id) || undefined;
 	const data = use(getAllMessages(page, order, dateStart, dateEnd));
 	return (
 		<div className="grid">
@@ -61,6 +58,17 @@ export default function Page({
 				<p className="pb-1">All Messages</p>
 			</h1>
 			<AllMessages data={data} page={page} highlightedUser={highlightedUser} />
+		</div>
+	);
+}
+
+function ErrorPage({ message }: { message: string }) {
+	return (
+		<div className="grid">
+			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
+				<p className="pb-1">All Messages</p>
+			</h1>
+			<p className="text-center">{message}</p>
 		</div>
 	);
 }
