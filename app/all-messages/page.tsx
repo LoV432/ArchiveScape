@@ -44,24 +44,18 @@ export default function Page({
 	if (!parsedFilters.success) {
 		return <ErrorPage message="There was an error parsing the filters." />;
 	}
-	const { page, order, dateStart, dateEnd, highlightedUser } =
-		parsedFilters.data;
-	if (page > 500) {
+	if (parsedFilters.data.page > 500) {
 		return (
 			<ErrorPage message="You cannot view more than 500 pages at a time." />
 		);
 	}
-	const data = use(getAllMessages(page, order, dateStart, dateEnd));
+	const data = use(getAllMessages(parsedFilters.data));
 	return (
 		<div className="grid">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-1">All Messages</p>
 			</h1>
-			<AllMessages
-				initialData={data}
-				initialPage={page}
-				highlightedUser={highlightedUser}
-			/>
+			<AllMessages initialData={data} />
 		</div>
 	);
 }

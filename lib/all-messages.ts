@@ -17,15 +17,18 @@ export type Message = {
 	color_name: string;
 };
 
-export async function getAllMessages(
-	page: number,
-	order: 'asc' | 'desc' = 'desc',
-	dateStart?: Date,
-	dateEnd?: Date
-) {
-	if (page > 500) return { messages: [] }; // Its very expensive to query pages above 500
+export async function getAllMessages(params: {
+	page: number;
+	order?: 'asc' | 'desc';
+	dateStart?: string;
+	dateEnd?: string;
+	highlightedUser?: number;
+}) {
+	if (params.page > 500) return { messages: [] }; // Its very expensive to query pages above 500
+	const dateStart = params.dateStart ? new Date(params.dateStart) : undefined;
+	const dateEnd = params.dateEnd ? new Date(params.dateEnd) : undefined;
 	const itemsPerPage = Number(process.env.ITEMS_PER_PAGE) || 10;
-	const offset = Number(page) * itemsPerPage - itemsPerPage;
+	const offset = Number(params.page) * itemsPerPage - itemsPerPage;
 	const localLastId = Number(cookies().get('localLastId')?.value) || undefined;
 	let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id
 						FROM messages
@@ -43,13 +46,13 @@ export async function getAllMessages(
 		queryBuilder = addDateRange({
 			query: queryBuilder,
 			params: paramsList,
-			dateStart,
-			dateEnd
+			dateStart: dateStart,
+			dateEnd: dateEnd
 		});
 	}
 	queryBuilder = addOrderBy({
 		query: queryBuilder,
-		orderBy: `created_at ${order}`
+		orderBy: `created_at ${params.order || 'desc'}`
 	});
 	queryBuilder = addOffsetLimit({
 		query: queryBuilder,

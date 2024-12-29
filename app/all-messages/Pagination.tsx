@@ -1,5 +1,4 @@
 'use client';
-import { usePathname, useSearchParams } from 'next/navigation';
 import {
 	Pagination,
 	PaginationContent,
@@ -9,26 +8,23 @@ import {
 import GoToPageEllipsis from '@/components/GoToPageEllipsis';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FiltersReducer, FiltersState } from './useFilters';
 
 export function MessagesPagination({
-	page,
+	filters,
 	setPage,
-	initalOrder = 'desc',
 	totalPages
 }: {
-	page: number;
-	setPage: (page: number) => void;
-	initalOrder?: 'asc' | 'desc';
+	filters: FiltersState;
+	setPage: FiltersReducer;
 	totalPages: number;
 }) {
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
+	const { page } = filters;
 	const isFirstPage = page === 1;
 	const isLastPage = page === totalPages;
 
 	let buttonTextFirst, buttonTextLast;
-	let order = searchParams.get('order');
-	if (order !== 'asc' && order != 'desc') order = initalOrder;
+	let order = filters.order || 'desc';
 	buttonTextFirst = order === 'asc' ? 'Older' : 'Newer';
 	buttonTextLast = order === 'asc' ? 'Newer' : 'Older';
 
@@ -41,7 +37,14 @@ export function MessagesPagination({
 			<PaginationContent>
 				<PaginationItem>
 					<Button
-						onClick={() => setPage(previousPage)}
+						onClick={() => {
+							window.scrollTo({
+								top: 0,
+								left: 0,
+								behavior: 'instant'
+							});
+							setPage({ page: previousPage });
+						}}
 						variant={'outline'}
 						className={`${isFirstPage ? 'pointer-events-none opacity-0' : ''} select-none`}
 					>
@@ -58,7 +61,14 @@ export function MessagesPagination({
 				</PaginationItem>
 				<PaginationItem>
 					<Button
-						onClick={() => setPage(nextPage)}
+						onClick={() => {
+							window.scrollTo({
+								top: 0,
+								left: 0,
+								behavior: 'instant'
+							});
+							setPage({ page: nextPage });
+						}}
 						variant={'outline'}
 						className={`${isLastPage ? 'pointer-events-none opacity-0' : ''} select-none`}
 					>

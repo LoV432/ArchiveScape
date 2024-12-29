@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useConfirmation } from './ConfirmationProvider';
+import { FiltersReducer } from '@/app/all-messages/useFilters';
 
 const linkRegex = new RegExp(
 	'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
@@ -23,7 +24,8 @@ export default function TableRowContextMenu({
 	children,
 	isContextPage = false,
 	isAllMessagesPage = false,
-	copyToClipboard
+	copyToClipboard,
+	setFilters
 }: {
 	user_id: number;
 	message_id: number;
@@ -31,6 +33,7 @@ export default function TableRowContextMenu({
 	isContextPage?: boolean;
 	isAllMessagesPage?: boolean;
 	copyToClipboard?: string;
+	setFilters?: FiltersReducer;
 }) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -88,7 +91,7 @@ export default function TableRowContextMenu({
 		params += `&${key}=${value}`;
 	});
 	const contextLink = isAllMessagesPage
-		? `/all-messages?${params}&user_id=${user_id}`
+		? ``
 		: `/users/${user_id}/messages/${message_id}/message-context`;
 	return (
 		<ContextMenu>
@@ -111,6 +114,12 @@ export default function TableRowContextMenu({
 					rel="nofollow"
 					className="h-full w-full"
 					href={contextLink}
+					onClick={(e) => {
+						if (isAllMessagesPage) e.preventDefault();
+						setFilters?.({
+							user_id: user_id
+						});
+					}}
 					{...(isContextPage || isAllMessagesPage ? { scroll: false } : {})}
 				>
 					<ContextMenuItem>

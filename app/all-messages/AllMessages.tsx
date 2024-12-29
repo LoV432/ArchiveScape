@@ -14,68 +14,100 @@ import { mapToHex } from '@/lib/utils';
 import { getAllMessages, Message } from '@/lib/all-messages';
 import { MessagesPagination } from './Pagination';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
-import { Filters } from '@/components/Filters';
-import { useState } from 'react';
+import { Filters } from './Filters';
 import {
 	useQuery,
 	QueryClient,
 	QueryClientProvider
 } from '@tanstack/react-query';
+import { useFilters, FiltersState, FiltersReducer } from './useFilters';
+import { useEffect, useState } from 'react';
 
 const queryClient = new QueryClient();
 
 export default function AllMessagesPage({
-	initialData,
-	initialPage,
-	highlightedUser
+	initialData
 }: {
 	initialData: { messages: Message[] };
-	initialPage: number;
-	highlightedUser?: number;
 }) {
-	const [page, setPage] = useState(initialPage);
+	const [filters, setFilters] = useFilters();
 	return (
 		<>
-			<MessagesPagination totalPages={500} page={page} setPage={setPage} />
+			<MessagesPagination
+				totalPages={500}
+				filters={filters}
+				setPage={setFilters}
+			/>
 			{/* TODO: Move this provider somewhere else */}
 			<QueryClientProvider client={queryClient}>
 				<MessageSection
 					initialData={initialData}
-					initialPage={initialPage}
-					page={page}
-					highlightedUser={highlightedUser}
+					filters={filters}
+					setFilters={setFilters}
 				/>
 			</QueryClientProvider>
-			<MessagesPagination totalPages={500} page={page} setPage={setPage} />
+			<MessagesPagination
+				totalPages={500}
+				filters={filters}
+				setPage={setFilters}
+			/>
 		</>
 	);
 }
 
 function MessageSection({
 	initialData,
-	page,
-	initialPage,
-	highlightedUser
+	filters,
+	setFilters
 }: {
 	initialData: { messages: Message[] };
-	page: number;
-	initialPage: number;
 	highlightedUser?: number;
+	filters: FiltersState;
+	setFilters: FiltersReducer;
 }) {
+	const [isInitialData, setIsInitialData] = useState(true);
+	function preFetch() {
+		queryClient.prefetchQuery({
+			queryKey: ['messages', { ...filters, page: filters.page - 1 }],
+			queryFn: async () => {
+				const { messages } = await getAllMessages({
+					...filters,
+					page: filters.page - 1
+				});
+				return { messages };
+			}
+		});
+		queryClient.prefetchQuery({
+			queryKey: ['messages', { ...filters, page: filters.page + 1 }],
+			queryFn: async () => {
+				const { messages } = await getAllMessages({
+					...filters,
+					page: filters.page + 1
+				});
+				return { messages };
+			}
+		});
+	}
 	const { data, isPlaceholderData } = useQuery({
-		queryKey: ['messages', page],
+		queryKey: ['messages', filters],
 		queryFn: async () => {
-			const { messages } = await getAllMessages(page);
+			const { messages } = await getAllMessages(filters);
+			preFetch();
 			return { messages };
 		},
 		initialData: () => {
-			if (page === initialPage) {
+			if (isInitialData) {
 				return initialData;
 			}
 			return undefined;
 		},
 		placeholderData: (prev) => prev
 	});
+	useEffect(() => {
+		if (isInitialData) {
+			setIsInitialData(false);
+		}
+	}, []);
 	return (
 		<Table className="mx-auto max-w-3xl text-base">
 			<TableCaption hidden>Messages</TableCaption>
@@ -83,7 +115,7 @@ function MessageSection({
 				<TableRow>
 					<TableHead>
 						<div className="flex flex-row gap-2">
-							<Filters />
+							<Filters filters={filters} setFilters={setFilters} />
 							Message
 						</div>
 					</TableHead>
@@ -98,6 +130,7 @@ function MessageSection({
 						user_id={message.user_id}
 						message_id={message.id}
 						isAllMessagesPage
+						setFilters={setFilters}
 					>
 						<TableRow
 							tabIndex={0}
@@ -105,7 +138,7 @@ function MessageSection({
 								// @ts-ignore
 								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
 							}}
-							className={`${message.user_id === highlightedUser ? `bg-[--highlight] ` : ''}`}
+							className={`${message.user_id === filters.user_id ? `bg-[--highlight] ` : ''}`}
 							key={message.id}
 						>
 							<TableCell
