@@ -66,33 +66,33 @@ function MessageSection({
 	setFilters: FiltersReducer;
 }) {
 	const [isInitialData, setIsInitialData] = useState(true);
-	function preFetch() {
-		queryClient.prefetchQuery({
-			queryKey: ['messages', { ...filters, page: filters.page - 1 }],
-			queryFn: async () => {
-				const { messages } = await getAllMessages({
-					...filters,
-					page: filters.page - 1
-				});
-				return { messages };
-			}
-		});
-		queryClient.prefetchQuery({
-			queryKey: ['messages', { ...filters, page: filters.page + 1 }],
-			queryFn: async () => {
-				const { messages } = await getAllMessages({
-					...filters,
-					page: filters.page + 1
-				});
-				return { messages };
-			}
-		});
-	}
+	// function preFetch() {
+	// 	queryClient.prefetchQuery({
+	// 		queryKey: ['messages', { ...filters, page: filters.page - 1 }],
+	// 		queryFn: async () => {
+	// 			const { messages } = await getAllMessages({
+	// 				...filters,
+	// 				page: filters.page - 1
+	// 			});
+	// 			return { messages };
+	// 		}
+	// 	});
+	// 	queryClient.prefetchQuery({
+	// 		queryKey: ['messages', { ...filters, page: filters.page + 1 }],
+	// 		queryFn: async () => {
+	// 			const { messages } = await getAllMessages({
+	// 				...filters,
+	// 				page: filters.page + 1
+	// 			});
+	// 			return { messages };
+	// 		}
+	// 	});
+	// }
 	const { data, isPlaceholderData } = useQuery({
 		queryKey: ['messages', filters],
 		queryFn: async () => {
 			const { messages } = await getAllMessages(filters);
-			preFetch();
+			// preFetch();
 			return { messages };
 		},
 		initialData: () => {
