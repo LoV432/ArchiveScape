@@ -7,6 +7,8 @@ import {
 	addOrderBy
 } from './db-helpers';
 
+export type getSearchResponse = ReturnType<typeof getSearch>;
+
 export async function getSearch(
 	searchQuery: string,
 	page: number,
