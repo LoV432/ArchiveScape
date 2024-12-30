@@ -8,6 +8,12 @@ const nextConfig = {
 				hostname: 'api.dicebear.com'
 			}
 		]
+	},
+	experimental: {
+		staleTimes: {
+			dynamic: 30,
+			static: 180
+		}
 	}
 };
 
