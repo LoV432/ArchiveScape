@@ -8,46 +8,12 @@ import {
 	TableRow
 } from '@/components/ui/table';
 
-import { MessagesPagination } from '@/components/Pagination';
 import TableRowContextMenu from '@/components/TableRowContextMenu';
 import { mapToHex } from '@/lib/utils';
 import { Message } from '@/lib/all-messages';
-import ScrollIntoView from './ScrollIntoView.client';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 
-export default function MessageContext({
-	data,
-	userId,
-	messageId,
-	page
-}: {
-	data: {
-		messages: Message[];
-		user_name: string;
-	};
-	userId: number;
-	messageId: number;
-	page: number;
-}) {
-	return (
-		<>
-			<MessagesPagination
-				totalPages={'infinite'}
-				initalOrder="asc"
-				page={page}
-			/>
-			<MessageSection messages={data.messages} userId={userId} />
-			<MessagesPagination
-				totalPages={'infinite'}
-				initalOrder="asc"
-				page={page}
-			/>
-			<ScrollIntoView messageId={messageId} />
-		</>
-	);
-}
-
-function MessageSection({
+export function MessageSection({
 	messages,
 	userId
 }: {

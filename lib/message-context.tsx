@@ -1,6 +1,8 @@
 import { db } from '@/lib/db';
 import { Message } from './all-messages';
 
+export type getMessageContextResponse = ReturnType<typeof getMessageContext>;
+
 export async function getMessageContext(
 	userId: number,
 	messageId: number,
