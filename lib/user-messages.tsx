@@ -7,6 +7,8 @@ import {
 	addOrderBy
 } from './db-helpers';
 
+export type getUserMessagesResponse = ReturnType<typeof getUserMessages>;
+
 export async function getUserMessages(
 	userId: number,
 	page: number,
