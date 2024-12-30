@@ -10,6 +10,7 @@ import { LoadingTable } from '@/components/LoadingTable';
 import { getUserMessagesResponse } from '@/lib/user-messages';
 import { Suspense, use } from 'react';
 import { LoadingPagination } from '@/components/LoadingPagination';
+import { parseFilters } from '@/lib/parseFilters';
 
 export const metadata: Metadata = {
 	title: 'Messages By User | ArchiveScape',
@@ -36,13 +37,7 @@ export default async function UserMessagesPage(props: {
 		redirect('/');
 	}
 	const page = Number(searchParams.page) || 1;
-	const order = searchParams.order === 'asc' ? 'asc' : 'desc';
-	const dateStart = searchParams.dateStart
-		? new Date(searchParams.dateStart)
-		: undefined;
-	const dateEnd = searchParams.dateEnd
-		? new Date(searchParams.dateEnd)
-		: undefined;
+	const { dateStart, dateEnd, order } = parseFilters(searchParams);
 	const data = getUserMessages(Number(userId), page, order, dateStart, dateEnd);
 	return (
 		<Suspense fallback={<LoadingSkeleton page={page} />}>

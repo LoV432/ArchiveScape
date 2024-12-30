@@ -2,6 +2,7 @@ import { Metadata } from 'next/types';
 import Main from './Main';
 import { getSearch } from '@/lib/search';
 import Error from '@/components/Error';
+import { parseFilters } from '@/lib/parseFilters';
 
 export async function generateMetadata(props: {
 	searchParams: Promise<{ search: string; page: string }>;
@@ -33,24 +34,8 @@ export default async function Page(props: {
 	const searchParams = await props.searchParams;
 	const searchQuery = searchParams.search || '';
 	const page = Number(searchParams.page) || 1;
-	const order = searchParams.order === 'asc' ? 'asc' : 'desc';
-	let dateStart = searchParams.dateStart || '';
-	let dateEnd = searchParams.dateEnd || '';
-	let parsedDateStart: Date | undefined = new Date(dateStart);
-	let parsedDateEnd: Date | undefined = new Date(dateEnd);
-	if (Number.isNaN(Number(parsedDateStart))) {
-		parsedDateStart = undefined;
-	}
-	if (Number.isNaN(Number(parsedDateEnd))) {
-		parsedDateEnd = undefined;
-	}
-	const data = await getSearch(
-		searchQuery,
-		page,
-		parsedDateStart,
-		parsedDateEnd,
-		order
-	);
+	const { dateStart, dateEnd, order } = parseFilters(searchParams);
+	const data = await getSearch(searchQuery, page, dateStart, dateEnd, order);
 	if (!data.success) {
 		return <Error error={data.error} />;
 	}

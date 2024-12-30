@@ -5,6 +5,7 @@ import { MessageSection } from './AllMessages';
 import { LoadingTable } from '@/components/LoadingTable';
 import { MessagesPagination } from '@/components/Pagination';
 import { Suspense } from 'react';
+import { parseFilters } from '@/lib/parseFilters';
 
 export async function generateMetadata(props: {
 	searchParams: Promise<{ page: string; user_id: number }>;
@@ -47,13 +48,7 @@ export default function Page(props: {
 			</div>
 		);
 	}
-	const order = searchParams.order === 'asc' ? 'asc' : 'desc';
-	const dateStart = searchParams.dateStart
-		? new Date(searchParams.dateStart)
-		: undefined;
-	const dateEnd = searchParams.dateEnd
-		? new Date(searchParams.dateEnd)
-		: undefined;
+	const { dateStart, dateEnd, order } = parseFilters(searchParams);
 	const highlightedUser = Number(searchParams.user_id) || undefined;
 	const data = getAllMessages(page, order, dateStart, dateEnd);
 	return (
