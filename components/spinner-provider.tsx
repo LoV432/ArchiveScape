@@ -1,19 +1,12 @@
 'use client';
-import React from 'react';
 import { Next13ProgressBar } from 'next13-progressbar';
 
-const SpinnerProvider = ({ children }: { children: React.ReactNode }) => {
+export default function SpinnerProvider() {
 	return (
-		<>
-			{children}
-			<Next13ProgressBar
-				height="4px"
-				color="#ffffff"
-				options={{ showSpinner: false }}
-				showOnShallow
-			/>
-		</>
+		<Next13ProgressBar
+			height="4px"
+			color="#ffffff"
+			options={{ showSpinner: false }}
+		/>
 	);
-};
-
-export default SpinnerProvider;
+}
