@@ -30,7 +30,7 @@ export default function Page(props: {
 	const page = Number(searchParams.page) || 1;
 	const data = getAllUsers(page);
 	return (
-		<div className="grid">
+		<div className="grid grid-rows-[min-content,min-content,1fr,min-content]">
 			<h1 className="place-self-center py-5 text-center text-xl font-bold sm:text-5xl">
 				<p className="pb-2">All Users</p>
 			</h1>
@@ -40,12 +40,7 @@ export default function Page(props: {
 				type="default"
 			/>
 			<Suspense
-				fallback={
-					<LoadingTable
-						ariaLabel="Users"
-						tableHeadValues={['User Name', 'Total Messages']}
-					/>
-				}
+				fallback={<LoadingTable ariaLabel="Users" tableHeadValues={['User']} />}
 			>
 				<UsersTable data={data} />
 			</Suspense>
