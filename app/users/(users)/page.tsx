@@ -40,7 +40,12 @@ export default function Page(props: {
 				type="default"
 			/>
 			<Suspense
-				fallback={<LoadingTable ariaLabel="Users" tableHeadValues={['User']} />}
+				fallback={
+					<LoadingTable
+						ariaLabel="Users"
+						tableHeadValues={['User Name', 'Total Messages']}
+					/>
+				}
 			>
 				<UsersTable data={data} />
 			</Suspense>
