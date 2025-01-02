@@ -6,7 +6,8 @@ export async function getHeatmapData(userId: number, startingYear?: number) {
 	try {
 		const yearsQuery = `SELECT DISTINCT EXTRACT(YEAR FROM created_at) as year
 		FROM messages 
-		WHERE user_id = $1`;
+		WHERE user_id = $1
+		ORDER BY EXTRACT(YEAR FROM created_at) DESC`;
 		const years = (await db.query(yearsQuery, [userId])).rows.map(
 			(row) => row.year
 		) as string[];
