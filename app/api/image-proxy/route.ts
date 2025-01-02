@@ -14,10 +14,14 @@ export async function GET(request: NextRequest) {
 		if (!imageRequest.ok) {
 			return new Response('Failed to get image', { status: 400 });
 		}
+		const contentType = imageRequest.headers.get('Content-Type');
+		if (!contentType || !contentType.startsWith('image/')) {
+			return new Response('Failed to get image', { status: 400 });
+		}
 		const image = await imageRequest.blob();
 		return new Response(image, {
 			headers: {
-				'Content-Type': imageRequest.headers.get('Content-Type') || 'image/png',
+				'Content-Type': contentType,
 				'Cache-Control': 'public, max-age=31536000, immutable'
 			}
 		});
