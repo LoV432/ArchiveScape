@@ -128,22 +128,21 @@ export default function Heatmap({
 				</div>
 			</div>
 			<div className="mb-6 flex flex-row-reverse justify-center gap-5">
-				{years.length > 1 &&
-					years.map((year) => (
-						<Link
-							scroll={false}
-							key={year}
-							href={`?year=${year}`}
-							className={`text-center text-sm font-medium text-gray-500 hover:text-gray-700`}
+				{years.map((year) => (
+					<Link
+						scroll={false}
+						key={year}
+						href={`?year=${year}`}
+						className={`text-center text-sm font-medium text-gray-500 hover:text-gray-700`}
+					>
+						<Button
+							variant="outline"
+							className={`${firstDateOfYear.year === Number(year) ? 'border-white border-opacity-50 text-white' : ''}`}
 						>
-							<Button
-								variant="outline"
-								className={`${firstDateOfYear.year === Number(year) ? 'border-white border-opacity-50 text-white' : ''}`}
-							>
-								{year}
-							</Button>
-						</Link>
-					))}
+							{year}
+						</Button>
+					</Link>
+				))}
 			</div>
 		</>
 	);
