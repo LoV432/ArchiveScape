@@ -46,21 +46,24 @@ export const metadata: Metadata = {
 
 export default async function Page(props: {
 	params: Promise<{ userId: string }>;
+	searchParams: Promise<{ year?: string }>;
 }) {
 	const params = await props.params;
+	const searchParams = await props.searchParams;
 	if (!params.userId || params.userId === '' || isNaN(Number(params.userId))) {
 		redirect('/404');
 	}
+	const selectedYear = Number(searchParams.year) || undefined;
 	const userId = parseInt(params.userId);
 	const userName = getUserName(userId);
 	const firstLastSeen = getFirstLastSeen(userId);
 	const totalMessages = getTotalMessages(userId);
 	const recentMessages = getRecentMessages(userId);
-	const heatmapData = getHeatmapData(userId);
+	const heatmapData = getHeatmapData(userId, selectedYear);
 	return (
-		<div className="container mx-auto space-y-12 p-4">
+		<div className="container mx-auto p-4">
 			<Card className="mx-auto w-full max-w-3xl rounded-none border-l-0 border-r-0 border-t-0">
-				<CardHeader className="flex flex-row items-center space-x-4 pb-5">
+				<CardHeader className="flex flex-row items-center space-x-4 !pr-0 pb-5">
 					<Avatar className="grid h-20 w-20 place-items-center border-2">
 						<Suspense>
 							<AvatarComponent userName={userName} />
@@ -132,7 +135,7 @@ export default async function Page(props: {
 				</CardContent>
 			</Card>
 			<Suspense fallback={<HeatMapLoading />}>
-				<Heatmap heatmapData={heatmapData} />
+				<Heatmap heatmapData={heatmapData} selectedYear={selectedYear} />
 			</Suspense>
 			<Suspense
 				fallback={<div className="flex justify-center">Loading...</div>}
