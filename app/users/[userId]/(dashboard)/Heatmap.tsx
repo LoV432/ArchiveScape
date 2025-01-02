@@ -32,7 +32,7 @@ export default function Heatmap({
 		month: 1,
 		day: 1
 	}) as DateTime<true>;
-	const firstDayOfYear = firstDateOfYear.day;
+	const firstDayOfYear = firstDateOfYear.weekday;
 	const heatmapDict = data.reduce(
 		(acc, curr) => {
 			acc[curr.date.toISOString().slice(0, 10)] = curr.count;
