@@ -59,6 +59,7 @@ class MessagesPlayer {
 		let startTime = new Date().getTime();
 		let index = 0;
 		this.playInterval = setInterval(() => {
+			this.setMessagesInBuffer([...this.messagesInBuffer]); // To make sure removed messages are not in the buffer
 			if (!this.messagesRendered.includes(index - 1) && index > 0) return;
 			const now = new Date().getTime();
 			const timeDiff = now - startTime;
