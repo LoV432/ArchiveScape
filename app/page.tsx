@@ -3,6 +3,12 @@ export const dynamic = 'force-dynamic';
 import { getCount } from '@/lib/get-count';
 import { WebSite } from 'schema-dts';
 import Script from 'next/script';
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger
+} from '@/components/ui/hover-card';
+import { Button } from '@/components/ui/button';
 
 const richText: WebSite = {
 	'@type': 'WebSite',
@@ -30,7 +36,7 @@ export default async function Home() {
 						What is ArchiveScape?
 					</span>
 				</h2>
-				<p className="text-base sm:text-xl">
+				<div className="text-base sm:text-xl">
 					ArchiveScape is a public archive of{' '}
 					<a
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
@@ -53,9 +59,36 @@ export default async function Home() {
 					>
 						{parseInt(usersCount).toLocaleString()}
 					</Link>{' '}
-					unique &quot;users&quot;. This archive was started on April 12, 2024
-					at 17:00 UTC and it is currently being updated every 5 minutes.
-				</p>
+					unique{' '}
+					<HoverCard>
+						<HoverCardTrigger asChild>
+							<Button
+								variant={'link'}
+								className="m-0 h-fit w-fit p-0 text-base sm:text-xl"
+							>
+								users
+							</Button>
+						</HoverCardTrigger>
+						<HoverCardContent className="w-[600px] max-w-[85vw]">
+							<span className="text-base sm:text-xl">
+								A &quot;user&quot; is just a random{' '}
+								<Link
+									className="underline underline-offset-4"
+									href="https://en.wikipedia.org/wiki/Universally_unique_identifier"
+									target="_blank"
+								>
+									UUID
+								</Link>{' '}
+								that is generated when you first visit VentScape. This UUID can
+								be reset by deleting your browser&apos;s cookies or temporarily
+								bypassed by using &quot;incognito/private mode&quot; of your
+								browser.
+							</span>
+						</HoverCardContent>
+					</HoverCard>
+					*. This archive was started on April 12, 2024 at 17:00 UTC and it is
+					currently being updated every 5 minutes.
+				</div>
 			</section>
 
 			<section>
