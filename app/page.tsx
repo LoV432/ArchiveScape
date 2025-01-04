@@ -69,8 +69,8 @@ export default async function Home() {
 								users
 							</Button>
 						</HoverCardTrigger>
-						<HoverCardContent className="w-[600px] max-w-[85vw]">
-							<span className="text-base sm:text-xl">
+						<HoverCardContent className="w-[600px] max-w-[85vw] pr-0">
+							<p className="text-base sm:text-xl">
 								A &quot;user&quot; is just a random{' '}
 								<Link
 									className="underline underline-offset-4"
@@ -81,9 +81,9 @@ export default async function Home() {
 								</Link>{' '}
 								that is generated when you first visit VentScape. This UUID can
 								be reset by deleting your browser&apos;s cookies or temporarily
-								bypassed by using &quot;incognito/private mode&quot; of your
+								bypassed by using &quot;incognito/private&quot; mode of your
 								browser.
-							</span>
+							</p>
 						</HoverCardContent>
 					</HoverCard>
 					*. This archive was started on April 12, 2024 at 17:00 UTC and it is
