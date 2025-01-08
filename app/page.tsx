@@ -4,10 +4,11 @@ import { getCount } from '@/lib/get-count';
 import { WebSite } from 'schema-dts';
 import Script from 'next/script';
 import {
-	HoverCard,
-	HoverCardContent,
-	HoverCardTrigger
-} from '@/components/ui/hover-card';
+	Dialog,
+	DialogContent,
+	DialogTitle,
+	DialogTrigger
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 const richText: WebSite = {
@@ -60,16 +61,17 @@ export default async function Home() {
 						{parseInt(usersCount).toLocaleString()}
 					</Link>{' '}
 					unique{' '}
-					<HoverCard>
-						<HoverCardTrigger asChild>
+					<Dialog>
+						<DialogTrigger asChild>
 							<Button
 								variant={'link'}
 								className="m-0 h-fit w-fit p-0 text-base sm:text-xl"
 							>
 								users
 							</Button>
-						</HoverCardTrigger>
-						<HoverCardContent className="w-[600px] max-w-[85vw] pr-0">
+						</DialogTrigger>
+						<DialogContent className="w-[600px] max-w-[85vw] rounded-lg">
+							<DialogTitle hidden>What is a user?</DialogTitle>
 							<p className="text-base sm:text-xl">
 								A &quot;user&quot; is just a random{' '}
 								<Link
@@ -84,8 +86,8 @@ export default async function Home() {
 								bypassed by using &quot;incognito/private&quot; mode of your
 								browser.
 							</p>
-						</HoverCardContent>
-					</HoverCard>
+						</DialogContent>
+					</Dialog>
 					*. This archive was started on April 12, 2024 at 17:00 UTC and it is
 					currently being updated every 5 minutes.
 				</div>
