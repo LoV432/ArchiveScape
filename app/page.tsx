@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { memCache, min } from '@/lib/memCache';
+import { Suspense, use } from 'react';
 
 const richText: WebSite = {
 	'@type': 'WebSite',
@@ -26,8 +27,8 @@ async function getCountWithCache() {
 	});
 }
 
-export default async function Home() {
-	const { usersCount, messagesCount } = await getCountWithCache();
+export default function Home() {
+	const promiseData = getCountWithCache();
 	return (
 		<div className="prose lg:prose-xl mx-4 flex w-fit max-w-[800px] flex-col gap-5 pb-8 text-slate-200 sm:mx-auto sm:w-1/2 sm:pt-5">
 			<Script
@@ -58,14 +59,22 @@ export default async function Home() {
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="/all-messages"
 					>
-						{parseInt(messagesCount).toLocaleString()}
+						<Suspense
+							fallback={<span className="animate-pulse">{'0,000,000'}</span>}
+						>
+							<Count type="messagesCount" dataPromise={promiseData} />
+						</Suspense>
 					</Link>{' '}
 					messages from{' '}
 					<Link
 						className="text-lg font-bold underline underline-offset-4 sm:text-2xl"
 						href="/users"
 					>
-						{parseInt(usersCount).toLocaleString()}
+						<Suspense
+							fallback={<span className="animate-pulse">{'00,000'}</span>}
+						>
+							<Count type="usersCount" dataPromise={promiseData} />
+						</Suspense>
 					</Link>{' '}
 					unique{' '}
 					<Dialog>
@@ -175,4 +184,15 @@ export default async function Home() {
 			</section>
 		</div>
 	);
+}
+
+function Count({
+	type,
+	dataPromise
+}: {
+	type: 'usersCount' | 'messagesCount';
+	dataPromise: Promise<{ usersCount: string; messagesCount: string }>;
+}) {
+	const data = use(dataPromise);
+	return parseInt(data[type]).toLocaleString();
 }
