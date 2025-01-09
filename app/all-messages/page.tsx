@@ -57,6 +57,12 @@ export default function Page(props: {
 				<p className="pb-1">All Messages</p>
 			</h1>
 			<MessagesPagination totalPages={500} page={page} />
+			{page === 500 && (
+				<p className="px-2 pb-5 text-center text-rose-500">
+					You can view {order === 'asc' ? 'newer' : 'older'} messages by using
+					the filter options below.
+				</p>
+			)}
 			<Suspense
 				fallback={
 					<LoadingTable ariaLabel="Messages" tableHeadValues={['Message']} />
