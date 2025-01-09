@@ -1,23 +1,7 @@
 import { ChartConfig } from '@/components/ui/chart';
 import { db } from '@/lib/db';
 
-// TODO: Check if we can use React/Next.js built-in caching stuff?
-let datasetCache: {
-	chartConfig: ChartConfig;
-	chartData: { [key: string]: any }[];
-} = {
-	chartConfig: {},
-	chartData: []
-};
-let lastUpdated = 0;
-
 export async function emojiBarList() {
-	const now = Date.now();
-	if (now - lastUpdated < 1000 * 60 * 5 && datasetCache.chartData.length > 0) {
-		return datasetCache;
-	}
-	lastUpdated = now;
-
 	const twentyDaysAgo = new Date();
 	twentyDaysAgo.setUTCDate(twentyDaysAgo.getUTCDate() - 19);
 	twentyDaysAgo.setUTCHours(0, 0, 0, 0);
@@ -80,6 +64,5 @@ export async function emojiBarList() {
 			color: `hsl(var(--chart-${index + 1}))`
 		};
 	});
-	datasetCache = { chartConfig, chartData };
 	return { chartConfig, chartData };
 }

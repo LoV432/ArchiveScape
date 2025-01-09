@@ -10,6 +10,7 @@ import {
 	DialogTrigger
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { memCache, min } from '@/lib/memCache';
 
 const richText: WebSite = {
 	'@type': 'WebSite',
@@ -19,8 +20,14 @@ const richText: WebSite = {
 	description: 'An open source archive of VentScape.'
 };
 
+async function getCountWithCache() {
+	return await memCache.get('count', min(5), async () => {
+		return await getCount();
+	});
+}
+
 export default async function Home() {
-	const { usersCount, messagesCount } = await getCount();
+	const { usersCount, messagesCount } = await getCountWithCache();
 	return (
 		<div className="prose lg:prose-xl mx-4 flex w-fit max-w-[800px] flex-col gap-5 pb-8 text-slate-200 sm:mx-auto sm:w-1/2 sm:pt-5">
 			<Script
