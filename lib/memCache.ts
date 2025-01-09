@@ -1,36 +1,34 @@
 class MemCache {
-	private cache: Record<
+	private cache: Map<
 		string,
 		{
-			data: string;
+			data: unknown;
 			maxAge: number;
 		}
-	> = {};
+	> = new Map();
 
 	private isDev = process.env.NODE_ENV === 'development';
 
 	async get<T>(key: string, ttl: number, callback: () => Promise<T>) {
 		const t0 = this.isDev ? performance.now() : 0;
-		const findCache = this.cache[key];
+		const findCache = this.cache.get(key);
 		if (findCache && findCache.maxAge > Date.now()) {
-			const data = JSON.parse(findCache.data) as T;
 			this.isDev && console.log(performance.now() - t0, 'Cache hit', key);
-			return data;
+			return findCache.data as T;
 		}
 		const newData = await callback();
-		const data = JSON.stringify(newData);
 		const maxAge = Date.now() + ttl;
-		this.cache[key] = { data, maxAge };
+		this.cache.set(key, { data: newData, maxAge });
 		this.isDev && console.log(performance.now() - t0, 'Cache miss', key);
 		return newData;
 	}
 
 	pruneCache() {
-		this.cache = {};
+		this.cache = new Map();
 	}
 
 	clearKey(key: string) {
-		delete this.cache[key];
+		this.cache.delete(key);
 	}
 }
 
