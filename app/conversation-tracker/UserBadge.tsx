@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next13-progressbar';
 import { removeuserFromConversationTrackerCookie } from '@/lib/conversation-tracker-cookie';
 
 export default function UserBadge({ userId }: { userId: number }) {

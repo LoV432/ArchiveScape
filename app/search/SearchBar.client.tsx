@@ -1,9 +1,10 @@
 'use client';
+import { useRouter } from 'next13-progressbar';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Filters } from '../../components/Filters';
 import cursorUpdate from './cursor-update';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 export default function SearchBar({ searchQuery }: { searchQuery: string }) {
 	const searchElementRef = useRef<HTMLInputElement>(null);
