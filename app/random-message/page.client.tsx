@@ -3,6 +3,7 @@ import { RandomMessage as RandomMessageType } from '@/lib/random-message';
 import { Quote } from 'lucide-react';
 import { Metadata } from 'next/types';
 import { useEffect, useRef, useState } from 'react';
+import useCounter from './useCounter';
 
 export const metadata: Metadata = {
 	title: 'Random Message | ArchiveScape',
@@ -26,27 +27,19 @@ export default function RandomMessage({
 		messageTime: number;
 		id: number;
 	}[]);
-	const [countdown, setCountdown] = useState(initialMessage.messageTime);
-	const [startCountDown, setStartCountDown] = useState(true);
+	const { count, setCount, countEnded } = useCounter(
+		initialMessage.messageTime
+	);
 
 	useEffect(() => {
 		addNewMessage();
 	}, []);
 
 	useEffect(() => {
-		const timerInterval = setInterval(() => {
-			setCountdown((prevTime) => {
-				if (prevTime === 0) {
-					clearInterval(timerInterval);
-					nextMessage();
-					return 0;
-				} else {
-					return prevTime - 1;
-				}
-			});
-		}, 1000);
-		return () => clearInterval(timerInterval);
-	}, [startCountDown]);
+		if (countEnded) {
+			nextMessage();
+		}
+	}, [countEnded]);
 	return (
 		<div className="my-auto grid h-[80%]">
 			<div className="mx-auto place-self-start bg-white p-2 text-center font-bold text-black sm:text-2xl">
@@ -67,7 +60,7 @@ export default function RandomMessage({
 				</p>
 			</div>
 			<div className="bold mx-auto place-self-end sm:text-2xl">
-				Next Message in: {countdown}s
+				Next Message in: {count}s
 			</div>
 		</div>
 	);
@@ -81,11 +74,10 @@ export default function RandomMessage({
 			}, 200);
 			return;
 		}
-		await new Promise((r) => setTimeout(r, 10));
+		await new Promise((r) => setTimeout(r, 1000));
 		messagesListRef.current.shift();
 		setActiveMessage(messagesListRef.current[0]);
-		setCountdown(messagesListRef.current[0].messageTime);
-		setStartCountDown(!startCountDown);
+		setCount(activeMessage.messageTime);
 		addNewMessage();
 	}
 
