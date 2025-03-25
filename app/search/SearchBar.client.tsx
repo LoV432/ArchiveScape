@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next13-progressbar';
+import { useRouter } from 'nextjs-toploader/app';
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Filters } from '../../components/Filters';

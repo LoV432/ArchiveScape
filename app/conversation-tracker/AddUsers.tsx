@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { addMutlipleUsersToConversationTrackerCookie } from '@/lib/conversation-tracker-cookie';
-import { useRouter } from 'next13-progressbar';
+import { useRouter } from 'nextjs-toploader/app';
 import { CirclePlus } from 'lucide-react';
 
 export default function AddUsers({ type }: { type: 'button' | 'icon' }) {
