@@ -22,7 +22,7 @@ class MessagesPlayer {
 		this.time = new Date();
 	}
 
-	async fetchMessages(time: Date) {
+	fetchMessages = async (time: Date) => {
 		try {
 			this.cleanUp();
 			const res = await fetch(`/api/replay?time=${time.toISOString()}`);
@@ -51,9 +51,9 @@ class MessagesPlayer {
 				error: 'Something went wrong'
 			};
 		}
-	}
+	};
 
-	play() {
+	play = () => {
 		let totalMessages = this.messages.length;
 		if (totalMessages === 0) return;
 		let startTime = new Date().getTime();
@@ -88,24 +88,24 @@ class MessagesPlayer {
 			}
 			return;
 		}, 100);
-	}
+	};
 
-	isPlaying() {
+	isPlaying = () => {
 		return this.playInterval !== null;
-	}
+	};
 
-	messageRendered(message: Replay) {
+	messageRendered = (message: Replay) => {
 		if (this.messagesRendered.includes(message.index)) return;
 		this.messagesRendered.push(message.index);
-	}
+	};
 
-	removeMessageFromBuffer(message: Replay) {
+	removeMessageFromBuffer = (message: Replay) => {
 		this.messagesInBuffer = this.messagesInBuffer.filter(
 			(m) => m.index !== message.index
 		);
-	}
+	};
 
-	cleanUp() {
+	cleanUp = () => {
 		if (this.playInterval) {
 			clearInterval(this.playInterval);
 			this.playInterval = null;
@@ -114,7 +114,7 @@ class MessagesPlayer {
 		this.messagesInBuffer = [];
 		this.messagesRendered = [];
 		this.setMessagesInBuffer([]);
-	}
+	};
 }
 
 export default MessagesPlayer;

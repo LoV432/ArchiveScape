@@ -30,22 +30,6 @@ export default function ReplayPage() {
 		[]
 	);
 
-	async function fetchMessages() {
-		return messagesPlayer.fetchMessages(time);
-	}
-
-	function removeMessageFromBuffer(message: Replay) {
-		messagesPlayer.removeMessageFromBuffer(message);
-	}
-
-	function messageRendered(message: Replay) {
-		messagesPlayer.messageRendered(message);
-	}
-
-	function startPlay() {
-		messagesPlayer.play();
-	}
-
 	useEffect(() => {
 		return () => {
 			messagesPlayer.cleanUp();
@@ -57,8 +41,8 @@ export default function ReplayPage() {
 			<Settings
 				time={time}
 				setTime={setTime}
-				fetchMessage={fetchMessages}
-				startPlaying={startPlay}
+				fetchMessage={() => messagesPlayer.fetchMessages(time)}
+				startPlaying={messagesPlayer.play}
 				isPlaying={messagesPlayer.isPlaying()}
 			/>
 			<div
@@ -74,8 +58,8 @@ export default function ReplayPage() {
 						key={message.index}
 						canvas={canvas}
 						message={message}
-						removeFromBuffer={removeMessageFromBuffer}
-						messageRendered={messageRendered}
+						removeFromBuffer={messagesPlayer.removeMessageFromBuffer}
+						messageRendered={messagesPlayer.messageRendered}
 					/>
 				))}
 			</div>
