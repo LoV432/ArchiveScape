@@ -9,8 +9,15 @@ export async function GET(request: NextRequest) {
 	if (!url.startsWith('https://api.dicebear.com/')) {
 		return new Response('Invalid url parameter', { status: 400 });
 	}
+	const parsedUrl = new URL(url);
+	if (
+		parsedUrl.hostname !== 'api.dicebear.com' ||
+		parsedUrl.pathname !== '/9.x/adventurer/png'
+	) {
+		return new Response('Invalid url parameter', { status: 400 });
+	}
 	try {
-		const imageRequest = await fetch(url);
+		const imageRequest = await fetch(parsedUrl.toString());
 		if (!imageRequest.ok) {
 			return new Response('Failed to get image', { status: 400 });
 		}
