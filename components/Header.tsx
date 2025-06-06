@@ -254,13 +254,14 @@ function NavMenuItem({
 			{...{ onClick }}
 			className={`${isMobile ? 'w-full' : ''}`}
 		>
-			<Link href={link} legacyBehavior passHref>
+			<div className="inline-flex">
 				<NavigationMenuLink
+					href={link}
 					className={`${isMobile ? '' : navigationMenuTriggerStyle()} text-center text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
 				>
 					{name}
 				</NavigationMenuLink>
-			</Link>
+			</div>
 		</NavigationMenuItem>
 	);
 }
@@ -277,14 +278,15 @@ function NavDropDownItem({
 	onClick?: () => void;
 }) {
 	return (
-		<Link href={link} legacyBehavior passHref>
+		<div className="inline-flex">
 			<NavigationMenuLink
+				href={link}
 				{...{ onClick }}
 				className={`${navigationMenuTriggerStyle()} w-full min-w-max text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
 			>
 				{name}
 			</NavigationMenuLink>
-		</Link>
+		</div>
 	);
 }
 
@@ -298,15 +300,16 @@ function NavDropDownItemAnimatedSwear({
 	onClick?: () => void;
 }) {
 	return (
-		<Link href={link} legacyBehavior passHref>
+		<div className="inline-flex">
 			<NavigationMenuLink
+				href={link}
 				{...{ onClick }}
 				className={`${navigationMenuTriggerStyle()} w-full min-w-max text-lg font-semibold ${currentPath === link ? 'text-primary' : 'text-zinc-400'}`}
 			>
 				Most used&nbsp;
 				<div className="inline-block after:animate-[animatedSwearText_4s_infinite]"></div>
 			</NavigationMenuLink>
-		</Link>
+		</div>
 	);
 }
 
@@ -375,8 +378,9 @@ function NavDropDown({
 
 function SearchButton({ isMobile = false }: { isMobile?: boolean }) {
 	return (
-		<Link href="/search" legacyBehavior passHref>
+		<div className="ml-auto inline-flex">
 			<NavigationMenuLink
+				href="/search"
 				aria-label="Search"
 				className={`${isMobile ? 'mr-2.5' : `${navigationMenuTriggerStyle()} ml-auto`} text-center text-xl font-bold`}
 			>
@@ -388,6 +392,6 @@ function SearchButton({ isMobile = false }: { isMobile?: boolean }) {
 					<path d="M464 428L339.92 303.9a160.48 160.48 0 0030.72-94.58C370.64 120.37 298.27 48 209.32 48S48 120.37 48 209.32s72.37 161.32 161.32 161.32a160.48 160.48 0 0094.58-30.72L428 464zM209.32 319.69a110.38 110.38 0 11110.37-110.37 110.5 110.5 0 01-110.37 110.37z" />
 				</svg>
 			</NavigationMenuLink>
-		</Link>
+		</div>
 	);
 }
