@@ -81,7 +81,7 @@ export default function Home() {
 						<DialogTrigger asChild>
 							<Button
 								variant={'link'}
-								className="m-0 h-fit w-fit p-0 text-base sm:text-xl"
+								className="m-0 h-fit w-fit p-0 text-base underline underline-offset-4 sm:text-xl"
 							>
 								users
 							</Button>
