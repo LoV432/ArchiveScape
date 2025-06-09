@@ -131,8 +131,9 @@ function DatePickerWithRange({
 	date?: DateRange;
 	setDate: (date: DateRange | undefined) => void;
 }) {
+	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<Popover>
+		<Popover open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
 			<PopoverTrigger asChild>
 				<div className="flex w-full justify-center font-normal">
 					<CalendarIcon className="mr-2 mt-1 h-4 w-4" />
@@ -150,15 +151,14 @@ function DatePickerWithRange({
 					)}
 				</div>
 			</PopoverTrigger>
-			<PopoverContent className="w-[330px] p-0" align="start">
+			<PopoverContent className="w-fit p-0" align="start">
 				<div
 					id="date"
 					className={cn('flex w-full justify-center font-normal')}
 				></div>
 				<div className="flex w-full justify-center">
 					<Calendar
-						className="w-full"
-						initialFocus
+						className="sm:[--cell-size:2.4rem] md:[--cell-size:2.5rem]"
 						mode="range"
 						defaultMonth={date?.from}
 						selected={date}
@@ -166,6 +166,12 @@ function DatePickerWithRange({
 						numberOfMonths={1}
 					/>
 				</div>
+				<Button
+					onClick={() => setIsOpen(false)}
+					className="w-full rounded-t-none text-center"
+				>
+					Close
+				</Button>
 			</PopoverContent>
 		</Popover>
 	);
