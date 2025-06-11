@@ -13,6 +13,9 @@ export default function Canvas({
 	const router = useRouter();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	useEffect(() => {
+		if (words.length === 0) {
+			return;
+		}
 		if (window.matchMedia('(max-width: 768px)').matches) {
 			const maxCount = Math.max(
 				...Object.values(wordsRef.current).map((d) => d.y)
@@ -77,10 +80,18 @@ export default function Canvas({
 	});
 	return (
 		<div className="mx-auto grid h-5/6 w-[95vw] justify-center gap-5 pt-10">
-			<h1 className="text-center text-xl font-bold sm:text-2xl">
-				(Last 3 Hours)
-			</h1>
-			<canvas ref={canvasRef} id="word-cloud"></canvas>
+			{words.length === 0 ? (
+				<div className="flex h-full items-center justify-center text-center text-2xl font-bold">
+					No data in last 3 hours (╥﹏╥)
+				</div>
+			) : (
+				<>
+					<h1 className="text-center text-xl font-bold sm:text-2xl">
+						(Last 3 Hours)
+					</h1>
+					<canvas ref={canvasRef} id="word-cloud"></canvas>
+				</>
+			)}
 		</div>
 	);
 }
