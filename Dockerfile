@@ -9,8 +9,7 @@ WORKDIR /app
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
-# TODO: remove --legacy-peer-deps once all the dependencies are updated
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 
 
 # Rebuild the source code only when needed
