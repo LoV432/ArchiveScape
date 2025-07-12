@@ -225,7 +225,11 @@ function MessageSection({
 								href={`/users/${userId}/messages/${message.id}/message-context`}
 								className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
 							>
-								<p>{message.message_text}</p>
+								<p>{message.message_text} {message.nickname ?  (
+									<>
+									- <span className="italic text-sm">{message.nickname}</span>
+									</>
+								) : ''}</p>
 							</LinkWithHoverPrefetch>
 							<MessageCreatedAt time={message.created_at} />
 							<p className="float-right text-sm text-gray-500">

@@ -13,6 +13,7 @@ export type Message = {
 	message_text: string;
 	user_id: number;
 	color_name: string;
+	nickname: string | null;
 };
 
 export async function getAllMessages(
@@ -26,7 +27,7 @@ export async function getAllMessages(
 	const offset = Number(page) * itemsPerPage - itemsPerPage;
 	const localLastId =
 		Number((await cookies()).get('localLastId')?.value) || undefined;
-	let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id
+	let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id, nickname
 						FROM messages
 						LEFT JOIN colors ON messages.color_id = colors.id
 						WHERE messages.is_deleted = false`;

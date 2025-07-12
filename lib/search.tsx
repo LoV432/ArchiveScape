@@ -25,7 +25,7 @@ export async function getSearch(
 		Number((await cookies()).get('localLastId')?.value) || undefined;
 	try {
 		// Build get messages query
-		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE message_text ILIKE $1 AND messages.is_deleted = false`;
+		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id, nickname FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE message_text ILIKE $1 AND messages.is_deleted = false`;
 		let params: any[] = [`%${searchQuery}%`];
 		if (dateStart || dateEnd) {
 			queryBuilder = addDateRange({

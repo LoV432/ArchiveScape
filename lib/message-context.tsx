@@ -56,7 +56,7 @@ async function getFirstPage(anchorMessageCreatedAt: Date) {
 	// I am now just anchoring to a specific date.
 	const query = `
         (
-            SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+            SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
             WHERE created_at <= $1 AND messages.is_deleted = false
             ORDER BY created_at DESC
@@ -64,7 +64,7 @@ async function getFirstPage(anchorMessageCreatedAt: Date) {
         )
         UNION ALL
         (
-            SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+            SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
             WHERE created_at > $1 AND messages.is_deleted = false
             ORDER BY created_at ASC
@@ -78,7 +78,7 @@ async function getFirstPage(anchorMessageCreatedAt: Date) {
 
 async function getNegativePage(anchorMessageCreatedAt: Date, page: number) {
 	const offset = Math.abs(page + 1) * 40 + 20;
-	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+	const query = `SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
 					WHERE created_at <= $1 AND messages.is_deleted = false
             		ORDER BY created_at DESC
@@ -90,7 +90,7 @@ async function getNegativePage(anchorMessageCreatedAt: Date, page: number) {
 
 async function getPositivePage(anchorMessageCreatedAt: Date, page: number) {
 	const offset = (page - 1) * 40 + 20;
-	const query = `SELECT messages.id, created_at, user_id, message_text, color_name FROM messages
+	const query = `SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
 					WHERE created_at > $1  AND messages.is_deleted = false
             		ORDER BY created_at ASC
