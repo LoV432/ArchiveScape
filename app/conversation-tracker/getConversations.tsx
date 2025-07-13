@@ -9,9 +9,10 @@ export default async function getConversations(users: number[], page: number) {
 		const offset = Number(page) * itemsPerPage - itemsPerPage;
 		const localLastId =
 			Number((await cookies()).get('localLastId')?.value) || undefined;
-		let messagesQuery = `SELECT messages.id as id, user_id, message_text, created_at, colors.color_name, nickname
+		let messagesQuery = `SELECT messages.id as id, user_id, message_text, created_at, colors.color_name, nicknames.nickname_name as nickname
 			FROM messages 
-			LEFT JOIN colors ON messages.color_id = colors.id 
+			LEFT JOIN colors ON messages.color_id = colors.id
+			LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
 			WHERE user_id = ANY($1::int[]) AND messages.is_deleted = false`;
 		let messagesParams: any[] = [users];
 

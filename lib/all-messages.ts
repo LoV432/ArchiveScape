@@ -27,9 +27,10 @@ export async function getAllMessages(
 	const offset = Number(page) * itemsPerPage - itemsPerPage;
 	const localLastId =
 		Number((await cookies()).get('localLastId')?.value) || undefined;
-	let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id, nickname
+	let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, messages.user_id, nicknames.nickname_name as nickname
 						FROM messages
 						LEFT JOIN colors ON messages.color_id = colors.id
+						LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
 						WHERE messages.is_deleted = false`;
 	let paramsList = [] as any[];
 	if (localLastId) {

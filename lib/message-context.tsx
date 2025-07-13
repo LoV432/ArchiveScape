@@ -56,16 +56,18 @@ async function getFirstPage(anchorMessageCreatedAt: Date) {
 	// I am now just anchoring to a specific date.
 	const query = `
         (
-            SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
+            SELECT messages.id, created_at, user_id, message_text, color_name, nicknames.nickname_name as nickname FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
+			LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
             WHERE created_at <= $1 AND messages.is_deleted = false
             ORDER BY created_at DESC
             LIMIT 20
         )
         UNION ALL
         (
-            SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
+            SELECT messages.id, created_at, user_id, message_text, color_name, nicknames.nickname_name as nickname FROM messages
 			LEFT JOIN colors ON messages.color_id = colors.id
+			LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
             WHERE created_at > $1 AND messages.is_deleted = false
             ORDER BY created_at ASC
             LIMIT 20
@@ -78,8 +80,9 @@ async function getFirstPage(anchorMessageCreatedAt: Date) {
 
 async function getNegativePage(anchorMessageCreatedAt: Date, page: number) {
 	const offset = Math.abs(page + 1) * 40 + 20;
-	const query = `SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
+	const query = `SELECT messages.id, created_at, user_id, message_text, color_name, nicknames.nickname_name as nickname FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
+					LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
 					WHERE created_at <= $1 AND messages.is_deleted = false
             		ORDER BY created_at DESC
 					OFFSET $2
@@ -90,8 +93,9 @@ async function getNegativePage(anchorMessageCreatedAt: Date, page: number) {
 
 async function getPositivePage(anchorMessageCreatedAt: Date, page: number) {
 	const offset = (page - 1) * 40 + 20;
-	const query = `SELECT messages.id, created_at, user_id, message_text, color_name, nickname FROM messages
+	const query = `SELECT messages.id, created_at, user_id, message_text, color_name, nicknames.nickname_name as nickname FROM messages
 					LEFT JOIN colors ON messages.color_id = colors.id
+					LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
 					WHERE created_at > $1  AND messages.is_deleted = false
             		ORDER BY created_at ASC
 					OFFSET $2

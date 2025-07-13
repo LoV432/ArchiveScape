@@ -30,7 +30,10 @@ export async function getUserMessages(
 				error: 'User not found'
 			};
 		}
-		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, nickname FROM messages LEFT JOIN colors ON messages.color_id = colors.id WHERE user_id = $1 AND messages.is_deleted = false`;
+		let queryBuilder = `SELECT messages.id, message_text, created_at, colors.color_name, nicknames.nickname_name as nickname FROM messages 
+		LEFT JOIN colors ON messages.color_id = colors.id 
+		LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
+		WHERE user_id = $1 AND messages.is_deleted = false`;
 		let paramsList = [userId] as any[];
 		if (localLastId) {
 			queryBuilder = addLocalLastId({

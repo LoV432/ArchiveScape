@@ -61,8 +61,9 @@ export async function getTotalMessages(userId: number) {
 export async function getRecentMessages(userId: number) {
 	try {
 		const query = `
-        SELECT messages.id as id, created_at, message_text, user_id, color_name, nickname FROM messages
+        SELECT messages.id as id, created_at, message_text, user_id, color_name, nicknames.nickname_name as nickname FROM messages
         LEFT JOIN colors ON messages.color_id = colors.id
+		LEFT JOIN nicknames ON messages.nickname_id = nicknames.id
         WHERE user_id = $1 AND messages.is_deleted = false
         ORDER BY created_at DESC
         LIMIT 10
