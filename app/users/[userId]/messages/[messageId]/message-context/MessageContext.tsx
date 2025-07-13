@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/table';
 
 import TableRowContextMenu from '@/components/TableRowContextMenu';
-import { mapToHex } from '@/lib/utils';
 import { Message } from '@/lib/all-messages';
 import { MessageCreatedAt } from '@/components/MessageCreatedAt';
 
@@ -41,10 +40,10 @@ export function MessageSection({
 							tabIndex={0}
 							style={{
 								// @ts-ignore
-								'--highlight': `rgba(${mapToHex[message.color_name] || '255,255,255,0.15'})`
+								'--highlight': message.color_name ? `${message.color_name}15` : '#FFFFFF15'
 							}}
 							key={message.id}
-							className={`${message.user_id === userId ? `bg-[--highlight] ` : ''}`}
+							className={`${message.user_id === userId ? `bg-[--highlight]` : ''}`}
 						>
 							<TableCell
 								style={{ color: message.color_name }}
