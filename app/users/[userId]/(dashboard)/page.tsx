@@ -14,14 +14,20 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger
+} from '@/components/ui/popover';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, MessageCircle, Clock } from 'lucide-react';
+import { CalendarDays, MessageCircle, Clock, ArrowDown } from 'lucide-react';
 import {
 	getFirstLastSeen,
 	getTotalMessages,
 	getUserName,
-	getRecentMessages
+	getRecentMessages,
+	getAllUsedNicknames
 } from './dashboard-data';
 import { redirect } from 'next/navigation';
 import { Suspense, use } from 'react';
@@ -60,6 +66,7 @@ export default async function Page(props: {
 	const totalMessages = getTotalMessages(userId);
 	const recentMessages = getRecentMessages(userId);
 	const heatmapData = getHeatmapData(userId, selectedYear);
+	const allUsedNicknames = getAllUsedNicknames(userId);
 	return (
 		<div className="container mx-auto p-4">
 			<Card className="mx-auto w-full max-w-3xl rounded-none border-l-0 border-r-0 border-t-0">
@@ -71,22 +78,27 @@ export default async function Page(props: {
 						<AvatarFallbackComponent />
 					</Avatar>
 					<div>
-						<Suspense
-							fallback={
-								<CardTitle className="text-2xl sm:min-w-80">
-									Loading...
+						<div className="flex flex-row items-center gap-4">
+							<Suspense
+								fallback={
+									<CardTitle className="text-2xl sm:min-w-80">
+										Loading...
+									</CardTitle>
+								}
+							>
+								<CardTitle className="w-32 overflow-hidden text-ellipsis text-2xl sm:w-fit">
+									{userName}
 								</CardTitle>
-							}
-						>
-							<CardTitle className="w-32 overflow-hidden text-ellipsis text-2xl sm:w-fit">
-								{userName}
-							</CardTitle>
+							</Suspense>
+							<Suspense>
+								<BadgeComponent firstLastSeen={firstLastSeen} />
+							</Suspense>
+						</div>
+						<Suspense fallback={<></>}>
+							<NicknameSection allUsedNicknames={allUsedNicknames} />
 						</Suspense>
 						<CardDescription>User Dashboard</CardDescription>
 					</div>
-					<Suspense>
-						<BadgeComponent firstLastSeen={firstLastSeen} />
-					</Suspense>
 				</CardHeader>
 				<CardContent className="flex flex-row flex-wrap gap-5 pl-12 sm:justify-center sm:gap-16">
 					<div className="flex items-center space-x-2">
@@ -152,6 +164,55 @@ export default async function Page(props: {
 	);
 }
 
+function NicknameSection({
+	allUsedNicknames
+}: {
+	allUsedNicknames: Promise<{ nickname: string }[] | null>;
+}) {
+	const allUsedNicknamesData = use(allUsedNicknames);
+	if (!allUsedNicknamesData || allUsedNicknamesData.length === 0) {
+		return <></>;
+	}
+	return (
+		<div className="flex flex-row items-center gap-2">
+			<span className="text-muted-foreground">aka</span>
+			<span className="inline-block text-sm font-medium text-primary/90">
+				{allUsedNicknamesData[0].nickname}
+			</span>
+			{allUsedNicknamesData.length > 1 ? (
+				<Popover>
+					<PopoverTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-6 w-6 rounded-full hover:bg-accent hover:text-accent-foreground"
+						>
+							<ArrowDown className="h-3 w-3" />
+						</Button>
+					</PopoverTrigger>
+					<PopoverContent className="max-h-[300px] w-fit overflow-y-auto">
+						<div className="flex flex-col gap-3 p-1">
+							<p className="border-b pb-2 text-sm font-medium text-muted-foreground">
+								Past Nicknames
+							</p>
+							{allUsedNicknamesData.slice(1).map((nickname) => (
+								<div
+									key={nickname.nickname}
+									className="group flex flex-row items-center gap-2 rounded-md p-2 transition-colors hover:bg-accent/50"
+								>
+									<span className="text-sm">{nickname.nickname}</span>
+								</div>
+							))}
+						</div>
+					</PopoverContent>
+				</Popover>
+			) : (
+				''
+			)}
+		</div>
+	);
+}
+
 function AvatarComponent({ userName }: { userName: Promise<string | null> }) {
 	return (
 		<AvatarImage
@@ -184,12 +245,11 @@ function BadgeComponent({
 	const minutesSinceLastMessage = (now - lastMessage) / (1000 * 60);
 	const status = minutesSinceLastMessage < 15 ? 'Active' : 'Offline';
 	return (
-		<Badge
-			className="!mb-5 !ml-2"
-			variant={status === 'Active' ? 'default' : 'outline'}
-		>
-			{status}
-		</Badge>
+		<div className="mt-0.5">
+			<Badge variant={status === 'Active' ? 'default' : 'outline'}>
+				{status}
+			</Badge>
+		</div>
 	);
 }
 
@@ -225,11 +285,17 @@ function MessageSection({
 								href={`/users/${userId}/messages/${message.id}/message-context`}
 								className="before:absolute before:left-0 before:top-0 before:h-full before:w-full"
 							>
-								<p>{message.message_text} {message.nickname ?  (
-									<>
-									- <span className="italic text-sm">{message.nickname}</span>
-									</>
-								) : ''}</p>
+								<p>
+									{message.message_text}{' '}
+									{message.nickname ? (
+										<>
+											-{' '}
+											<span className="text-sm italic">{message.nickname}</span>
+										</>
+									) : (
+										''
+									)}
+								</p>
 							</LinkWithHoverPrefetch>
 							<MessageCreatedAt time={message.created_at} />
 							<p className="float-right text-sm text-gray-500">

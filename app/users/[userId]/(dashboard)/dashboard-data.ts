@@ -75,3 +75,23 @@ export async function getRecentMessages(userId: number) {
 		return null;
 	}
 }
+
+export async function getAllUsedNicknames(userId: number) {
+	try {
+		const query = `
+        SELECT nicknames.nickname_name as nickname
+        FROM messages
+        JOIN nicknames ON messages.nickname_id = nicknames.id
+        WHERE user_id = $1 AND messages.is_deleted = false
+        GROUP BY nicknames.nickname_name
+        ORDER BY MAX(messages.created_at) DESC 
+        `;
+		const allUsedNicknames = (await db.query(query, [userId])).rows as {
+			nickname: string;
+		}[];
+		return allUsedNicknames;
+	} catch (error) {
+		console.error('Error fetching all used nicknames:', error);
+		return null;
+	}
+}
