@@ -40,7 +40,9 @@ export function MessageSection({
 							tabIndex={0}
 							style={{
 								// @ts-ignore
-								'--highlight': message.color_name ? `${message.color_name}15` : '#FFFFFF15'
+								'--highlight': message.color_name
+									? `${message.color_name}15`
+									: '#FFFFFF15'
 							}}
 							key={message.id}
 							className={`${message.user_id === userId ? `bg-[--highlight]` : ''}`}
@@ -49,11 +51,17 @@ export function MessageSection({
 								style={{ color: message.color_name }}
 								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								<p>{message.message_text} {message.nickname ?  (
-									<>
-									- <span className="italic text-sm">{message.nickname}</span>
-									</>
-								) : ''}</p>
+								<p>
+									{message.message_text}{' '}
+									{message.nickname ? (
+										<>
+											-{' '}
+											<span className="text-sm italic">{message.nickname}</span>
+										</>
+									) : (
+										''
+									)}
+								</p>
 								<MessageCreatedAt time={message.created_at} />
 								<p className="float-right text-sm text-gray-500">
 									{message.user_id} -&nbsp;

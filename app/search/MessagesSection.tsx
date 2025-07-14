@@ -32,11 +32,17 @@ export default function MessageSection({ messages }: { messages: Message[] }) {
 								style={{ color: message.color_name }}
 								className="max-w-[150px] break-words pb-2 sm:max-w-[500px]"
 							>
-								<p>{message.message_text} {message.nickname ?  (
-									<>
-									- <span className="italic text-sm">{message.nickname}</span>
-									</>
-								) : ''}</p>
+								<p>
+									{message.message_text}{' '}
+									{message.nickname ? (
+										<>
+											-{' '}
+											<span className="text-sm italic">{message.nickname}</span>
+										</>
+									) : (
+										''
+									)}
+								</p>
 								<MessageCreatedAt time={message.created_at} />
 								<p className="float-right text-sm text-gray-500">
 									{message.user_id} -&nbsp;
