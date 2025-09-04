@@ -1,6 +1,5 @@
 'use client';
 
-import { Cat } from 'lucide-react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -11,29 +10,41 @@ export default function GlobalKeyEvent() {
 		);
 	}, []);
 	useEffect(() => {
-		if (document.cookie.includes('disclaimer=true')) return;
-		toast.success('This website is NOT created by the VentScape dev.', {
-			richColors: true,
-			duration: 10000,
-			position: 'bottom-right',
-			style: {
-				fontSize: '0.9rem'
-			},
-			action: {
-				label: (
-					<>
-						<Cat /> &nbsp;I Understand
-					</>
-				),
-				onClick: () => {}
-			},
-			actionButtonStyle: {
-				paddingTop: '20px',
-				paddingBottom: '20px',
-				fontSize: '0.9rem'
+		if (document.cookie.includes('deathnotice=true')) return;
+		toast.error(
+			<div>
+				<h1 className="text-base font-bold">ArchiveScape is dead.</h1>
+				<p>
+					The archive is no longer being updated following the return of the
+					original creator of{' '}
+					<a
+						className="underline underline-offset-4"
+						href="https://ventscape.life"
+						target="_blank"
+					>
+						VentScape
+					</a>
+					.
+				</p>
+			</div>,
+			{
+				richColors: true,
+				duration: 10000000,
+				position: 'bottom-right',
+				style: {
+					fontSize: '0.9rem'
+				},
+				onDismiss: () => {
+					document.cookie =
+						'deathnotice=true; max-age=31536000; path=/; samesite=lax';
+				},
+				actionButtonStyle: {
+					paddingTop: '20px',
+					paddingBottom: '20px',
+					fontSize: '0.9rem'
+				}
 			}
-		});
-		document.cookie = 'disclaimer=true; max-age=31536000; path=/; samesite=lax';
+		);
 	}, []);
 	return null;
 }
