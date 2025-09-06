@@ -8,6 +8,10 @@ export default function robots(): MetadataRoute.Robots {
 				disallow: '/search'
 			},
 			{
+				userAgent: 'BLEXBot',
+				disallow: '/'
+			},
+			{
 				userAgent: '*',
 				allow: '/'
 			}
